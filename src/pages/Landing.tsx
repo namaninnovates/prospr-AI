@@ -1,42 +1,156 @@
 // TODO: REPLACE THIS LANDING PAGE WITH AN ELEGANT, THEMATIC, AND WELL-DESIGNED LANDING PAGE RELEVANT TO THE PROJECT
 import { motion } from "framer-motion";
-import { Loader } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import { useAction } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { Loader2, Bot, Brain, ArrowRight } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
+import { useNavigate } from "react-router";
 
 export default function Landing() {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const chat = useAction(api.ai.chatWithAI);
+
+  const [prompt, setPrompt] = useState("");
+  const [answer, setAnswer] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const askAI = async () => {
+    if (!prompt.trim() || loading) return;
+    setLoading(true);
+    setAnswer(null);
+    try {
+      const res = await chat({
+        messages: [{ role: "user", content: prompt.trim() }],
+      });
+      setAnswer(res);
+    } catch (e: any) {
+      setAnswer(e?.message || "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="min-h-screen flex flex-col"
+      className="min-h-screen relative overflow-hidden"
     >
+      {/* Vibrant gradient background with soft blurred circles */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-400 via-pink-500 to-red-500" />
+      <div className="pointer-events-none absolute -top-32 -left-32 h-96 w-96 rounded-full bg-white/10 blur-3xl" />
+      <div className="pointer-events-none absolute bottom-0 right-0 h-80 w-80 rounded-full bg-blue-300/20 blur-3xl" />
+      <div className="pointer-events-none absolute top-1/2 left-1/3 h-72 w-72 -translate-y-1/2 rounded-full bg-yellow-300/15 blur-3xl" />
 
-      
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center justify-center">
-        <div className="max-w-5xl mx-auto relative px-4">
-        {/* TODO: landing page goes here; replace with the landing page */}
-        <div className="flex justify-center">
-          <img
-            src="./logo.svg"
-            alt="Lock Icon"
-            width={64}
-            height={64}
-            className="rounded-lg mb-8 mt-24"
-          />
-        </div>
-        <div className="flex items-center justify-center">
-          <Loader className="h-8 w-8 animate-spin mr-4" />
-          <a
-            href="https://vly.ai"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary underline hover:text-primary/80 transition-colors"
+      {/* Nav */}
+      <div className="relative z-10">
+        <nav className="flex items-center justify-between px-6 py-6">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg border border-white/20 bg-white/10 backdrop-blur-sm">
+              <Brain className="h-7 w-7 text-white" />
+            </div>
+            <span className="text-2xl font-bold text-white tracking-tight">FinanceAI</span>
+          </div>
+          <Button
+            onClick={() => navigate(isAuthenticated ? "/dashboard" : "/auth")}
+            className="bg-white/10 border border-white/20 text-white hover:bg-white/20 backdrop-blur-md"
           >
-            vly.ai
-          </a>&nbsp; is generating your project...
-        </div>
-        </div>
+            {isAuthenticated ? "Dashboard" : "Get Started"}
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </nav>
+      </div>
+
+      {/* Hero */}
+      <div className="relative z-10">
+        <section className="px-6 pt-10">
+          <div className="mx-auto max-w-5xl text-center">
+            <motion.h1
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-5xl md:text-6xl font-bold tracking-tight text-white"
+            >
+              Glassmorphism Finance Assistant
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="mt-4 text-lg md:text-xl text-white/85"
+            >
+              Ask anything about investments, budgeting, statements, or ratios — explained clearly and professionally.
+            </motion.p>
+          </div>
+        </section>
+
+        {/* AI Chat Card */}
+        <section className="px-6 py-10">
+          <div className="mx-auto max-w-3xl">
+            <Card className="border-white/20 bg-white/10 backdrop-blur-xl text-white">
+              <CardContent className="p-6 space-y-4">
+                <div className="flex items-center gap-2 text-white/90">
+                  <Bot className="h-5 w-5" />
+                  <span className="font-semibold">Ask DeepSeek Finance AI</span>
+                </div>
+                <Textarea
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  placeholder="e.g., What is a good asset allocation for a moderate risk profile? How do I compute ROE and what does it mean?"
+                  className="min-h-28 bg-white/5 border-white/20 text-white placeholder:text-white/60"
+                />
+                <div className="flex items-center gap-2">
+                  <Button
+                    onClick={askAI}
+                    disabled={loading || !prompt.trim()}
+                    className="bg-blue-500/20 text-blue-100 border border-blue-400/30 hover:bg-blue-500/30"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Thinking...
+                      </>
+                    ) : (
+                      <>
+                        <Bot className="mr-2 h-4 w-4" /> Ask AI
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setPrompt("");
+                      setAnswer(null);
+                    }}
+                    className="bg-white/5 text-white border-white/20 hover:bg-white/15"
+                  >
+                    Clear
+                  </Button>
+                </div>
+
+                {answer && (
+                  <div className="mt-2 rounded-lg border border-white/15 bg-white/5 p-4">
+                    <div className="mb-2 flex items-center gap-2 text-sm text-white/70">
+                      <Bot className="h-4 w-4" />
+                      Answer
+                    </div>
+                    <div className="whitespace-pre-wrap text-white/95">{answer}</div>
+                  </div>
+                )}
+
+                {!answer && !loading && (
+                  <div className="text-sm text-white/70">
+                    Tips: Ask about P/E, ROE/ROA, DCF basics, cash flow health, leverage, liquidity, or how to read a balance sheet.
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </section>
       </div>
     </motion.div>
   );
