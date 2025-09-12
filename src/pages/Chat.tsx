@@ -1,0 +1,264 @@
+import { useEffect, useMemo, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import { useAction, useMutation, useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { useAuth } from "@/hooks/use-auth";
+import { useNavigate } from "react-router";
+import { Bot, Plus, Send, Loader2, ArrowLeft } from "lucide-react";
+
+type InteractiveEl = HTMLElement | null;
+
+export default function ChatPage() {
+  const { isAuthenticated, isLoading, user } = useAuth();
+  const navigate = useNavigate();
+
+  const createChat = useMutation(api.chats.createChat);
+  const listChats = useQuery(api.chats.listMyChats);
+  const addMessage = useMutation(api.messages.addMessage);
+  const listByChat = useQuery as unknown as <T extends any>(fn: any, args?: any) => T;
+
+  const chatWithAI = useAction(api.ai.chatWithAI);
+
+  const [activeChatId, setActiveChatId] = useState<null | string>(null);
+  const [input, setInput] = useState("");
+  const [sending, setSending] = useState(false);
+
+  // Cursor + parallax state (same style as Landing)
+  const [cursorPos, setCursorPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [hoveringInteractive, setHoveringInteractive] = useState<boolean>(false);
+  const [mouse, setMouse] = useState({ x: 0, y: 0 });
+
+  const messages = useMemo(() => {
+    if (!activeChatId) return undefined;
+    return listByChat(api.messages.listByChat, { chatId: activeChatId as any });
+  }, [activeChatId, listByChat]);
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) navigate("/auth");
+  }, [isLoading, isAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (!activeChatId && listChats && listChats.length > 0) {
+      setActiveChatId(listChats[0]._id);
+    }
+  }, [listChats, activeChatId]);
+
+  const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const { innerWidth, innerHeight } = window;
+    const x = (e.clientX / innerWidth - 0.5) * 2;
+    const y = (e.clientY / innerHeight - 0.5) * 2;
+    setMouse({ x, y });
+
+    setCursorPos({ x: e.clientX, y: e.clientY });
+
+    const target = (e.target as HTMLElement) ?? null;
+    const isInteractive = !!(target as InteractiveEl)?.closest?.(
+      "button,[role='button'],a,input,textarea,select,label,.cursor-pointer"
+    );
+    setHoveringInteractive(Boolean(isInteractive));
+  };
+
+  const newChat = async () => {
+    const id = await createChat({ title: "New Chat" });
+    setActiveChatId(id);
+  };
+
+  const send = async () => {
+    const text = input.trim();
+    if (!text || !activeChatId || sending) return;
+    setSending(true);
+    try {
+      await addMessage({ chatId: activeChatId as any, role: "user", content: text });
+      setInput("");
+      const answer = await chatWithAI({
+        messages: [{ role: "user", content: text }],
+      });
+      await addMessage({ chatId: activeChatId as any, role: "assistant", content: answer });
+    } catch (e) {
+      await addMessage({
+        chatId: activeChatId as any,
+        role: "assistant",
+        content: "Sorry, I couldn't process that. Please try again.",
+      });
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  // Safely derive message count to avoid TS issues when messages may be undefined or non-array
+  const messageCount = Array.isArray(messages) ? messages.length : 0;
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [messageCount, sending]);
+
+  if (isLoading || !isAuthenticated || !listChats) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin" />
+      </div>
+    );
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="min-h-screen bg-background cursor-none"
+      onMouseMove={onMouseMove}
+    >
+      {/* Custom Glass Cursor */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none fixed z-[60] h-6 w-6 rounded-full"
+        style={{
+          left: cursorPos.x,
+          top: cursorPos.y,
+          transform: "translate(-50%, -50%)",
+          background:
+            "radial-gradient(closest-side, rgba(255,255,255,0.25), rgba(255,255,255,0.05))",
+          boxShadow:
+            "0 0 0 1px color-mix(in oklch, var(--ring) 70%, transparent), 0 8px 24px rgba(0,0,0,0.12)",
+          backdropFilter: "blur(4px)",
+          WebkitBackdropFilter: "blur(4px)",
+        }}
+        animate={{
+          scale: hoveringInteractive ? 1.4 : 1,
+          opacity: 1,
+        }}
+        transition={{ type: "spring", stiffness: 250, damping: 20, mass: 0.6 }}
+      />
+
+      {/* Parallax Background Elements (same spirit as Landing) */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden -z-10">
+        <motion.div
+          className="absolute -top-24 -left-24 h-72 w-72 rounded-full"
+          style={{ background: "radial-gradient(circle, rgba(177,59,255,0.18), transparent 60%)" }}
+          animate={{ x: mouse.x * 20, y: mouse.y * 20 }}
+          transition={{ type: "spring", stiffness: 50, damping: 20 }}
+        />
+        <motion.div
+          className="absolute -bottom-24 -right-24 h-80 w-80 rounded-full"
+          style={{ background: "radial-gradient(circle, rgba(71,19,150,0.16), transparent 60%)" }}
+          animate={{ x: mouse.x * -25, y: mouse.y * -25 }}
+          transition={{ type: "spring", stiffness: 50, damping: 20 }}
+        />
+        <motion.div
+          className="absolute top-1/3 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full"
+          style={{ background: "radial-gradient(circle, rgba(255,204,0,0.08), transparent 60%)" }}
+          animate={{ x: mouse.x * 15, y: mouse.y * 10 }}
+          transition={{ type: "spring", stiffness: 60, damping: 22 }}
+        />
+      </div>
+
+      {/* Top Bar */}
+      <nav className="flex items-center justify-between px-6 py-4 border-b">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-lg border bg-card">
+            <Bot className="h-5 w-5" />
+          </div>
+          <span className="font-bold tracking-tight">FinanceAI Chat</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={() => navigate("/")}>
+            <ArrowLeft className="mr-2 h-4 w-4" /> Home
+          </Button>
+          <Button onClick={newChat}>
+            <Plus className="mr-2 h-4 w-4" />
+            New Chat
+          </Button>
+        </div>
+      </nav>
+
+      {/* Layout */}
+      <div className="px-6 py-6 grid gap-4 md:grid-cols-[280px_1fr] max-w-6xl mx-auto">
+        {/* Sidebar: chats */}
+        <Card className="h-[72vh] md:h-[76vh]">
+          <CardContent className="p-3 h-full overflow-auto space-y-2">
+            {listChats.length === 0 && (
+              <div className="text-sm text-muted-foreground">No chats yet. Create one to start.</div>
+            )}
+            {listChats.map((c) => (
+              <motion.button
+                key={c._id}
+                onClick={() => setActiveChatId(c._id)}
+                className={`w-full text-left rounded-md border px-3 py-2 text-sm ${
+                  activeChatId === c._id ? "bg-primary/10 border-primary/30" : "bg-card"
+                }`}
+                whileHover={{ y: -2 }}
+                transition={{ type: "spring", stiffness: 220, damping: 22 }}
+              >
+                {c.title}
+              </motion.button>
+            ))}
+          </CardContent>
+        </Card>
+
+        {/* Chat panel */}
+        <Card className="flex flex-col h-[72vh] md:h-[76vh]">
+          <CardContent className="p-0 flex flex-col h-full">
+            {/* Messages */}
+            <div ref={containerRef} className="flex-1 overflow-auto p-4 space-y-3">
+              {!activeChatId && (
+                <div className="text-sm text-muted-foreground">Select a chat or create a new one.</div>
+              )}
+              {activeChatId && messages === undefined && (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Loader2 className="h-4 w-4 animate-spin" /> Loading messages...
+                </div>
+              )}
+              {activeChatId &&
+                Array.isArray(messages) &&
+                messages.map((m: any) => (
+                  <motion.div
+                    key={m._id}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`max-w-[80%] rounded-md border px-3 py-2 ${
+                      m.role === "user" ? "ml-auto bg-primary/10 border-primary/30" : "bg-card"
+                    }`}
+                  >
+                    <div className="text-xs text-muted-foreground mb-1">
+                      {m.role === "user" ? (user?.name || "You") : "FinanceAI"}
+                    </div>
+                    <div className="whitespace-pre-wrap text-sm">{m.content}</div>
+                  </motion.div>
+                ))}
+            </div>
+
+            {/* Composer */}
+            <div className="border-t p-3">
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Ask about budgeting, statements, ratios..."
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      if (!activeChatId) return;
+                      send();
+                    }
+                  }}
+                  disabled={sending || !activeChatId}
+                />
+                <Button onClick={send} disabled={sending || !activeChatId}>
+                  {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                </Button>
+              </div>
+              {!activeChatId && (
+                <div className="text-xs text-muted-foreground mt-2">Create or select a chat to begin.</div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </motion.div>
+  );
+}

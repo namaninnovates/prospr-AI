@@ -32,12 +32,16 @@ const schema = defineSchema(
       role: v.optional(roleValidator), // role of the user. do not remove
     }).index("email", ["email"]), // index for the email. do not remove or modify
 
-    // add other tables here
+    chats: defineTable({
+      ownerId: v.id("users"),
+      title: v.string(),
+    }).index("by_ownerId", ["ownerId"]),
 
-    // tableName: defineTable({
-    //   ...
-    //   // table fields
-    // }).index("by_field", ["field"])
+    messages: defineTable({
+      chatId: v.id("chats"),
+      role: v.union(v.literal("user"), v.literal("assistant")),
+      content: v.string(),
+    }).index("by_chatId", ["chatId"]),
   },
   {
     schemaValidation: false,

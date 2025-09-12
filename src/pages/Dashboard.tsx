@@ -129,7 +129,7 @@ export default function Dashboard() {
             <Home className="mr-2 h-4 w-4" />
             Home
           </Button>
-          <Button variant="outline" onClick={() => navigate("/")}>
+          <Button variant="outline" onClick={() => navigate("/chat")}>
             <Bot className="mr-2 h-4 w-4" />
             Ask AI
           </Button>
@@ -200,6 +200,7 @@ function KPI({ label, value, icon: Icon, accentClass }: { label: string; value: 
 
 function HomeTab() {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <div className="space-y-6">
@@ -268,7 +269,7 @@ function HomeTab() {
                 <FileText className="mr-2 h-4 w-4" />
                 Generate Report
               </Button>
-              <Button variant="outline" onClick={() => toast("Opening AI on landing")}>
+              <Button variant="outline" onClick={() => navigate("/chat")}>
                 <Bot className="mr-2 h-4 w-4" />
                 Ask AI
               </Button>
