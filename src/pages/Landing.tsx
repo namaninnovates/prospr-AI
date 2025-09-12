@@ -38,7 +38,8 @@ export default function Landing() {
     const prefersDark =
       window.matchMedia &&
       window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const shouldDark = stored ? stored === "dark" : true || prefersDark;
+    // Default to light theme for a white background
+    const shouldDark = stored ? stored === "dark" : false;
     setIsDark(shouldDark);
     document.documentElement.classList.toggle("dark", shouldDark);
   }, []);
@@ -108,17 +109,16 @@ export default function Landing() {
       <div className="relative z-10">
         <nav className="flex items-center justify-between px-6 py-6">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg border border-white/20 bg-white/10 backdrop-blur-sm">
-              <Brain className="h-7 w-7 text-white" />
+            <div className="p-2 rounded-lg border bg-card">
+              <Brain className="h-7 w-7 text-foreground" />
             </div>
-            <span className="text-2xl font-bold text-white tracking-tight">FinanceAI</span>
+            <span className="text-2xl font-bold text-foreground tracking-tight">FinanceAI</span>
           </div>
           <div className="flex items-center gap-2">
             {/* Theme toggle */}
             <Button
               variant="outline"
               onClick={toggleTheme}
-              className="bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-md"
               aria-label="Toggle theme"
               title="Toggle theme"
             >
@@ -136,7 +136,6 @@ export default function Landing() {
             </Button>
             <Button
               onClick={() => navigate(isAuthenticated ? "/dashboard" : "/auth")}
-              className="bg-white/10 border border-white/20 text-white hover:bg-white/20 backdrop-blur-md"
               disabled={loading}
               aria-busy={loading}
             >
@@ -155,7 +154,7 @@ export default function Landing() {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-5xl md:text-6xl font-bold tracking-tight text-white"
+              className="text-5xl md:text-6xl font-bold tracking-tight text-foreground"
             >
               {isAuthenticated
                 ? `Welcome, ${user?.name || user?.email || "there"}`
@@ -165,7 +164,7 @@ export default function Landing() {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="mt-4 text-lg md:text-xl text-white/85"
+              className="mt-4 text-lg md:text-xl text-muted-foreground"
             >
               {isAuthenticated
                 ? "Ask anything about investments, budgeting, statements, or ratios — get clear, professional answers."
@@ -182,7 +181,6 @@ export default function Landing() {
               >
                 <Button
                   onClick={() => navigate("/auth")}
-                  className="bg-white/10 border border-white/20 text-white hover:bg-white/20 backdrop-blur-md"
                 >
                   Sign up to ask questions
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -196,9 +194,9 @@ export default function Landing() {
         {isAuthenticated && (
           <section className="px-6 py-10">
             <div className="mx-auto max-w-3xl">
-              <Card className="border-white/20 bg-white/10 backdrop-blur-xl text-white">
+              <Card>
                 <CardContent className="p-6 space-y-4">
-                  <div className="flex items-center gap-2 text-white/90">
+                  <div className="flex items-center gap-2 text-foreground/90">
                     <Bot className="h-5 w-5" />
                     <span className="font-semibold">Ask DeepSeek Finance AI</span>
                   </div>
@@ -206,13 +204,11 @@ export default function Landing() {
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
                     placeholder="e.g., What is a good asset allocation for a moderate risk profile? How do I compute ROE and what does it mean?"
-                    className="min-h-28 bg-white/5 border-white/20 text-white placeholder:text-white/60"
                   />
                   <div className="flex items-center gap-2">
                     <Button
                       onClick={askAI}
                       disabled={loading || !prompt.trim()}
-                      className="bg-blue-500/20 text-blue-100 border border-blue-400/30 hover:bg-blue-500/30"
                       aria-busy={loading}
                     >
                       {loading ? (
@@ -231,7 +227,6 @@ export default function Landing() {
                         setPrompt("");
                         setAnswer(null);
                       }}
-                      className="bg-white/5 text-white border-white/20 hover:bg-white/15"
                       disabled={loading}
                     >
                       Clear
@@ -239,8 +234,8 @@ export default function Landing() {
                   </div>
 
                   {answer && (
-                    <div className="mt-2 rounded-lg border border-white/15 bg-white/5 p-4">
-                      <div className="mb-2 flex items-center justify-between text-sm text-white/70">
+                    <div className="mt-2 rounded-lg border p-4">
+                      <div className="mb-2 flex items-center justify-between text-sm text-muted-foreground">
                         <div className="flex items-center gap-2">
                           <Bot className="h-4 w-4" />
                           Answer
@@ -248,18 +243,17 @@ export default function Landing() {
                         <Button
                           size="sm"
                           variant="outline"
-                          className="bg-white/5 text-white border-white/20 hover:bg-white/15"
                           onClick={() => setShowModal(true)}
                         >
                           View in Modal
                         </Button>
                       </div>
-                      <div className="whitespace-pre-wrap text-white/95">{answer}</div>
+                      <div className="whitespace-pre-wrap">{answer}</div>
                     </div>
                   )}
 
                   {!answer && !loading && (
-                    <div className="text-sm text-white/70">
+                    <div className="text-sm text-muted-foreground">
                       Tips: Ask about P/E, ROE/ROA, DCF basics, cash flow health, leverage, liquidity, or how to read a balance sheet.
                     </div>
                   )}
@@ -273,17 +267,16 @@ export default function Landing() {
       {/* Animated Answer Modal */}
       <Dialog open={showModal} onOpenChange={setShowModal}>
         <DialogContent
-          className="border-white/20 bg-white/10 backdrop-blur-2xl text-white shadow-[0_10px_40px_rgba(0,0,0,0.35)]"
           showCloseButton
         >
           <DialogHeader>
-            <DialogTitle className="text-white/95">AI Answer</DialogTitle>
+            <DialogTitle>AI Answer</DialogTitle>
           </DialogHeader>
           <motion.div
             initial={{ opacity: 0, y: 10, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ type: "spring", stiffness: 220, damping: 22 }}
-            className="max-h-[60vh] overflow-auto rounded-md border border-white/10 bg-white/5 p-4 text-white/95"
+            className="max-h-[60vh] overflow-auto rounded-md border p-4"
           >
             {answer}
           </motion.div>
