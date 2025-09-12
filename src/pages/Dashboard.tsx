@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, Plus, FileText, Bot, Bell, Download, TrendingUp, Wallet, WalletMinimal, PieChart, Target, GraduationCap, BookOpenCheck } from "lucide-react";
+import { Loader2, Plus, FileText, Bot, Bell, Download, TrendingUp, Wallet, WalletMinimal, PieChart, Target, GraduationCap, BookOpenCheck, Home } from "lucide-react";
 
 type InteractiveEl = HTMLElement | null;
 type TxnType = "income" | "expense" | "asset" | "liability";
@@ -125,6 +125,10 @@ export default function Dashboard() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={() => navigate("/")}>
+            <Home className="mr-2 h-4 w-4" />
+            Home
+          </Button>
           <Button variant="outline" onClick={() => navigate("/")}>
             <Bot className="mr-2 h-4 w-4" />
             Ask AI
