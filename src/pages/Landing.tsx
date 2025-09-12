@@ -14,7 +14,7 @@ import { useEffect } from "react";
 import { Moon, Sun } from "lucide-react";
 
 export default function Landing() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user, isLoading } = useAuth();
   const navigate = useNavigate();
   const chat = useAction(api.ai.chatWithAI);
 
@@ -24,6 +24,14 @@ export default function Landing() {
   const [showModal, setShowModal] = useState(false);
   // Theme state managed via DOM class & localStorage for persistence
   const [isDark, setIsDark] = useState<boolean>(true);
+
+  const [mouse, setMouse] = useState({ x: 0, y: 0 });
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const { innerWidth, innerHeight } = window;
+    const x = (e.clientX / innerWidth - 0.5) * 2;
+    const y = (e.clientY / innerHeight - 0.5) * 2;
+    setMouse({ x, y });
+  };
 
   useEffect(() => {
     const stored = localStorage.getItem("theme");
@@ -63,7 +71,39 @@ export default function Landing() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       className="min-h-screen bg-background"
+      onMouseMove={handleMouseMove}
     >
+      {/* Parallax Background Elements */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <motion.div
+          className="absolute -top-24 -left-24 h-72 w-72 rounded-full"
+          style={{ background: "radial-gradient(circle, rgba(177,59,255,0.18), transparent 60%)" }}
+          animate={{
+            x: mouse.x * 20,
+            y: mouse.y * 20,
+          }}
+          transition={{ type: "spring", stiffness: 50, damping: 20 }}
+        />
+        <motion.div
+          className="absolute -bottom-24 -right-24 h-80 w-80 rounded-full"
+          style={{ background: "radial-gradient(circle, rgba(71,19,150,0.16), transparent 60%)" }}
+          animate={{
+            x: mouse.x * -25,
+            y: mouse.y * -25,
+          }}
+          transition={{ type: "spring", stiffness: 50, damping: 20 }}
+        />
+        <motion.div
+          className="absolute top-1/3 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full"
+          style={{ background: "radial-gradient(circle, rgba(255,204,0,0.08), transparent 60%)" }}
+          animate={{
+            x: mouse.x * 15,
+            y: mouse.y * 10,
+          }}
+          transition={{ type: "spring", stiffness: 60, damping: 22 }}
+        />
+      </div>
+
       {/* Nav */}
       <div className="relative z-10">
         <nav className="flex items-center justify-between px-6 py-6">
@@ -117,7 +157,9 @@ export default function Landing() {
               transition={{ delay: 0.1 }}
               className="text-5xl md:text-6xl font-bold tracking-tight text-white"
             >
-              Glassmorphism Finance Assistant
+              {isAuthenticated
+                ? `Welcome, ${user?.name || user?.email || "there"}`
+                : "Welcome to FinanceAI"}
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 15 }}
@@ -125,85 +167,107 @@ export default function Landing() {
               transition={{ delay: 0.2 }}
               className="mt-4 text-lg md:text-xl text-white/85"
             >
-              Ask anything about investments, budgeting, statements, or ratios — explained clearly and professionally.
+              {isAuthenticated
+                ? "Ask anything about investments, budgeting, statements, or ratios — get clear, professional answers."
+                : "Your AI assistant for investments, budgeting, statements, and ratios — sign up to start asking questions."}
             </motion.p>
+
+            {/* CTA when not authenticated */}
+            {!isAuthenticated && (
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="mt-6 flex justify-center"
+              >
+                <Button
+                  onClick={() => navigate("/auth")}
+                  className="bg-white/10 border border-white/20 text-white hover:bg-white/20 backdrop-blur-md"
+                >
+                  Sign up to ask questions
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </motion.div>
+            )}
           </div>
         </section>
 
-        {/* AI Chat Card */}
-        <section className="px-6 py-10">
-          <div className="mx-auto max-w-3xl">
-            <Card className="border-white/20 bg-white/10 backdrop-blur-xl text-white">
-              <CardContent className="p-6 space-y-4">
-                <div className="flex items-center gap-2 text-white/90">
-                  <Bot className="h-5 w-5" />
-                  <span className="font-semibold">Ask DeepSeek Finance AI</span>
-                </div>
-                <Textarea
-                  value={prompt}
-                  onChange={(e) => setPrompt(e.target.value)}
-                  placeholder="e.g., What is a good asset allocation for a moderate risk profile? How do I compute ROE and what does it mean?"
-                  className="min-h-28 bg-white/5 border-white/20 text-white placeholder:text-white/60"
-                />
-                <div className="flex items-center gap-2">
-                  <Button
-                    onClick={askAI}
-                    disabled={loading || !prompt.trim()}
-                    className="bg-blue-500/20 text-blue-100 border border-blue-400/30 hover:bg-blue-500/30"
-                    aria-busy={loading}
-                  >
-                    {loading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Thinking...
-                      </>
-                    ) : (
-                      <>
-                        <Bot className="mr-2 h-4 w-4" /> Ask AI
-                      </>
-                    )}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setPrompt("");
-                      setAnswer(null);
-                    }}
-                    className="bg-white/5 text-white border-white/20 hover:bg-white/15"
-                    disabled={loading}
-                  >
-                    Clear
-                  </Button>
-                </div>
+        {/* AI Chat Card - only after sign up (authenticated) */}
+        {isAuthenticated && (
+          <section className="px-6 py-10">
+            <div className="mx-auto max-w-3xl">
+              <Card className="border-white/20 bg-white/10 backdrop-blur-xl text-white">
+                <CardContent className="p-6 space-y-4">
+                  <div className="flex items-center gap-2 text-white/90">
+                    <Bot className="h-5 w-5" />
+                    <span className="font-semibold">Ask DeepSeek Finance AI</span>
+                  </div>
+                  <Textarea
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    placeholder="e.g., What is a good asset allocation for a moderate risk profile? How do I compute ROE and what does it mean?"
+                    className="min-h-28 bg-white/5 border-white/20 text-white placeholder:text-white/60"
+                  />
+                  <div className="flex items-center gap-2">
+                    <Button
+                      onClick={askAI}
+                      disabled={loading || !prompt.trim()}
+                      className="bg-blue-500/20 text-blue-100 border border-blue-400/30 hover:bg-blue-500/30"
+                      aria-busy={loading}
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Thinking...
+                        </>
+                      ) : (
+                        <>
+                          <Bot className="mr-2 h-4 w-4" /> Ask AI
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setPrompt("");
+                        setAnswer(null);
+                      }}
+                      className="bg-white/5 text-white border-white/20 hover:bg-white/15"
+                      disabled={loading}
+                    >
+                      Clear
+                    </Button>
+                  </div>
 
-                {answer && (
-                  <div className="mt-2 rounded-lg border border-white/15 bg-white/5 p-4">
-                    <div className="mb-2 flex items-center justify-between text-sm text-white/70">
-                      <div className="flex items-center gap-2">
-                        <Bot className="h-4 w-4" />
-                        Answer
+                  {answer && (
+                    <div className="mt-2 rounded-lg border border-white/15 bg-white/5 p-4">
+                      <div className="mb-2 flex items-center justify-between text-sm text-white/70">
+                        <div className="flex items-center gap-2">
+                          <Bot className="h-4 w-4" />
+                          Answer
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="bg-white/5 text-white border-white/20 hover:bg-white/15"
+                          onClick={() => setShowModal(true)}
+                        >
+                          View in Modal
+                        </Button>
                       </div>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="bg-white/5 text-white border-white/20 hover:bg-white/15"
-                        onClick={() => setShowModal(true)}
-                      >
-                        View in Modal
-                      </Button>
+                      <div className="whitespace-pre-wrap text-white/95">{answer}</div>
                     </div>
-                    <div className="whitespace-pre-wrap text-white/95">{answer}</div>
-                  </div>
-                )}
+                  )}
 
-                {!answer && !loading && (
-                  <div className="text-sm text-white/70">
-                    Tips: Ask about P/E, ROE/ROA, DCF basics, cash flow health, leverage, liquidity, or how to read a balance sheet.
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        </section>
+                  {!answer && !loading && (
+                    <div className="text-sm text-white/70">
+                      Tips: Ask about P/E, ROE/ROA, DCF basics, cash flow health, leverage, liquidity, or how to read a balance sheet.
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </section>
+        )}
       </div>
 
       {/* Animated Answer Modal */}
