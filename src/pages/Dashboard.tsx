@@ -132,17 +132,24 @@ export default function Dashboard() {
 
 function KPI({ label, value, icon: Icon, accentClass }: { label: string; value: string; icon: any; accentClass: string }) {
   return (
-    <Card>
-      <CardHeader className="pb-2 flex flex-row items-center justify-between">
-        <CardDescription>{label}</CardDescription>
-        <div className={`p-2 rounded-md border ${accentClass}`}>
-          <Icon className="h-4 w-4" />
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold tracking-tight">{value}</div>
-      </CardContent>
-    </Card>
+    <motion.div
+      initial={{ opacity: 0, y: 10, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ type: "spring", stiffness: 220, damping: 22 }}
+      whileHover={{ y: -3 }}
+    >
+      <Card>
+        <CardHeader className="pb-2 flex flex-row items-center justify-between">
+          <CardDescription>{label}</CardDescription>
+          <div className={`p-2 rounded-md border ${accentClass}`}>
+            <Icon className="h-4 w-4" />
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold tracking-tight">{value}</div>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }
 
@@ -168,42 +175,57 @@ function HomeTab() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle>AI Insights</CardTitle>
-            <CardDescription>Tips, red flags, and goal progress</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Insight text="Spending on groceries is up 12% MoM. Consider setting a weekly cap." tone="tip" />
-            <Insight text="Credit card utilization at 45%. Aim to keep it under 30%." tone="warning" />
-            <Insight text="You're on track to hit your emergency fund goal in 3 months." tone="success" />
-          </CardContent>
-        </Card>
+        <motion.div
+          initial={{ opacity: 0, y: 12, scale: 0.99 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ type: "spring", stiffness: 220, damping: 24 }}
+          whileHover={{ y: -3 }}
+          className="lg:col-span-2"
+        >
+          <Card>
+            <CardHeader>
+              <CardTitle>AI Insights</CardTitle>
+              <CardDescription>Tips, red flags, and goal progress</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Insight text="Spending on groceries is up 12% MoM. Consider setting a weekly cap." tone="tip" />
+              <Insight text="Credit card utilization at 45%. Aim to keep it under 30%." tone="warning" />
+              <Insight text="You're on track to hit your emergency fund goal in 3 months." tone="success" />
+            </CardContent>
+          </Card>
+        </motion.div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-            <CardDescription>Common tasks</CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-2">
-            <Button variant="outline" onClick={() => toast("Add Transaction dialog opened")}>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Transaction
-            </Button>
-            <Button variant="outline" onClick={() => toast("Generating report...")}>
-              <FileText className="mr-2 h-4 w-4" />
-              Generate Report
-            </Button>
-            <Button variant="outline" onClick={() => toast("Opening AI on landing")}>
-              <Bot className="mr-2 h-4 w-4" />
-              Ask AI
-            </Button>
-            <Button variant="outline" onClick={() => toast("Notifications opened")}>
-              <Bell className="mr-2 h-4 w-4" />
-              Notifications
-            </Button>
-          </CardContent>
-        </Card>
+        <motion.div
+          initial={{ opacity: 0, y: 12, scale: 0.99 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ type: "spring", stiffness: 220, damping: 24, delay: 0.05 }}
+          whileHover={{ y: -3 }}
+        >
+          <Card>
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
+              <CardDescription>Common tasks</CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-2">
+              <Button variant="outline" onClick={() => toast("Add Transaction dialog opened")}>
+                <Plus className="mr-2 h-4 w-4" />
+                Add Transaction
+              </Button>
+              <Button variant="outline" onClick={() => toast("Generating report...")}>
+                <FileText className="mr-2 h-4 w-4" />
+                Generate Report
+              </Button>
+              <Button variant="outline" onClick={() => toast("Opening AI on landing")}>
+                <Bot className="mr-2 h-4 w-4" />
+                Ask AI
+              </Button>
+              <Button variant="outline" onClick={() => toast("Notifications opened")}>
+                <Bell className="mr-2 h-4 w-4" />
+                Notifications
+              </Button>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
     </div>
   );

@@ -13,6 +13,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useEffect } from "react";
 import { Moon, Sun } from "lucide-react";
 
+type InteractiveEl = HTMLElement | null;
+
 export default function Landing() {
   const { isAuthenticated, user, isLoading } = useAuth();
   const navigate = useNavigate();
@@ -25,12 +27,26 @@ export default function Landing() {
   // Theme state managed via DOM class & localStorage for persistence
   const [isDark, setIsDark] = useState<boolean>(true);
 
+  const [cursorPos, setCursorPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [hoveringInteractive, setHoveringInteractive] = useState<boolean>(false);
+
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const { innerWidth, innerHeight } = window;
     const x = (e.clientX / innerWidth - 0.5) * 2;
     const y = (e.clientY / innerHeight - 0.5) * 2;
     setMouse({ x, y });
+
+    // Track cursor position
+    setCursorPos({ x: e.clientX, y: e.clientY });
+
+    // Detect interactive elements to scale cursor subtly
+    const target = (e.target as HTMLElement) ?? null;
+    const isInteractive =
+      !!(target as InteractiveEl)?.closest?.(
+        "button,[role='button'],a,input,textarea,select,label,.cursor-pointer"
+      );
+    setHoveringInteractive(Boolean(isInteractive));
   };
 
   useEffect(() => {
@@ -71,9 +87,31 @@ export default function Landing() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen bg-background"
+      className="min-h-screen bg-background cursor-none"
       onMouseMove={handleMouseMove}
     >
+      {/* Custom Glass Cursor */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none fixed z-[60] h-6 w-6 rounded-full"
+        style={{
+          left: cursorPos.x,
+          top: cursorPos.y,
+          transform: "translate(-50%, -50%)",
+          background:
+            "radial-gradient(closest-side, rgba(255,255,255,0.25), rgba(255,255,255,0.05))",
+          boxShadow:
+            "0 0 0 1px color-mix(in oklch, var(--ring) 70%, transparent), 0 8px 24px rgba(0,0,0,0.12)",
+          backdropFilter: "blur(4px)",
+          WebkitBackdropFilter: "blur(4px)",
+        }}
+        animate={{
+          scale: hoveringInteractive ? 1.4 : 1,
+          opacity: 1,
+        }}
+        transition={{ type: "spring", stiffness: 250, damping: 20, mass: 0.6 }}
+      />
+
       {/* Parallax Background Elements */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <motion.div
