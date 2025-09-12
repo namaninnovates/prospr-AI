@@ -10,6 +10,8 @@ import { Loader2, Bot, Brain, ArrowRight } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useNavigate } from "react-router";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useEffect } from "react";
+import { Moon, Sun } from "lucide-react";
 
 export default function Landing() {
   const { isAuthenticated } = useAuth();
@@ -20,6 +22,25 @@ export default function Landing() {
   const [answer, setAnswer] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  // Theme state managed via DOM class & localStorage for persistence
+  const [isDark, setIsDark] = useState<boolean>(true);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("theme");
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const shouldDark = stored ? stored === "dark" : true || prefersDark;
+    setIsDark(shouldDark);
+    document.documentElement.classList.toggle("dark", shouldDark);
+  }, []);
+
+  const toggleTheme = () => {
+    const next = !isDark;
+    setIsDark(next);
+    document.documentElement.classList.toggle("dark", next);
+    localStorage.setItem("theme", next ? "dark" : "light");
+  };
 
   const askAI = async () => {
     if (!prompt.trim() || loading) return;
@@ -52,15 +73,37 @@ export default function Landing() {
             </div>
             <span className="text-2xl font-bold text-white tracking-tight">FinanceAI</span>
           </div>
-          <Button
-            onClick={() => navigate(isAuthenticated ? "/dashboard" : "/auth")}
-            className="bg-white/10 border border-white/20 text-white hover:bg-white/20 backdrop-blur-md"
-            disabled={loading}
-            aria-busy={loading}
-          >
-            {isAuthenticated ? "Dashboard" : "Get Started"}
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-2">
+            {/* Theme toggle */}
+            <Button
+              variant="outline"
+              onClick={toggleTheme}
+              className="bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-md"
+              aria-label="Toggle theme"
+              title="Toggle theme"
+            >
+              {isDark ? (
+                <>
+                  <Sun className="mr-2 h-4 w-4" />
+                  Light
+                </>
+              ) : (
+                <>
+                  <Moon className="mr-2 h-4 w-4" />
+                  Dark
+                </>
+              )}
+            </Button>
+            <Button
+              onClick={() => navigate(isAuthenticated ? "/dashboard" : "/auth")}
+              className="bg-white/10 border border-white/20 text-white hover:bg-white/20 backdrop-blur-md"
+              disabled={loading}
+              aria-busy={loading}
+            >
+              {isAuthenticated ? "Dashboard" : "Get Started"}
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
         </nav>
       </div>
 
