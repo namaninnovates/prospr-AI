@@ -37,6 +37,7 @@ export default function Dashboard() {
 
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [hoveringInteractive, setHoveringInteractive] = useState<boolean>(false);
+  const [mouse, setMouse] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -46,6 +47,12 @@ export default function Dashboard() {
 
   function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
     setCursorPos({ x: e.clientX, y: e.clientY });
+
+    const { innerWidth, innerHeight } = window;
+    const mx = (e.clientX / innerWidth - 0.5) * 2;
+    const my = (e.clientY / innerHeight - 0.5) * 2;
+    setMouse({ x: mx, y: my });
+
     const target = (e.target as HTMLElement) ?? null;
     const isInteractive = !!(target as InteractiveEl)?.closest?.(
       "button,[role='button'],a,input,textarea,select,label,.cursor-pointer"
@@ -63,24 +70,45 @@ export default function Dashboard() {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="relative min-h-screen overflow-hidden bg-background cursor-none" onMouseMove={handleMouseMove}>
+      <motion.div
+        aria-hidden
+        className="pointer-events-none fixed z-[60] h-6 w-6 rounded-full"
+        style={{
+          left: cursorPos.x,
+          top: cursorPos.y,
+          transform: "translate(-50%, -50%)",
+          background:
+            "radial-gradient(closest-side, rgba(255,255,255,0.25), rgba(255,255,255,0.05))",
+          boxShadow:
+            "0 0 0 1px color-mix(in oklch, var(--ring) 70%, transparent), 0 8px 24px rgba(0,0,0,0.12)",
+          backdropFilter: "blur(4px)",
+          WebkitBackdropFilter: "blur(4px)",
+        }}
+        animate={{
+          scale: hoveringInteractive ? 1.4 : 1,
+          opacity: 1,
+        }}
+        transition={{ type: "spring", stiffness: 250, damping: 20, mass: 0.6 }}
+      />
+
       <div className="pointer-events-none absolute inset-0 -z-10">
         <motion.div
           className="absolute -top-24 -left-24 h-72 w-72 rounded-full"
           style={{ background: "radial-gradient(circle, color-mix(in oklch, var(--chart-2) 22%, transparent), transparent 60%)" }}
-          animate={{ x: 12, y: 8 }}
-          transition={{ repeat: Infinity, repeatType: "mirror", duration: 10, ease: "easeInOut" }}
+          animate={{ x: mouse.x * 20, y: mouse.y * 20 }}
+          transition={{ type: "spring", stiffness: 50, damping: 20 }}
         />
         <motion.div
           className="absolute -bottom-28 -right-20 h-96 w-96 rounded-full"
           style={{ background: "radial-gradient(circle, color-mix(in oklch, var(--primary) 18%, transparent), transparent 60%)" }}
-          animate={{ x: -10, y: -6 }}
-          transition={{ repeat: Infinity, repeatType: "mirror", duration: 12, ease: "easeInOut" }}
+          animate={{ x: mouse.x * -25, y: mouse.y * -25 }}
+          transition={{ type: "spring", stiffness: 50, damping: 20 }}
         />
         <motion.div
           className="absolute top-1/3 left-1/3 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full"
           style={{ background: "radial-gradient(circle, color-mix(in oklch, var(--chart-1) 14%, transparent), transparent 60%)" }}
-          animate={{ x: 6, y: -4 }}
-          transition={{ repeat: Infinity, repeatType: "mirror", duration: 14, ease: "easeInOut" }}
+          animate={{ x: mouse.x * 15, y: mouse.y * 10 }}
+          transition={{ type: "spring", stiffness: 60, damping: 22 }}
         />
       </div>
 
