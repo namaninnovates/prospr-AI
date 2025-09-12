@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, Plus, FileText, Bot, Bell, Download, TrendingUp, Wallet, WalletMinimal, PieChart, Target, GraduationCap, BookOpenCheck } from "lucide-react";
 
+type InteractiveEl = HTMLElement | null;
 type TxnType = "income" | "expense" | "asset" | "liability";
 type Txn = {
   id: string;
@@ -34,11 +35,23 @@ export default function Dashboard() {
   const { isLoading, isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
+  const [cursorPos, setCursorPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [hoveringInteractive, setHoveringInteractive] = useState<boolean>(false);
+
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       navigate("/auth");
     }
   }, [isLoading, isAuthenticated, navigate]);
+
+  function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    setCursorPos({ x: e.clientX, y: e.clientY });
+    const target = (e.target as HTMLElement) ?? null;
+    const isInteractive = !!(target as InteractiveEl)?.closest?.(
+      "button,[role='button'],a,input,textarea,select,label,.cursor-pointer"
+    );
+    setHoveringInteractive(Boolean(isInteractive));
+  }
 
   if (isLoading || !isAuthenticated) {
     return (
@@ -49,7 +62,7 @@ export default function Dashboard() {
   }
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="relative min-h-screen overflow-hidden bg-background">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="relative min-h-screen overflow-hidden bg-background cursor-none" onMouseMove={handleMouseMove}>
       <div className="pointer-events-none absolute inset-0 -z-10">
         <motion.div
           className="absolute -top-24 -left-24 h-72 w-72 rounded-full"
@@ -165,6 +178,14 @@ function HomeTab() {
         <p className="text-sm text-muted-foreground">
           Quick view of your financial health with AI insights.
         </p>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="rounded-md border px-3 py-2 text-sm text-muted-foreground bg-primary/5 dark:bg-primary/10"
+      >
+        Overview of your finances at a glance with KPIs and AI-driven insights.
       </motion.div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -291,6 +312,14 @@ function LedgerTab() {
 
   return (
     <div className="space-y-4">
+      <motion.div
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="rounded-md border px-3 py-2 text-sm text-muted-foreground bg-primary/5 dark:bg-primary/10"
+      >
+        Add, manage, and export your transactions with monthly summaries.
+      </motion.div>
+
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold tracking-tight">Transactions</h3>
@@ -415,6 +444,14 @@ function ReportsTab() {
 
   return (
     <div className="grid gap-4 md:grid-cols-2">
+      <motion.div
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="md:col-span-2 rounded-md border px-3 py-2 text-sm text-muted-foreground bg-primary/5 dark:bg-primary/10"
+      >
+        Generate financial statements and analyses to understand performance and plan ahead.
+      </motion.div>
+
       {items.map((it) => (
         <Card key={it.title}>
           <CardHeader>
@@ -454,6 +491,14 @@ function InvestmentsTab() {
 
   return (
     <div className="grid gap-4 lg:grid-cols-2">
+      <motion.div
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="lg:col-span-2 rounded-md border px-3 py-2 text-sm text-muted-foreground bg-primary/5 dark:bg-primary/10"
+      >
+        Track allocations and goal progress with quick AI suggestions for next steps.
+      </motion.div>
+
       <Card>
         <CardHeader>
           <CardTitle>Portfolio</CardTitle>
@@ -512,6 +557,14 @@ function LearningTab() {
 
   return (
     <div className="grid gap-4 md:grid-cols-3">
+      <motion.div
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="md:col-span-3 rounded-md border px-3 py-2 text-sm text-muted-foreground bg-primary/5 dark:bg-primary/10"
+      >
+        Learn finance concepts in plain language with quick lessons and news summaries.
+      </motion.div>
+
       {items.map((it) => (
         <Card key={it.title} className="flex flex-col">
           <CardHeader>
