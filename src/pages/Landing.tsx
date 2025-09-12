@@ -190,6 +190,97 @@ export default function Landing() {
           </div>
         </section>
 
+        {/* Glassmorphism Illustration */}
+        <section className="relative px-6 pt-8">
+          <div className="mx-auto max-w-5xl">
+            {/* Soft animated blobs behind the glass cards */}
+            <div className="pointer-events-none absolute inset-0 -z-10">
+              <motion.div
+                className="absolute -top-10 left-12 h-40 w-40 rounded-full"
+                style={{ background: "radial-gradient(circle, rgba(255,204,0,0.22), transparent 60%)" }}
+                animate={{ x: [0, 10, -6, 0], y: [0, -6, 8, 0] }}
+                transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+              />
+              <motion.div
+                className="absolute top-16 right-10 h-48 w-48 rounded-full"
+                style={{ background: "radial-gradient(circle, rgba(177,59,255,0.16), transparent 60%)" }}
+                animate={{ x: [0, -8, 12, 0], y: [0, 10, -6, 0] }}
+                transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+              />
+              <motion.div
+                className="absolute bottom-0 left-1/3 h-36 w-36 rounded-full"
+                style={{ background: "radial-gradient(circle, rgba(71,19,150,0.14), transparent 60%)" }}
+                animate={{ x: [0, 6, -8, 0], y: [0, 8, -10, 0] }}
+                transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+              />
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-3">
+              <motion.div
+                initial={{ opacity: 0, y: 12, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ delay: 0.05, type: "spring", stiffness: 200, damping: 20 }}
+                className="rounded-xl border bg-white/50 dark:bg-card/40 backdrop-blur-md p-5"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-md border bg-white/60 dark:bg-background/40">
+                    <Brain className="h-4 w-4" />
+                  </div>
+                  <div className="font-semibold tracking-tight">Smart by Design</div>
+                </div>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Clear, actionable answers on budgeting, statements, and ratios — without the jargon.
+                </p>
+                <div className="mt-3 text-xs text-muted-foreground">
+                  ✨ Friendly, expert guidance
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 12, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ delay: 0.12, type: "spring", stiffness: 200, damping: 20 }}
+                whileHover={{ y: -4 }}
+                className="rounded-xl border bg-white/50 dark:bg-card/40 backdrop-blur-md p-5"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-md border bg-white/60 dark:bg-background/40">
+                    <Bot className="h-4 w-4" />
+                  </div>
+                  <div className="font-semibold tracking-tight">Always On</div>
+                </div>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Ask anything — from ROE/ROA basics to cash flow health and allocation ideas.
+                </p>
+                <div className="mt-3 text-xs text-muted-foreground">
+                  ⚡ Fast, reliable responses
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 12, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ delay: 0.18, type: "spring", stiffness: 200, damping: 20 }}
+                whileHover={{ y: -4 }}
+                className="rounded-xl border bg-white/50 dark:bg-card/40 backdrop-blur-md p-5"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-md border bg-white/60 dark:bg-background/40">
+                    <span className="text-base" role="img" aria-label="chart">📈</span>
+                  </div>
+                  <div className="font-semibold tracking-tight">Built for You</div>
+                </div>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Personalized and practical — your name, your goals, your journey.
+                </p>
+                <div className="mt-3 text-xs text-muted-foreground">
+                  💛 Human tone, pro insights
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
         {/* AI Chat Card - only after sign up (authenticated) */}
         {isAuthenticated && (
           <section className="px-6 py-10">
