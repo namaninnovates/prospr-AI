@@ -179,12 +179,15 @@ export default function Landing() {
                 transition={{ delay: 0.3 }}
                 className="mt-6 flex justify-center"
               >
-                <Button
-                  onClick={() => navigate("/auth")}
-                >
-                  Sign up to ask questions
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+                {/* subtle interactive hover/tap */}
+                <motion.div whileHover={{ y: -2, scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                  <Button
+                    onClick={() => navigate("/auth")}
+                  >
+                    Sign up to ask questions
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </motion.div>
               </motion.div>
             )}
           </div>
@@ -220,6 +223,7 @@ export default function Landing() {
                 initial={{ opacity: 0, y: 12, scale: 0.98 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ delay: 0.05, type: "spring", stiffness: 200, damping: 20 }}
+                whileHover={{ y: -4 }}  // Add subtle float on hover for consistency
                 className="rounded-xl border bg-white/50 dark:bg-card/40 backdrop-blur-md p-5"
               >
                 <div className="flex items-center gap-3">
@@ -283,7 +287,13 @@ export default function Landing() {
 
         {/* AI Chat Card - only after sign up (authenticated) */}
         {isAuthenticated && (
-          <section className="px-6 py-10">
+          <motion.section
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ type: "spring", stiffness: 220, damping: 26 }}
+            className="px-6 py-10"
+          >
             <div className="mx-auto max-w-3xl">
               <Card>
                 <CardContent className="p-6 space-y-4">
@@ -351,7 +361,7 @@ export default function Landing() {
                 </CardContent>
               </Card>
             </div>
-          </section>
+          </motion.section>
         )}
       </div>
 
