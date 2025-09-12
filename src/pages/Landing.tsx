@@ -9,7 +9,7 @@ import { api } from "@/convex/_generated/api";
 import { Loader2, Bot, Brain, ArrowRight } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useNavigate } from "react-router";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export default function Landing() {
   const { isAuthenticated } = useAuth();
@@ -30,7 +30,6 @@ export default function Landing() {
         messages: [{ role: "user", content: prompt.trim() }],
       });
       setAnswer(res);
-      setShowModal(true);
     } catch (e: any) {
       setAnswer(e?.message || "Something went wrong. Please try again.");
     } finally {
@@ -57,6 +56,7 @@ export default function Landing() {
             onClick={() => navigate(isAuthenticated ? "/dashboard" : "/auth")}
             className="bg-white/10 border border-white/20 text-white hover:bg-white/20 backdrop-blur-md"
             disabled={loading}
+            aria-busy={loading}
           >
             {isAuthenticated ? "Dashboard" : "Get Started"}
             <ArrowRight className="ml-2 h-4 w-4" />
@@ -108,7 +108,6 @@ export default function Landing() {
                     disabled={loading || !prompt.trim()}
                     className="bg-blue-500/20 text-blue-100 border border-blue-400/30 hover:bg-blue-500/30"
                     aria-busy={loading}
-                    aria-live="polite"
                   >
                     {loading ? (
                       <>
@@ -129,26 +128,19 @@ export default function Landing() {
                     className="bg-white/5 text-white border-white/20 hover:bg-white/15"
                     disabled={loading}
                   >
-                    {loading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Clearing...
-                      </>
-                    ) : (
-                      "Clear"
-                    )}
+                    Clear
                   </Button>
                 </div>
 
                 {answer && (
                   <div className="mt-2 rounded-lg border border-white/15 bg-white/5 p-4">
-                    <div className="mb-2 flex items-center gap-2 text-sm text-white/70">
-                      <Bot className="h-4 w-4" />
-                      Answer
-                    </div>
-                    <div className="whitespace-pre-wrap text-white/95">{answer}</div>
-
-                    <div className="mt-3">
+                    <div className="mb-2 flex items-center justify-between text-sm text-white/70">
+                      <div className="flex items-center gap-2">
+                        <Bot className="h-4 w-4" />
+                        Answer
+                      </div>
                       <Button
+                        size="sm"
                         variant="outline"
                         className="bg-white/5 text-white border-white/20 hover:bg-white/15"
                         onClick={() => setShowModal(true)}
@@ -156,6 +148,7 @@ export default function Landing() {
                         View in Modal
                       </Button>
                     </div>
+                    <div className="whitespace-pre-wrap text-white/95">{answer}</div>
                   </div>
                 )}
 
@@ -170,34 +163,23 @@ export default function Landing() {
         </section>
       </div>
 
-      {/* Animated modal for the AI answer */}
+      {/* Animated Answer Modal */}
       <Dialog open={showModal} onOpenChange={setShowModal}>
-        <DialogContent className="bg-white/10 backdrop-blur-2xl border border-white/20 text-white">
+        <DialogContent
+          className="border-white/20 bg-white/10 backdrop-blur-2xl text-white shadow-[0_10px_40px_rgba(0,0,0,0.35)]"
+          showCloseButton
+        >
           <DialogHeader>
             <DialogTitle className="text-white/95">AI Answer</DialogTitle>
-            <DialogDescription className="text-white/70">
-              Your financial assistant's response
-            </DialogDescription>
           </DialogHeader>
           <motion.div
             initial={{ opacity: 0, y: 10, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ type: "spring", stiffness: 220, damping: 20 }}
-            className="mt-2"
+            transition={{ type: "spring", stiffness: 220, damping: 22 }}
+            className="max-h-[60vh] overflow-auto rounded-md border border-white/10 bg-white/5 p-4 text-white/95"
           >
-            <div className="whitespace-pre-wrap text-white/95">
-              {answer || "No response yet."}
-            </div>
+            {answer}
           </motion.div>
-          <div className="mt-4 flex justify-end gap-2">
-            <Button
-              variant="outline"
-              className="bg-white/5 text-white border-white/20 hover:bg-white/15"
-              onClick={() => setShowModal(false)}
-            >
-              Close
-            </Button>
-          </div>
         </DialogContent>
       </Dialog>
     </motion.div>
