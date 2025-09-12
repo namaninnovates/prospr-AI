@@ -49,7 +49,28 @@ export default function Dashboard() {
   }
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="relative min-h-screen overflow-hidden bg-background">
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <motion.div
+          className="absolute -top-24 -left-24 h-72 w-72 rounded-full"
+          style={{ background: "radial-gradient(circle, color-mix(in oklch, var(--chart-2) 22%, transparent), transparent 60%)" }}
+          animate={{ x: 12, y: 8 }}
+          transition={{ repeat: Infinity, repeatType: "mirror", duration: 10, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute -bottom-28 -right-20 h-96 w-96 rounded-full"
+          style={{ background: "radial-gradient(circle, color-mix(in oklch, var(--primary) 18%, transparent), transparent 60%)" }}
+          animate={{ x: -10, y: -6 }}
+          transition={{ repeat: Infinity, repeatType: "mirror", duration: 12, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute top-1/3 left-1/3 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full"
+          style={{ background: "radial-gradient(circle, color-mix(in oklch, var(--chart-1) 14%, transparent), transparent 60%)" }}
+          animate={{ x: 6, y: -4 }}
+          transition={{ repeat: Infinity, repeatType: "mirror", duration: 14, ease: "easeInOut" }}
+        />
+      </div>
+
       <header className="border-b px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg border bg-card">
@@ -305,7 +326,7 @@ function LedgerTab() {
               {txns.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center text-sm text-muted-foreground">
-                    No transactions yet. Click “Add” to create one.
+                    No transactions yet. Click "Add" to create one.
                   </TableCell>
                 </TableRow>
               )}
