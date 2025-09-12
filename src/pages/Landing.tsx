@@ -39,14 +39,8 @@ export default function Landing() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen relative overflow-hidden"
+      className="min-h-screen bg-background"
     >
-      {/* Vibrant gradient background with soft blurred circles */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-400 via-pink-500 to-red-500" />
-      <div className="pointer-events-none absolute -top-32 -left-32 h-96 w-96 rounded-full bg-white/10 blur-3xl" />
-      <div className="pointer-events-none absolute bottom-0 right-0 h-80 w-80 rounded-full bg-blue-300/20 blur-3xl" />
-      <div className="pointer-events-none absolute top-1/2 left-1/3 h-72 w-72 -translate-y-1/2 rounded-full bg-yellow-300/15 blur-3xl" />
-
       {/* Nav */}
       <div className="relative z-10">
         <nav className="flex items-center justify-between px-6 py-6">
