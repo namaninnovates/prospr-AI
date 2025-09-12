@@ -9,6 +9,7 @@ import { api } from "@/convex/_generated/api";
 import { Loader2, Bot, Brain, ArrowRight } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useNavigate } from "react-router";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export default function Landing() {
   const { isAuthenticated } = useAuth();
@@ -18,6 +19,7 @@ export default function Landing() {
   const [prompt, setPrompt] = useState("");
   const [answer, setAnswer] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const askAI = async () => {
     if (!prompt.trim() || loading) return;
@@ -28,6 +30,7 @@ export default function Landing() {
         messages: [{ role: "user", content: prompt.trim() }],
       });
       setAnswer(res);
+      setShowModal(true);
     } catch (e: any) {
       setAnswer(e?.message || "Something went wrong. Please try again.");
     } finally {
@@ -53,6 +56,7 @@ export default function Landing() {
           <Button
             onClick={() => navigate(isAuthenticated ? "/dashboard" : "/auth")}
             className="bg-white/10 border border-white/20 text-white hover:bg-white/20 backdrop-blur-md"
+            disabled={loading}
           >
             {isAuthenticated ? "Dashboard" : "Get Started"}
             <ArrowRight className="ml-2 h-4 w-4" />
@@ -103,6 +107,8 @@ export default function Landing() {
                     onClick={askAI}
                     disabled={loading || !prompt.trim()}
                     className="bg-blue-500/20 text-blue-100 border border-blue-400/30 hover:bg-blue-500/30"
+                    aria-busy={loading}
+                    aria-live="polite"
                   >
                     {loading ? (
                       <>
@@ -121,8 +127,15 @@ export default function Landing() {
                       setAnswer(null);
                     }}
                     className="bg-white/5 text-white border-white/20 hover:bg-white/15"
+                    disabled={loading}
                   >
-                    Clear
+                    {loading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Clearing...
+                      </>
+                    ) : (
+                      "Clear"
+                    )}
                   </Button>
                 </div>
 
@@ -133,6 +146,16 @@ export default function Landing() {
                       Answer
                     </div>
                     <div className="whitespace-pre-wrap text-white/95">{answer}</div>
+
+                    <div className="mt-3">
+                      <Button
+                        variant="outline"
+                        className="bg-white/5 text-white border-white/20 hover:bg-white/15"
+                        onClick={() => setShowModal(true)}
+                      >
+                        View in Modal
+                      </Button>
+                    </div>
                   </div>
                 )}
 
@@ -146,6 +169,37 @@ export default function Landing() {
           </div>
         </section>
       </div>
+
+      {/* Animated modal for the AI answer */}
+      <Dialog open={showModal} onOpenChange={setShowModal}>
+        <DialogContent className="bg-white/10 backdrop-blur-2xl border border-white/20 text-white">
+          <DialogHeader>
+            <DialogTitle className="text-white/95">AI Answer</DialogTitle>
+            <DialogDescription className="text-white/70">
+              Your financial assistant's response
+            </DialogDescription>
+          </DialogHeader>
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ type: "spring", stiffness: 220, damping: 20 }}
+            className="mt-2"
+          >
+            <div className="whitespace-pre-wrap text-white/95">
+              {answer || "No response yet."}
+            </div>
+          </motion.div>
+          <div className="mt-4 flex justify-end gap-2">
+            <Button
+              variant="outline"
+              className="bg-white/5 text-white border-white/20 hover:bg-white/15"
+              onClick={() => setShowModal(false)}
+            >
+              Close
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 }
