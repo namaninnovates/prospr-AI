@@ -52,6 +52,8 @@ export default function Landing() {
     setHoveringInteractive(Boolean(isInteractive));
   };
 
+  const LOGO_URL = "https://harmless-tapir-303.convex.cloud/api/storage/2844fd15-ce02-408e-9ac5-3e88a6ab15f7";
+
   useEffect(() => {
     const stored = localStorage.getItem("theme");
     const prefersDark =
@@ -90,7 +92,7 @@ export default function Landing() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen bg-background cursor-none"
+      className="min-h-screen cursor-none bg-gradient-to-b from-purple-50 via-white to-yellow-50 dark:from-background dark:via-background dark:to-background"
       onMouseMove={handleMouseMove}
     >
       {/* Custom Glass Cursor */}
@@ -151,7 +153,7 @@ export default function Landing() {
         <nav className="flex items-center justify-between px-6 py-6">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg border bg-card">
-              <Brain className="h-7 w-7 text-foreground" />
+              <img src={LOGO_URL} alt="prosprAI logo" className="h-7 w-auto" />
             </div>
             <span className="text-2xl font-bold text-foreground tracking-tight">prosprAI</span>
           </div>
