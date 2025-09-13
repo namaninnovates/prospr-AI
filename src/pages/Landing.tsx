@@ -311,7 +311,7 @@ export default function Landing() {
               <div className="p-2 rounded-lg border bg-card">
                 <img src={LOGO_URL} alt="prosprAI logo" className="h-7 w-auto" />
               </div>
-              <span className="text-2xl font-bold text-foreground tracking-tight">prosprAI</span>
+              <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent">prosprAI</span>
             </div>
             {/* Right: Theme + Dashboard/Get Started + Profile */}
             <div className="flex items-center gap-2">
