@@ -30,7 +30,13 @@ export default function Header() {
 
   return (
     <nav className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b backdrop-blur-md bg-white/40 dark:bg-white/10">
-      <div className="flex items-center gap-3">
+      <div
+        className="flex items-center gap-3 cursor-pointer"
+        onClick={() => navigate("/")}
+        role="button"
+        aria-label="Go to home"
+        title="Go to home"
+      >
         <div className="p-2 rounded-lg border bg-card">
           <img src={LOGO_URL} alt="prosprAI logo" className="h-7 w-auto" />
         </div>
@@ -51,54 +57,19 @@ export default function Header() {
           )}
         </Button>
 
-        <Button onClick={() => navigate(isAuthenticated ? "/dashboard" : "/auth")}>
-          {isAuthenticated ? "Dashboard" : "Get Started"}
-        </Button>
-
-        {isAuthenticated && (
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="ghost" className="h-10 rounded-full pl-1 pr-2 gap-2" aria-label="Open profile menu">
-                <Avatar className="h-7 w-7">
-                  <AvatarImage src={(user as any)?.image || ""} alt="Profile" />
-                  <AvatarFallback className="text-xs">
-                    {((user?.name || user?.email || "U")[0] || "U").toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <ChevronDown className="h-4 w-4 opacity-70" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent align="end" className="w-56" sideOffset={8}>
-              <div className="px-1 py-1.5 text-xs text-muted-foreground">
-                {user?.name || user?.email || "Account"}
-              </div>
-              <div className="h-px my-1 bg-border" />
-              <button className="w-full text-left rounded-md px-2 py-1.5 hover:bg-accent/40" onClick={() => navigate("/dashboard")}>
-                Personal Info
-              </button>
-              <button className="w-full text-left rounded-md px-2 py-1.5 hover:bg-accent/40" onClick={() => navigate("/chat")}>
-                Your Data
-              </button>
-              <button className="w-full text-left rounded-md px-2 py-1.5 hover:bg-accent/40" onClick={() => navigate("/dashboard")}>
-                Settings
-              </button>
-              <div className="h-px my-1 bg-border" />
-              <button
-                className="w-full text-left rounded-md px-2 py-1.5 bg-gradient-to-r from-red-600 to-red-400 text-white hover:from-red-700 hover:to-red-500 shadow-sm"
-                onClick={async () => {
-                  try {
-                    if (signOut) {
-                      await signOut();
-                    }
-                  } finally {
-                    navigate("/");
-                  }
-                }}
-              >
-                Logout
-              </button>
-            </PopoverContent>
-          </Popover>
+        {!isAuthenticated ? (
+          <>
+            <Button variant="ghost" onClick={() => navigate("/auth")}>
+              Sign In
+            </Button>
+            <Button onClick={() => navigate("/auth")}>
+              Register
+            </Button>
+          </>
+        ) : (
+          <div className="text-sm md:text-base font-medium">
+            {`Hey ${user?.name?.split?.(" ")?.[0] ?? "there"}, let's ask prosperAI ✨`}
+          </div>
         )}
       </div>
     </nav>
