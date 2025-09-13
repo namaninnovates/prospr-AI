@@ -468,52 +468,71 @@ export default function ChatPage() {
                     </div>
                     {/* Render markdown for assistant replies; keep user as plain text for predictability */}
                     {m.role === "assistant" ? (
-                      <div className="text-sm leading-relaxed">
+                      <div className="text-sm leading-relaxed break-words">
                         <ReactMarkdown
                           remarkPlugins={[remarkGfm]}
                           components={{
-                            a: ({ ...props }) => (
+                            a: ({ href, children, ...props }: any) => (
                               <a
-                                {...props}
+                                href={href}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="underline text-secondary hover:opacity-90"
-                              />
-                            ),
-                            code: ({ children, className, ...props }: any) => (
-                              <code
-                                className={`rounded bg-black/10 dark:bg-white/10 px-1.5 py-0.5 ${className ?? ""}`}
                                 {...props}
                               >
                                 {children}
-                              </code>
+                              </a>
                             ),
-                            pre: ({ ...props }) => (
-                              <pre
-                                {...props}
-                                className="overflow-x-auto rounded-md border bg-black/80 text-white p-3 my-2"
-                              />
+                            code: ({ className, children, ...props }: any) => {
+                              const isBlock = typeof className === "string" && /language-/.test(className);
+                              if (isBlock) {
+                                return (
+                                  <pre className="overflow-x-auto rounded-md border bg-black/80 text-white p-3 my-2">
+                                    <code className={className} {...props}>
+                                      {children}
+                                    </code>
+                                  </pre>
+                                );
+                              }
+                              return (
+                                <code
+                                  className={`rounded bg-black/10 dark:bg-white/10 px-1.5 py-0.5 ${className ?? ""}`}
+                                  {...props}
+                                >
+                                  {children}
+                                </code>
+                              );
+                            },
+                            p: ({ children, ...props }: any) => (
+                              <p className="mb-2 whitespace-pre-wrap" {...props}>
+                                {children}
+                              </p>
                             ),
-                            ul: ({ ...props }) => (
-                              <ul {...props} className="list-disc pl-5 my-2 space-y-1" />
+                            ul: ({ children, ...props }: any) => (
+                              <ul className="list-disc pl-5 my-2 space-y-1" {...props}>
+                                {children}
+                              </ul>
                             ),
-                            ol: ({ ...props }) => (
-                              <ol {...props} className="list-decimal pl-5 my-2 space-y-1" />
+                            ol: ({ children, ...props }: any) => (
+                              <ol className="list-decimal pl-5 my-2 space-y-1" {...props}>
+                                {children}
+                              </ol>
                             ),
-                            li: ({ ...props }) => <li {...props} className="leading-snug" />,
-                            p: ({ ...props }) => <p {...props} className="mb-2" />,
-                            h1: ({ ...props }) => <h1 {...props} className="text-lg font-semibold mb-2" />,
-                            h2: ({ ...props }) => <h2 {...props} className="text-base font-semibold mb-2" />,
-                            h3: ({ ...props }) => <h3 {...props} className="text-sm font-semibold mb-2" />,
-                            table: ({ ...props }) => (
+                            li: ({ children, ...props }: any) => (
+                              <li className="leading-snug" {...props}>
+                                {children}
+                              </li>
+                            ),
+                            h1: (props: any) => <h1 className="text-lg font-semibold mb-2" {...props} />,
+                            h2: (props: any) => <h2 className="text-base font-semibold mb-2" {...props} />,
+                            h3: (props: any) => <h3 className="text-sm font-semibold mb-2" {...props} />,
+                            table: (props: any) => (
                               <div className="overflow-x-auto my-2">
-                                <table {...props} className="w-full text-sm border-collapse" />
+                                <table className="w-full text-sm border-collapse" {...props} />
                               </div>
                             ),
-                            th: ({ ...props }) => (
-                              <th {...props} className="border px-2 py-1 text-left bg-white/30 dark:bg-white/10" />
-                            ),
-                            td: ({ ...props }) => <td {...props} className="border px-2 py-1" />,
+                            th: (props: any) => <th className="border px-2 py-1 text-left bg-white/30 dark:bg-white/10" {...props} />,
+                            td: (props: any) => <td className="border px-2 py-1" {...props} />,
                           }}
                         >
                           {m.content}
