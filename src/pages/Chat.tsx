@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/use-auth";
 import { useNavigate } from "react-router";
-import { Bot, Plus, Send, Loader2, ArrowLeft, Share2 } from "lucide-react";
+import { Bot, Plus, Send, Loader2, ArrowLeft, Share2, Mic, MicOff, Upload, Star, StarOff, Download } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { GripVertical, Pencil, Check, X, Wand2, Brain } from "lucide-react";
 import { toast } from "sonner";
@@ -40,6 +40,29 @@ export default function ChatPage() {
   const [sending, setSending] = useState(false);
   const [draggingId, setDraggingId] = useState<string | null>(null);
 
+  // Add: container ref for auto-scroll in the messages pane
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Add: speech recognition state
+  const [recognizing, setRecognizing] = useState<boolean>(false);
+
+  // Add: pinned messages state (localStorage)
+  const [pinned, setPinned] = useState<Record<string, true>>(() => {
+    try {
+      const raw = localStorage.getItem("pinnedMessages");
+      return raw ? (JSON.parse(raw) as Record<string, true>) : {};
+    } catch {
+      return {};
+    }
+  });
+
+  // Add: quick replies
+  const quickReplies: Array<string> = [
+    "Budgeting Tips",
+    "Investing Basics", 
+    "Retirement Planning",
+  ];
+
   // Cursor + parallax state (same style as Landing)
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [hoveringInteractive, setHoveringInteractive] = useState<boolean>(false);
@@ -70,9 +93,29 @@ export default function ChatPage() {
     activeChatId ? ({ chatId: activeChatId as any }) : "skip"
   );
 
+  // Add: auto-scroll to bottom when messages or sending state changes
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+  }, [messages, sending]);
+
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState<string>("");
   const [summarizingId, setSummarizingId] = useState<string | null>(null);
+
+  // Add: summarize handler for the wand button
+  const onSummarize = async (id: string) => {
+    try {
+      setSummarizingId(id);
+      await summarizeChat({ chatId: id as any });
+      toast.success("Brief generated");
+    } catch {
+      toast.error("Failed to generate brief");
+    } finally {
+      setSummarizingId(null);
+    }
+  };
 
   // Derive active chat object to show title and share
   const activeChat = useMemo(() => {
@@ -188,37 +231,123 @@ export default function ChatPage() {
     }
   };
 
-  const onSummarize = async (id: string) => {
-    if (summarizingId) return;
-    setSummarizingId(id);
+  const exportChat = () => {
+    if (!Array.isArray(messages) || !activeChat) {
+      toast.error("Nothing to export");
+      return;
+    }
+    const lines = messages.map((m: any) => {
+      const ts = new Date(m._creationTime).toLocaleString();
+      return `[${ts}] ${m.role.toUpperCase()}: ${m.content}`;
+    });
+    const blob = new Blob([`Title: ${activeChat.title}\n\n` + lines.join("\n")], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${activeChat.title.replace(/\s+/g, "_")}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success("Chat exported");
+  };
+
+  const onQuickReply = (text: string) => {
+    setInput(text);
+    // optional auto-send:
+    // void send();
+  };
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const onPickCsv = () => fileInputRef.current?.click();
+  const onCsvSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
     try {
-      await summarizeChat({ chatId: id as any });
-      toast.success("Brief generated");
-    } catch (e: any) {
-      toast.error(e?.message ?? "Failed to summarize. Please configure OpenRouter in Integrations.");
+      const text = await file.text();
+      // Very light CSV parsing
+      const rows = text.split(/\r?\n/).map((r) => r.split(",").map((c) => c.replace(/^"|"$/g, "").trim())).filter((r) => r.some((c) => c.length > 0));
+      const header = rows[0]?.map((h) => h.toLowerCase()) ?? [];
+      const amountIdx = header.findIndex((h) => ["amount", "amt", "value"].includes(h));
+      const typeIdx = header.findIndex((h) => ["type", "category"].includes(h));
+      let count = 0;
+      let income = 0;
+      let expense = 0;
+      for (let i = 1; i < rows.length; i++) {
+        const r = rows[i];
+        if (!r || r.length === 0) continue;
+        const amtRaw = amountIdx >= 0 ? Number(r[amountIdx].replace(/[^0-9.\-]/g, "")) : NaN;
+        if (!isNaN(amtRaw)) {
+          count += 1;
+          const ty = typeIdx >= 0 ? (r[typeIdx].toLowerCase() || "") : "";
+          if (ty.includes("income") || ty.includes("salary")) income += amtRaw;
+          else if (ty.includes("expense") || ty.includes("debit") || ty.includes("rent") || ty.includes("grocery")) expense += amtRaw;
+        }
+      }
+      const net = income - expense;
+      const summary =
+        `Imported ${count} rows.\n` +
+        `Income detected: ${income.toFixed(2)}\n` +
+        `Expenses detected: ${expense.toFixed(2)}\n` +
+        `Net: ${net.toFixed(2)}\n\n` +
+        `Tip: Consider setting monthly budgets and tracking high-variance categories.`;
+
+      if (activeChatId) {
+        await addMessage({ chatId: activeChatId as any, role: "assistant", content: summary });
+        toast.success("CSV analyzed");
+      } else {
+        toast.error("Open a chat to attach insights");
+      }
+    } catch {
+      toast.error("Failed to parse CSV");
     } finally {
-      setSummarizingId(null);
+      e.target.value = "";
     }
   };
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  // Safely derive message count to avoid TS issues when messages may be undefined or non-array
-  const messageCount = Array.isArray(messages) ? messages.length : 0;
-  useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+  const startStopDictation = () => {
+    // @ts-ignore
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) {
+      toast.error("Voice input not supported in this browser");
+      return;
     }
-  }, [messageCount, sending]);
+    // @ts-ignore
+    const recog = new SR();
+    recog.lang = "en-US";
+    recog.interimResults = true;
+    recog.continuous = false;
+    if (!recognizing) {
+      setRecognizing(true);
+      let finalText = "";
+      recog.onresult = (event: any) => {
+        let interim = "";
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) finalText += transcript + " ";
+          else interim += transcript;
+        }
+        setInput((finalText + interim).trim());
+      };
+      recog.onerror = () => setRecognizing(false);
+      recog.onend = () => setRecognizing(false);
+      recog.start();
+    } else {
+      try {
+        recog.stop();
+      } catch {}
+      setRecognizing(false);
+    }
+  };
 
-  if (isLoading || !isAuthenticated || !listChats) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <BrainThinking label="Loading chat…" />
-      </div>
-    );
-  }
+  const togglePin = (id: string) => {
+    setPinned((prev) => {
+      const next = { ...prev };
+      if (next[id]) delete next[id];
+      else next[id] = true;
+      localStorage.setItem("pinnedMessages", JSON.stringify(next));
+      return next;
+    });
+  };
 
-  // Build a new ordering when a chat is dropped onto another chat
   const reorder = async (sourceId: string, targetId: string) => {
     if (!listChats) return;
     if (sourceId === targetId) return;
@@ -376,11 +505,11 @@ export default function ChatPage() {
         {/* Sidebar: chats */}
         <Card className="h-[78vh] md:h-[82vh] bg-white/40 dark:bg-card/40 backdrop-blur-md border-white/30">
           <CardContent className="p-3 h-full overflow-auto space-y-2">
-            {listChats.length === 0 && (
+            {listChats && listChats.length === 0 && (
               <div className="text-sm text-muted-foreground">No chats yet. Create one to start.</div>
             )}
             <TooltipProvider>
-              {listChats.map((c, idx) => (
+              {listChats?.map((c, idx) => (
                 <Tooltip key={c._id}>
                   <TooltipTrigger asChild>
                     <motion.div
@@ -572,17 +701,32 @@ export default function ChatPage() {
               <div className="truncate text-sm font-medium">
                 {activeChat ? activeChat.title : "Select a chat"}
               </div>
-              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-                <Button
-                  onClick={shareChat}
-                  disabled={!activeChat}
-                  title="Share chat"
-                  className="gap-2 rounded-full px-3 py-1.5 bg-white/60 text-foreground hover:bg-muted/60 shadow-[0_8px_30px_rgba(0,0,0,0.12)] backdrop-blur-md border border-white/30 disabled:opacity-60 disabled:cursor-not-allowed dark:bg-white/10 dark:hover:bg-muted/20"
-                >
-                  <Share2 className="h-4 w-4" />
-                  Share
-                </Button>
-              </motion.div>
+              <div className="flex items-center gap-2">
+                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+                  <Button
+                    onClick={shareChat}
+                    disabled={!activeChat}
+                    title="Share chat"
+                    className="gap-2 rounded-full px-3 py-1.5 bg-white/60 text-foreground hover:bg-muted/60 shadow-[0_8px_30px_rgba(0,0,0,0.12)] backdrop-blur-md border border-white/30 disabled:opacity-60 disabled:cursor-not-allowed dark:bg-white/10 dark:hover:bg-muted/20"
+                  >
+                    <Share2 className="h-4 w-4" />
+                    Share
+                  </Button>
+                </motion.div>
+                {/* Add: Export button */}
+                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+                  <Button
+                    onClick={exportChat}
+                    disabled={!activeChat || !Array.isArray(messages)}
+                    title="Export as .txt"
+                    variant="outline"
+                    className="gap-2 rounded-full px-3 py-1.5"
+                  >
+                    <Download className="h-4 w-4" />
+                    Export
+                  </Button>
+                </motion.div>
+              </div>
             </div>
 
             {/* Messages */}
@@ -602,12 +746,22 @@ export default function ChatPage() {
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ type: "spring", stiffness: 220, damping: 22 }}
-                    className={`max-w-[80%] px-3.5 py-2.5 rounded-2xl border shadow-[0_8px_30px_rgba(0,0,0,0.06)] backdrop-blur-md ${
+                    className={`relative max-w-[80%] px-3.5 py-2.5 rounded-2xl border shadow-[0_8px_30px_rgba(0,0,0,0.06)] backdrop-blur-md ${
                       m.role === "user"
                         ? "ml-auto border-white/30 bg-gradient-to-br from-white/70 via-white/40 to-transparent dark:from-white/10 dark:via-white/5 dark:to-transparent"
                         : "border-white/20 bg-gradient-to-br from-white/40 via-white/20 to-transparent dark:from-white/10 dark:via-white/5 dark:to-transparent"
                     }`}
                   >
+                    {/* Add: pin button for assistant messages */}
+                    {m.role === "assistant" && (
+                      <button
+                        onClick={() => togglePin(m._id)}
+                        className="absolute -top-2 -right-2 h-7 w-7 inline-flex items-center justify-center rounded-full border bg-background/80 hover:bg-background"
+                        title={pinned[m._id] ? "Unpin" : "Pin"}
+                      >
+                        {pinned[m._id] ? <Star className="h-3.5 w-3.5 text-yellow-500" /> : <StarOff className="h-3.5 w-3.5 text-muted-foreground" />}
+                      </button>
+                    )}
                     <div className="text-[11px] uppercase tracking-wide text-muted-foreground/80 mb-1.5">
                       {m.role === "user" ? (user?.name || "You") : "prosprAI"}
                     </div>
@@ -686,6 +840,10 @@ export default function ChatPage() {
                     ) : (
                       <div className="whitespace-pre-wrap text-sm leading-relaxed">{m.content}</div>
                     )}
+                    {/* Add: timestamp */}
+                    <div className="mt-1 text-[10px] text-muted-foreground/70">
+                      {new Date(m._creationTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} • {new Date(m._creationTime).toLocaleDateString()}
+                    </div>
                   </motion.div>
                 ))}
 
@@ -709,7 +867,7 @@ export default function ChatPage() {
                       <span className="h-1.5 w-1.5 rounded-full bg-foreground/50 animate-bounce mx-1" />
                       <span className="h-1.5 w-1.5 rounded-full bg-foreground/50 animate-bounce [animation-delay:200ms]" />
                     </span>
-                    Thinking…
+                    ProsprAI is typing...
                   </div>
                 </motion.div>
               )}
@@ -722,7 +880,15 @@ export default function ChatPage() {
               transition={{ type: "spring", stiffness: 240, damping: 22, delay: 0.05 }}
               className="border-t p-3 bg-white/30 dark:bg-white/10 backdrop-blur-md"
             >
-              <div className="flex gap-2">
+              {/* Add: Quick replies row */}
+              <div className="flex flex-wrap gap-2 mb-2">
+                {quickReplies.map((q) => (
+                  <Button key={q} size="sm" variant="outline" className="h-7 rounded-full" onClick={() => onQuickReply(q)}>
+                    {q}
+                  </Button>
+                ))}
+              </div>
+              <div className="flex gap-2 items-center">
                 <Input
                   placeholder="Ask about budgeting, statements, ratios..."
                   value={input}
@@ -737,6 +903,25 @@ export default function ChatPage() {
                   disabled={sending || !activeChatId}
                   className="rounded-2xl border border-white/30 bg-gradient-to-br from-white/70 via-white/40 to-transparent dark:from-white/10 dark:via-white/5 dark:to-transparent backdrop-blur-md shadow-[0_8px_30px_rgba(0,0,0,0.08)] focus-visible:ring-2 focus-visible:ring-secondary/40 placeholder:text-foreground/60"
                 />
+                {/* Add: Mic button */}
+                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={startStopDictation}
+                    className={`border ${recognizing ? "border-secondary" : ""}`}
+                    title={recognizing ? "Stop dictation" : "Start dictation"}
+                  >
+                    {recognizing ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                  </Button>
+                </motion.div>
+                {/* Add: Upload CSV */}
+                <input ref={fileInputRef} type="file" accept=".csv,text/csv" className="hidden" onChange={onCsvSelected} />
+                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+                  <Button type="button" variant="outline" onClick={onPickCsv} title="Upload CSV for quick insights">
+                    <Upload className="h-4 w-4" />
+                  </Button>
+                </motion.div>
                 <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
                   <Button
                     onClick={send}
