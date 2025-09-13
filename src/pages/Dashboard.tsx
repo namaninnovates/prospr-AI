@@ -34,6 +34,7 @@ const defaultTxns: Array<Txn> = [
 export default function Dashboard() {
   const { isLoading, isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
+  const [chatLoading, setChatLoading] = useState(false);
 
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [hoveringInteractive, setHoveringInteractive] = useState<boolean>(false);
@@ -151,8 +152,20 @@ export default function Dashboard() {
             <Home className="mr-2 h-4 w-4" />
             Home
           </Button>
-          <Button variant="outline" onClick={() => navigate("/chat")}>
-            <Bot className="mr-2 h-4 w-4" />
+          <Button
+            variant="outline"
+            onClick={() => {
+              if (chatLoading) return;
+              setChatLoading(true);
+              navigate("/chat");
+            }}
+            disabled={chatLoading}
+          >
+            {chatLoading ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Bot className="mr-2 h-4 w-4" />
+            )}
             Ask AI
           </Button>
           <Button onClick={() => toast("Notifications opened")}>
@@ -223,6 +236,7 @@ function KPI({ label, value, icon: Icon, accentClass }: { label: string; value: 
 function HomeTab() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [chatLoading, setChatLoading] = useState(false);
 
   return (
     <div className="space-y-6">
@@ -291,8 +305,20 @@ function HomeTab() {
                 <FileText className="mr-2 h-4 w-4" />
                 Generate Report
               </Button>
-              <Button variant="outline" onClick={() => navigate("/chat")}>
-                <Bot className="mr-2 h-4 w-4" />
+              <Button
+                variant="outline"
+                onClick={() => {
+                  if (chatLoading) return;
+                  setChatLoading(true);
+                  navigate("/chat");
+                }}
+                disabled={chatLoading}
+              >
+                {chatLoading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Bot className="mr-2 h-4 w-4" />
+                )}
                 Ask AI
               </Button>
               <Button variant="outline" onClick={() => toast("Notifications opened")}>
