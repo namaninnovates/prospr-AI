@@ -12,7 +12,7 @@ import { useNavigate } from "react-router";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useEffect } from "react";
 import { Moon, Sun } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChevronDown } from "lucide-react";
 
@@ -184,8 +184,8 @@ export default function Landing() {
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
             {isAuthenticated && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
+              <Popover>
+                <PopoverTrigger asChild>
                   <Button
                     variant="ghost"
                     className="h-10 rounded-full pl-1 pr-2 gap-2"
@@ -199,23 +199,33 @@ export default function Landing() {
                     </Avatar>
                     <ChevronDown className="h-4 w-4 opacity-70" />
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuLabel className="text-xs">
+                </PopoverTrigger>
+                <PopoverContent align="end" className="w-56" sideOffset={8}>
+                  <div className="px-1 py-1.5 text-xs text-muted-foreground">
                     {user?.name || user?.email || "Account"}
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate("/dashboard")}>
+                  </div>
+                  <div className="h-px my-1 bg-border" />
+                  <button
+                    className="w-full text-left rounded-md px-2 py-1.5 hover:bg-accent/40"
+                    onClick={() => navigate("/dashboard")}
+                  >
                     Personal Info
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/chat")}>
+                  </button>
+                  <button
+                    className="w-full text-left rounded-md px-2 py-1.5 hover:bg-accent/40"
+                    onClick={() => navigate("/chat")}
+                  >
                     Your Data
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/dashboard")}>
+                  </button>
+                  <button
+                    className="w-full text-left rounded-md px-2 py-1.5 hover:bg-accent/40"
+                    onClick={() => navigate("/dashboard")}
+                  >
                     Settings
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
+                  </button>
+                  <div className="h-px my-1 bg-border" />
+                  <button
+                    className="w-full text-left rounded-md px-2 py-1.5 hover:bg-accent/40"
                     onClick={async () => {
                       try {
                         if (signOut) {
@@ -227,9 +237,9 @@ export default function Landing() {
                     }}
                   >
                     Logout
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                  </button>
+                </PopoverContent>
+              </Popover>
             )}
           </div>
         </nav>
