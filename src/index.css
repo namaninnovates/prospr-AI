@@ -104,12 +104,12 @@
   --popover: oklch(0.2 0.02 300);
   --popover-foreground: oklch(0.97 0 0);
 
-  /* Brand colors */
-  --primary: #ffcc00;
+  /* Brand colors — softened yellow and more refined accents */
+  --primary: #f5c84b; /* softer amber for dark mode */
   --primary-foreground: #090040;
-  --secondary: #b13bff;
+  --secondary: #9d6bff; /* slightly muted for modern feel */
   --secondary-foreground: oklch(0.1 0 0);
-  --accent: #471396;
+  --accent: #5b3ea3; /* refined violet */
   --accent-foreground: oklch(0.98 0 0);
 
   --muted: oklch(0.23 0 0);
@@ -118,13 +118,14 @@
 
   --border: oklch(0.32 0.02 300);
   --input: oklch(0.22 0.02 300);
-  --ring: #b13bff;
+  --ring: #9d6bff; /* align ring to secondary for cohesive focus state */
 
-  --chart-1: #b13bff;
-  --chart-2: #471396;
-  --chart-3: #ffcc00;
-  --chart-4: oklch(0.75 0.1 200);
-  --chart-5: oklch(0.7 0.1 140);
+  /* Updated chart palette for a modern, dynamic look */
+  --chart-1: #9d6bff; /* lavender/indigo */
+  --chart-2: #5b3ea3; /* refined violet */
+  --chart-3: #f5c84b; /* soft amber */
+  --chart-4: #4cc9f0; /* cyan */
+  --chart-5: #72e0a7; /* mint/green */
 
   --sidebar: oklch(0.18 0.02 300);
   --sidebar-foreground: oklch(0.97 0 0);
