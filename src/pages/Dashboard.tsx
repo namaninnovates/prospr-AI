@@ -76,7 +76,7 @@ export default function Dashboard() {
   }
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="relative min-h-screen overflow-hidden cursor-none bg-gradient-to-b from-purple-50 via-white to-yellow-50 dark:from-background dark:via-background dark:to-background" onMouseMove={handleMouseMove}>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="relative min-h-screen overflow-hidden cursor-none bg-gradient-to-b from-purple-50 via-white to-yellow-50 dark:from-background dark:via-background dark:to-background flex flex-col" onMouseMove={handleMouseMove}>
       <motion.div
         aria-hidden
         className="pointer-events-none fixed z-[60] h-6 w-6 rounded-full"
@@ -198,7 +198,7 @@ export default function Dashboard() {
 
       <Header />
 
-      <main className="px-6 py-6">
+      <main className="px-6 py-6 flex-1">
         <Tabs defaultValue="home" className="mx-auto max-w-6xl">
           <TabsList className="grid grid-cols-6">
             <TabsTrigger value="home">Home</TabsTrigger>
@@ -280,7 +280,7 @@ function HomeTab() {
     <div className="space-y-6">
       <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
         <h2 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-purple-700 to-purple-900 bg-clip-text text-transparent">
-          Snapshot{user?.name ? ` — ${user.name}` : ""}
+          {user?.name ? `${user.name}` : ""}
         </h2>
         <p className="text-sm text-muted-foreground">
           Quick view of your financial health with AI insights.

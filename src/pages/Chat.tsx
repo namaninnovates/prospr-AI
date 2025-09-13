@@ -269,7 +269,7 @@ export default function ChatPage() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="relative min-h-screen cursor-none bg-gradient-to-b from-slate-50 via-white to-zinc-50 dark:from-background dark:via-background dark:to-background"
+      className="relative min-h-screen cursor-none bg-gradient-to-b from-slate-50 via-white to-zinc-50 dark:from-background dark:via-background dark:to-background flex flex-col"
       onMouseMove={onMouseMove}
     >
       {/* Custom Glass Cursor */}
@@ -372,7 +372,7 @@ export default function ChatPage() {
       <Header />
 
       {/* Layout */}
-      <div className="px-6 py-6 grid gap-4 md:grid-cols-[280px_1fr] max-w-6xl mx-auto">
+      <div className="px-6 py-6 grid gap-4 md:grid-cols-[280px_1fr] max-w-6xl mx-auto flex-1">
         {/* Sidebar: chats */}
         <Card className="h-[72vh] md:h-[76vh] bg-white/40 dark:bg-card/40 backdrop-blur-md border-white/30">
           <CardContent className="p-3 h-full overflow-auto space-y-2">
