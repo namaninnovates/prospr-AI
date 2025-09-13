@@ -472,9 +472,9 @@ export default function ChatPage() {
                     }
                   }}
                   disabled={sending || !activeChatId}
-                  className="bg-white/60 dark:bg-white/10"
+                  className="rounded-2xl border border-white/30 bg-gradient-to-br from-white/70 via-white/40 to-transparent dark:from-white/10 dark:via-white/5 dark:to-transparent backdrop-blur-md shadow-[0_8px_30px_rgba(0,0,0,0.08)] focus-visible:ring-2 focus-visible:ring-secondary/40 placeholder:text-foreground/60"
                 />
-                <Button onClick={send} disabled={sending || !activeChatId} className="bg-secondary text-secondary-foreground hover:bg-secondary/90">
+                <Button onClick={send} disabled={sending || !activeChatId} className="bg-secondary/90 text-secondary-foreground hover:bg-secondary shadow-[0_8px_30px_rgba(0,0,0,0.12)] backdrop-blur-md border border-white/20">
                   {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                 </Button>
               </div>
