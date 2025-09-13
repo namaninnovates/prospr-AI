@@ -304,7 +304,7 @@ export default function Landing() {
 
       {/* Nav */}
       <div className="relative z-10">
-        <nav className="sticky top-0 backdrop-blur-md bg-white/65 dark:bg-white/10 border-b z-30">
+        <nav className="fixed top-0 left-0 right-0 backdrop-blur-md bg-white/65 dark:bg-white/10 border-b z-40">
           <div className="flex items-center justify-between px-6 py-3 relative">
             {/* Left: Logo + brand */}
             <div className="flex items-center gap-3">
@@ -427,6 +427,9 @@ export default function Landing() {
           </div>
         </nav>
       </div>
+
+      {/* Spacer to offset fixed nav height */}
+      <div className="h-14 md:h-[60px]" />
 
       {/* Hero */}
       <div id="hero" className="relative z-10">
