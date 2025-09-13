@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, Plus, FileText, Bot, Bell, Download, TrendingUp, Wallet, WalletMinimal, PieChart, Target, GraduationCap, BookOpenCheck, Home } from "lucide-react";
+import Footer from "@/components/Footer";
 
 type InteractiveEl = HTMLElement | null;
 type TxnType = "income" | "expense" | "asset" | "liability";
@@ -251,6 +252,7 @@ export default function Dashboard() {
           </TabsContent>
         </Tabs>
       </main>
+      <Footer />
     </motion.div>
   );
 }

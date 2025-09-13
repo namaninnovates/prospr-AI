@@ -15,6 +15,7 @@ import { Moon, Sun } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChevronDown } from "lucide-react";
+import Footer from "@/components/Footer";
 
 type InteractiveEl = HTMLElement | null;
 
@@ -535,6 +536,8 @@ export default function Landing() {
           </motion.div>
         </DialogContent>
       </Dialog>
+
+      <Footer />
     </motion.div>
   );
 }

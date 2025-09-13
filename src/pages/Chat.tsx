@@ -17,6 +17,7 @@ import remarkGfm from "remark-gfm";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Moon, Sun, ChevronDown } from "lucide-react";
+import Footer from "@/components/Footer";
 
 type InteractiveEl = HTMLElement | null;
 
@@ -588,7 +589,7 @@ export default function ChatPage() {
                               const isBlock = typeof className === "string" && /language-/.test(className);
                               if (isBlock) {
                                 return (
-                                  <pre className="overflow-x-auto rounded-md border bg-black/80 text-white p-2 my-1">
+                                  <pre className="overflow-x-auto rounded-md border bg-black/80 text-white p-3 my-2">
                                     <code className={className} {...props}>
                                       {children}
                                     </code>
@@ -597,7 +598,7 @@ export default function ChatPage() {
                               }
                               return (
                                 <code
-                                  className={`rounded bg-black/10 dark:bg-white/10 px-1 py-0.5 ${className ?? ""}`}
+                                  className={`rounded bg-black/10 dark:bg-white/10 px-1.5 py-0.5 ${className ?? ""}`}
                                   {...props}
                                 >
                                   {children}
@@ -605,17 +606,17 @@ export default function ChatPage() {
                               );
                             },
                             p: ({ children, ...props }: any) => (
-                              <p className="mb-1 whitespace-pre-wrap text-xs text-muted-foreground" {...props}>
+                              <p className="mb-2 whitespace-pre-wrap" {...props}>
                                 {children}
                               </p>
                             ),
                             ul: ({ children, ...props }: any) => (
-                              <ul className="list-disc pl-4 my-1 space-y-0.5 text-xs text-muted-foreground" {...props}>
+                              <ul className="list-disc pl-5 my-2 space-y-1" {...props}>
                                 {children}
                               </ul>
                             ),
                             ol: ({ children, ...props }: any) => (
-                              <ol className="list-decimal pl-4 my-1 space-y-0.5 text-xs text-muted-foreground" {...props}>
+                              <ol className="list-decimal pl-5 my-2 space-y-1" {...props}>
                                 {children}
                               </ol>
                             ),
@@ -624,12 +625,12 @@ export default function ChatPage() {
                                 {children}
                               </li>
                             ),
-                            h1: (props: any) => <h1 className="text-sm font-semibold mb-1" {...props} />,
-                            h2: (props: any) => <h2 className="text-xs font-semibold mb-1" {...props} />,
-                            h3: (props: any) => <h3 className="text-xs font-semibold mb-1" {...props} />,
+                            h1: (props: any) => <h1 className="text-lg font-semibold mb-2" {...props} />,
+                            h2: (props: any) => <h2 className="text-base font-semibold mb-2" {...props} />,
+                            h3: (props: any) => <h3 className="text-sm font-semibold mb-2" {...props} />,
                             table: (props: any) => (
-                              <div className="overflow-x-auto my-1">
-                                <table className="w-full text-xs border-collapse" {...props} />
+                              <div className="overflow-x-auto my-2">
+                                <table className="w-full text-sm border-collapse" {...props} />
                               </div>
                             ),
                             th: (props: any) => <th className="border px-2 py-1 text-left bg-white/30 dark:bg-white/10" {...props} />,
@@ -850,6 +851,7 @@ export default function ChatPage() {
           </CardContent>
         </Card>
       </div>
+      <Footer />
     </motion.div>
   );
 }
