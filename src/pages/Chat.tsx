@@ -153,6 +153,34 @@ export default function ChatPage() {
     );
   }
 
+  // Render a styled bullet list for the chat brief
+  function renderBrief(text?: string) {
+    if (!text) {
+      return (
+        <div className="text-xs text-muted-foreground">
+          No brief yet. Click the magic wand to generate a summary.
+        </div>
+      );
+    }
+    const items = text
+      .split(/\r?\n/)
+      .map((l) => l.trim())
+      .filter((l) => l.length > 0)
+      .map((l) => l.replace(/^[-*•]\s?/, "")); // strip leading bullet chars
+
+    if (items.length === 0) {
+      return <div className="text-xs text-muted-foreground whitespace-pre-wrap">{text}</div>;
+    }
+
+    return (
+      <ul className="text-xs text-muted-foreground list-disc pl-4 pr-2 space-y-1">
+        {items.map((it, i) => (
+          <li key={i} className="leading-snug">{it}</li>
+        ))}
+      </ul>
+    );
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -327,9 +355,7 @@ export default function ChatPage() {
                   </TooltipTrigger>
                   <TooltipContent side="right" className="max-w-xs">
                     <div className="text-xs font-medium mb-1">{c.title}</div>
-                    <div className="text-xs text-muted-foreground whitespace-pre-wrap line-clamp-5">
-                      {c.brief ? c.brief : "No brief yet. Click the magic wand to generate a summary."}
-                    </div>
+                    {renderBrief(c.brief)}
                   </TooltipContent>
                 </Tooltip>
               ))}
