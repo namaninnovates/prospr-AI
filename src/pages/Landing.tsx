@@ -1,5 +1,5 @@
 // TODO: REPLACE THIS LANDING PAGE WITH AN ELEGANT, THEMATIC, AND WELL-DESIGNED LANDING PAGE RELEVANT TO THE PROJECT
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -35,6 +35,13 @@ export default function Landing() {
   const [hoveringInteractive, setHoveringInteractive] = useState<boolean>(false);
 
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
+
+  // Add: scroll-based parallax drivers
+  const { scrollYProgress } = useScroll();
+  const bgScrollY = useTransform(scrollYProgress, [0, 1], [0, -120]); // background layers
+  const heroTitleY = useTransform(scrollYProgress, [0, 1], [0, -60]); // hero heading
+  const ctaWaveY = useTransform(scrollYProgress, [0, 1], [0, -80]); // CTA backdrop wave
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const { innerWidth, innerHeight } = window;
     const x = (e.clientX / innerWidth - 0.5) * 2;
@@ -175,57 +182,82 @@ export default function Landing() {
           transition={{ type: "spring", stiffness: 60, damping: 22 }}
         />
 
-        {/* New: Subtle animated gradient mesh overlay for extra color and motion */}
+        {/* New: Multi-color gradient mesh layer with scroll + mouse parallax */}
         <motion.div
           className="absolute inset-0 -z-10"
           style={{
-            background:
-              "radial-gradient(60% 60% at 15% 20%, rgba(255, 99, 132, 0.12), transparent 60%)," + // pink
-              "radial-gradient(50% 50% at 85% 25%, rgba(54, 162, 235, 0.12), transparent 60%)," + // blue
-              "radial-gradient(55% 55% at 20% 85%, rgba(255, 206, 86, 0.10), transparent 60%)," + // yellow
-              "radial-gradient(45% 45% at 80% 80%, rgba(75, 192, 192, 0.12), transparent 60%)",   // teal
-            mixBlendMode: "multiply",
+            transform: "translateZ(0)",
           }}
           animate={{
             rotate: [0, 360],
-            x: mouse.x * 10,
-            y: mouse.y * 6,
+            x: mouse.x * 8,
+            y: mouse.y * 5,
           }}
           transition={{
-            rotate: { duration: 80, repeat: Infinity, ease: "linear" },
-            x: { type: "spring", stiffness: 40, damping: 20 },
-            y: { type: "spring", stiffness: 40, damping: 20 },
+            rotate: { duration: 90, repeat: Infinity, ease: "linear" },
+            x: { type: "spring", stiffness: 40, damping: 18 },
+            y: { type: "spring", stiffness: 40, damping: 18 },
           }}
-          aria-hidden
-        />
-
-        {/* New: Extra floating blobs for liveliness with parallax parents */}
-        <motion.div
-          className="absolute top-10 left-1/4"
-          animate={{ x: mouse.x * 14, y: mouse.y * 10 }}
-          transition={{ type: "spring", stiffness: 50, damping: 22 }}
           aria-hidden
         >
           <motion.div
-            className="h-56 w-56 rounded-full"
-            style={{ background: "radial-gradient(circle, rgba(236,72,153,0.14), transparent 60%)" }} // fuchsia-500
-            animate={{ x: [0, 10, -8, 0], y: [0, -10, 12, 0], scale: [1, 1.04, 0.98, 1] }}
-            transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute inset-0"
+            style={{
+              y: bgScrollY,
+              background:
+                "radial-gradient(40% 40% at 12% 18%, rgba(255, 99, 132, 0.12), transparent 60%)," + // pink
+                "radial-gradient(50% 50% at 88% 15%, rgba(54, 162, 235, 0.12), transparent 60%)," + // blue
+                "radial-gradient(55% 55% at 18% 85%, rgba(255, 206, 86, 0.10), transparent 60%)," + // yellow
+                "radial-gradient(45% 45% at 80% 78%, rgba(75, 192, 192, 0.12), transparent 60%)," + // teal
+                "radial-gradient(36% 36% at 55% 50%, rgba(157, 107, 255, 0.10), transparent 60%)," + // lavender
+                "radial-gradient(42% 42% at 30% 60%, rgba(114, 224, 167, 0.10), transparent 60%)",   // mint
+              mixBlendMode: "multiply",
+            }}
           />
         </motion.div>
 
+        {/* New: Floating finance icons with opposing parallax */}
         <motion.div
-          className="absolute bottom-10 right-1/3"
-          animate={{ x: mouse.x * -16, y: mouse.y * -12 }}
-          transition={{ type: "spring", stiffness: 50, damping: 22, delay: 0.2 }}
+          className="absolute top-20 left-1/5"
+          animate={{ x: mouse.x * 10, y: mouse.y * 6 }}
+          transition={{ type: "spring", stiffness: 50, damping: 20 }}
           aria-hidden
         >
-          <motion.div
-            className="h-52 w-52 rounded-full"
-            style={{ background: "radial-gradient(circle, rgba(34,197,94,0.12), transparent 60%)" }} // emerald-500
-            animate={{ x: [0, -12, 10, 0], y: [0, 8, -10, 0], scale: [1, 0.97, 1.03, 1] }}
-            transition={{ duration: 20, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
-          />
+          <motion.span
+            className="text-4xl select-none"
+            animate={{ y: [0, -8, 0], rotate: [0, 6, -4, 0] }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          >
+            💰
+          </motion.span>
+        </motion.div>
+        <motion.div
+          className="absolute top-36 right-24"
+          animate={{ x: mouse.x * -12, y: mouse.y * -8 }}
+          transition={{ type: "spring", stiffness: 50, damping: 20 }}
+          aria-hidden
+        >
+          <motion.span
+            className="text-3xl select-none"
+            animate={{ y: [0, 10, 0], rotate: [0, -6, 4, 0] }}
+            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+          >
+            📊
+          </motion.span>
+        </motion.div>
+        <motion.div
+          className="absolute bottom-24 left-10"
+          animate={{ x: mouse.x * 14, y: mouse.y * 10 }}
+          transition={{ type: "spring", stiffness: 50, damping: 20 }}
+          aria-hidden
+        >
+          <motion.span
+            className="text-4xl select-none"
+            animate={{ y: [0, -6, 0], rotate: [0, 4, -3, 0] }}
+            transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
+          >
+            🤖
+          </motion.span>
         </motion.div>
       </div>
 
@@ -364,6 +396,7 @@ export default function Landing() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
               className="text-5xl md:text-6xl font-bold tracking-tight text-foreground"
+              style={{ y: heroTitleY }}
             >
               {isAuthenticated
                 ? `Welcome, ${user?.name || user?.email || "there"}`
@@ -506,6 +539,16 @@ export default function Landing() {
         </section>
 
         {/* New: Why Choose ProsprAI */}
+        <motion.div
+          className="pointer-events-none absolute left-1/2 top-[900px] -z-10 h-[420px] w-[420px] -translate-x-1/2 rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(255, 180, 80, 0.16), transparent 60%)",
+            y: bgScrollY,
+          }}
+          aria-hidden
+        />
+
         <section id="why" className="relative px-6 py-16">
           <div className="mx-auto max-w-5xl">
             <motion.h2
@@ -637,7 +680,20 @@ export default function Landing() {
 
         {/* New: Data Privacy & Security */}
         <section id="privacy" className="relative px-6 py-16">
-          <div className="mx-auto max-w-5xl">
+          {/* Darken-on-view overlay for mood shift */}
+          <motion.div
+            className="absolute inset-0 rounded-2xl"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 0.08 }}
+            viewport={{ once: false, amount: 0.4 }}
+            transition={{ duration: 0.6 }}
+            style={{
+              background:
+                "radial-gradient(60% 60% at 50% 40%, rgba(0,0,0,0.5), transparent 70%)",
+            }}
+            aria-hidden
+          />
+          <div className="mx-auto max-w-5xl relative">
             <motion.h2
               initial={{ opacity: 0, y: 14 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -657,9 +713,13 @@ export default function Landing() {
                 <div className="flex items-center justify-center">
                   <div className="relative">
                     <div className="absolute -inset-6 rounded-3xl bg-gradient-to-tr from-secondary/20 to-primary/20 blur-2xl" />
-                    <div className="relative h-28 w-28 rounded-3xl border grid place-items-center bg-white/70 dark:bg-white/10">
+                    <motion.div
+                      className="relative h-28 w-28 rounded-3xl border grid place-items-center bg-white/70 dark:bg-white/10"
+                      animate={{ scale: [1, 1.03, 1] }}
+                      transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+                    >
                       <Lock className="h-10 w-10" />
-                    </div>
+                    </motion.div>
                   </div>
                 </div>
                 <ul className="space-y-3 text-sm">
@@ -672,8 +732,27 @@ export default function Landing() {
           </div>
         </section>
 
-        {/* New: Final CTA */}
+        {/* Final CTA with dynamic gradient wave */}
         <section id="cta" className="relative px-6 py-16">
+          <motion.div
+            aria-hidden
+            className="absolute inset-0 -z-10"
+            style={{ y: ctaWaveY }}
+            animate={{ x: [0, 20, -10, 0] }}
+            transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "radial-gradient(40% 40% at 20% 20%, rgba(255, 204, 0, 0.18), transparent 60%)," +
+                  "radial-gradient(40% 40% at 80% 30%, rgba(157, 107, 255, 0.16), transparent 60%)," +
+                  "radial-gradient(40% 40% at 30% 80%, rgba(114, 224, 167, 0.14), transparent 60%)",
+                filter: "saturate(1.1)",
+              }}
+            />
+          </motion.div>
+
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
