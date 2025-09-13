@@ -141,7 +141,7 @@ export default function Dashboard() {
             <Wallet className="h-5 w-5" />
           </div>
           <div>
-            <h1 className="text-xl font-bold tracking-tight">FinanceAI Dashboard</h1>
+            <h1 className="text-xl font-bold tracking-tight">prosprAI Dashboard</h1>
             <p className="text-sm text-muted-foreground">
               Welcome{user?.name ? `, ${user.name}` : user?.email ? `, ${user.email}` : ""} — manage finances with AI.
             </p>
@@ -166,7 +166,7 @@ export default function Dashboard() {
             ) : (
               <Bot className="mr-2 h-4 w-4" />
             )}
-            Ask AI
+            Ask prosprAI
           </Button>
           <Button onClick={() => toast("Notifications opened")}>
             <Bell className="mr-2 h-4 w-4" />
@@ -319,7 +319,7 @@ function HomeTab() {
                 ) : (
                   <Bot className="mr-2 h-4 w-4" />
                 )}
-                Ask AI
+                Ask prosprAI
               </Button>
               <Button variant="outline" onClick={() => toast("Notifications opened")}>
                 <Bell className="mr-2 h-4 w-4" />
