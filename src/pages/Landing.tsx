@@ -197,7 +197,7 @@ export default function Landing() {
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <motion.div
           className="absolute -top-24 -left-24 h-72 w-72 rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(177,59,255,0.18), transparent 60%)" }}
+          style={{ background: "radial-gradient(circle, rgba(177,59,255,0.24), transparent 60%)" }}
           animate={{
             x: mouse.x * 20,
             y: mouse.y * 20,
@@ -206,7 +206,7 @@ export default function Landing() {
         />
         <motion.div
           className="absolute -bottom-24 -right-24 h-80 w-80 rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(71,19,150,0.16), transparent 60%)" }}
+          style={{ background: "radial-gradient(circle, rgba(71,19,150,0.22), transparent 60%)" }}
           animate={{
             x: mouse.x * -25,
             y: mouse.y * -25,
@@ -215,7 +215,7 @@ export default function Landing() {
         />
         <motion.div
           className="absolute top-1/3 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(255,204,0,0.08), transparent 60%)" }}
+          style={{ background: "radial-gradient(circle, rgba(255,204,0,0.12), transparent 60%)" }}
           animate={{
             x: mouse.x * 15,
             y: mouse.y * 10,
@@ -246,12 +246,12 @@ export default function Landing() {
             style={{
               y: bgScrollY,
               background:
-                "radial-gradient(40% 40% at 12% 18%, rgba(255, 99, 132, 0.12), transparent 60%)," + // pink
-                "radial-gradient(50% 50% at 88% 15%, rgba(54, 162, 235, 0.12), transparent 60%)," + // blue
-                "radial-gradient(55% 55% at 18% 85%, rgba(255, 206, 86, 0.10), transparent 60%)," + // yellow
-                "radial-gradient(45% 45% at 80% 78%, rgba(75, 192, 192, 0.12), transparent 60%)," + // teal
-                "radial-gradient(36% 36% at 55% 50%, rgba(157, 107, 255, 0.10), transparent 60%)," + // lavender
-                "radial-gradient(42% 42% at 30% 60%, rgba(114, 224, 167, 0.10), transparent 60%)",   // mint
+                "radial-gradient(40% 40% at 12% 18%, rgba(255, 99, 132, 0.16), transparent 60%)," + // pink
+                "radial-gradient(50% 50% at 88% 15%, rgba(54, 162, 235, 0.16), transparent 60%)," + // blue
+                "radial-gradient(55% 55% at 18% 85%, rgba(255, 206, 86, 0.14), transparent 60%)," + // yellow
+                "radial-gradient(45% 45% at 80% 78%, rgba(75, 192, 192, 0.16), transparent 60%)," + // teal
+                "radial-gradient(36% 36% at 55% 50%, rgba(157, 107, 255, 0.14), transparent 60%)," + // lavender
+                "radial-gradient(42% 42% at 30% 60%, rgba(114, 224, 167, 0.14), transparent 60%)",   // mint
               mixBlendMode: "multiply",
             }}
           />
@@ -494,19 +494,19 @@ export default function Landing() {
             <div className="pointer-events-none absolute inset-0 -z-10">
               <motion.div
                 className="absolute -top-10 left-12 h-40 w-40 rounded-full"
-                style={{ background: "radial-gradient(circle, rgba(255,204,0,0.22), transparent 60%)" }}
+                style={{ background: "radial-gradient(circle, rgba(255,204,0,0.28), transparent 60%)" }}
                 animate={{ x: [0, 10, -6, 0], y: [0, -6, 8, 0] }}
                 transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
               />
               <motion.div
                 className="absolute top-16 right-10 h-48 w-48 rounded-full"
-                style={{ background: "radial-gradient(circle, rgba(177,59,255,0.16), transparent 60%)" }}
+                style={{ background: "radial-gradient(circle, rgba(177,59,255,0.22), transparent 60%)" }}
                 animate={{ x: [0, -8, 12, 0], y: [0, 10, -6, 0] }}
                 transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
               />
               <motion.div
                 className="absolute bottom-0 left-1/3 h-36 w-36 rounded-full"
-                style={{ background: "radial-gradient(circle, rgba(71,19,150,0.14), transparent 60%)" }}
+                style={{ background: "radial-gradient(circle, rgba(71,19,150,0.20), transparent 60%)" }}
                 animate={{ x: [0, 6, -8, 0], y: [0, 8, -10, 0] }}
                 transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
               />
@@ -677,7 +677,7 @@ export default function Landing() {
                     </div>
 
                     {/* Conversation */}
-                    <div className="mt-5 rounded-xl border bg-white/70 dark:bg-background/40 p-3 max-h-[46vh] overflow-auto">
+                    <div className="mt-5 rounded-xl border bg-white/70 dark:bg-background/40 p-3 max-h-[32vh] overflow-auto">
                       {messages.length === 0 ? (
                         <div className="text-sm text-muted-foreground">
                           Start a conversation — your copilot will synthesize, explain, and outline next steps tailored to your situation.
@@ -742,7 +742,7 @@ export default function Landing() {
           className="pointer-events-none absolute left-1/2 top-[900px] -z-10 h-[420px] w-[420px] -translate-x-1/2 rounded-full"
           style={{
             background:
-              "radial-gradient(circle, rgba(255, 180, 80, 0.16), transparent 60%)",
+              "radial-gradient(circle, rgba(255, 180, 80, 0.22), transparent 60%)",
             y: bgScrollY,
           }}
           aria-hidden
@@ -944,9 +944,9 @@ export default function Landing() {
               className="absolute inset-0"
               style={{
                 background:
-                  "radial-gradient(40% 40% at 20% 20%, rgba(255, 204, 0, 0.18), transparent 60%)," +
-                  "radial-gradient(40% 40% at 80% 30%, rgba(157, 107, 255, 0.16), transparent 60%)," +
-                  "radial-gradient(40% 40% at 30% 80%, rgba(114, 224, 167, 0.14), transparent 60%)",
+                  "radial-gradient(40% 40% at 20% 20%, rgba(255, 204, 0, 0.22), transparent 60%)," +
+                  "radial-gradient(40% 40% at 80% 30%, rgba(157, 107, 255, 0.20), transparent 60%)," +
+                  "radial-gradient(40% 40% at 30% 80%, rgba(114, 224, 167, 0.18), transparent 60%)",
                 filter: "saturate(1.1)",
               }}
             />
