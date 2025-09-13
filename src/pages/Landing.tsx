@@ -168,7 +168,7 @@ export default function Landing() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen cursor-none bg-gradient-to-b from-purple-50 via-white to-yellow-50 dark:from-background dark:via-background dark:to-background"
+      className="min-h-screen md:cursor-none bg-gradient-to-b from-purple-50 via-white to-yellow-50 dark:from-background dark:via-background dark:to-background"
       onMouseMove={handleMouseMove}
     >
       {/* Custom Glass Cursor */}
@@ -259,7 +259,7 @@ export default function Landing() {
 
         {/* New: Floating finance icons with opposing parallax */}
         <motion.div
-          className="absolute top-20 left-1/5"
+          className="hidden sm:block absolute top-20 left-1/5"
           animate={{ x: mouse.x * 10, y: mouse.y * 6 }}
           transition={{ type: "spring", stiffness: 50, damping: 20 }}
           aria-hidden
@@ -273,7 +273,7 @@ export default function Landing() {
           </motion.span>
         </motion.div>
         <motion.div
-          className="absolute top-36 right-24"
+          className="hidden sm:block absolute top-36 right-24"
           animate={{ x: mouse.x * -12, y: mouse.y * -8 }}
           transition={{ type: "spring", stiffness: 50, damping: 20 }}
           aria-hidden
@@ -287,7 +287,7 @@ export default function Landing() {
           </motion.span>
         </motion.div>
         <motion.div
-          className="absolute bottom-24 left-10"
+          className="hidden sm:block absolute bottom-24 left-10"
           animate={{ x: mouse.x * 14, y: mouse.y * 10 }}
           transition={{ type: "spring", stiffness: 50, damping: 20 }}
           aria-hidden
@@ -696,7 +696,7 @@ export default function Landing() {
                     </div>
 
                     {/* Conversation */}
-                    <div className="mt-4 rounded-xl border bg-white/70 dark:bg-background/40 p-3 max-h-[12vh] overflow-auto">
+                    <div className="mt-4 rounded-xl border bg-white/70 dark:bg-background/40 p-3 max-h-[28vh] sm:max-h-[22vh] md:max-h-[18vh] lg:max-h-[16vh] overflow-auto">
                       {messages.length === 0 ? (
                         <div className="text-sm text-muted-foreground">
                           Start a conversation — <span className="bg-gradient-to-r from-secondary via-accent to-secondary bg-clip-text text-transparent font-semibold">prosprAI</span> will synthesize, explain, and outline next steps tailored to your situation.

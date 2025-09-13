@@ -35,7 +35,7 @@ export default function Header() {
     "https://harmless-tapir-303.convex.cloud/api/storage/2844fd15-ce02-408e-9ac5-3e88a6ab15f7";
 
   return (
-    <nav className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b backdrop-blur-md bg-white/40 dark:bg-white/10">
+    <nav className="sticky top-0 z-50 flex flex-wrap items-center justify-between px-4 sm:px-6 py-3 sm:py-4 gap-2 border-b backdrop-blur-md bg-white/40 dark:bg-white/10">
       <div className="flex items-center gap-3">
         <div
           className="p-2 rounded-lg border bg-card cursor-pointer hover:opacity-90 transition"
@@ -50,7 +50,7 @@ export default function Header() {
           <img src={LOGO_URL} alt="prosprAI logo" className="h-9 w-auto" />
         </div>
         <span
-          className="text-2xl font-bold tracking-tight cursor-pointer hover:opacity-90 transition bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent"
+          className="text-xl sm:text-2xl font-bold tracking-tight cursor-pointer hover:opacity-90 transition bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent"
           role="button"
           tabIndex={0}
           aria-label="Go to home"
@@ -62,7 +62,7 @@ export default function Header() {
           prosprAI
         </span>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <Button variant="outline" onClick={toggleTheme} aria-label="Toggle theme" title="Toggle theme">
           {isDark ? (
             <>
