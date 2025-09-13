@@ -58,21 +58,26 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.15 0 0);
 
-  /* Brand colors */
-  --primary: #ffcc00; /* primary */
+  /* Brand colors — increase golden warmth */
+  --primary: #ffce33; /* warmer, brighter amber */
   --primary-foreground: oklch(0.15 0 0);
-  --secondary: #b13bff; /* secondary */
+  --secondary: #b13bff;
   --secondary-foreground: oklch(0.98 0 0);
-  --accent: #471396; /* tertiary mapped to accent */
+  --accent: #471396;
   --accent-foreground: oklch(0.98 0 0);
 
-  --muted: oklch(0.95 0.01 80);
-  --muted-foreground: oklch(0.47 0.02 70);
+  /* Neutrals — add a gentle warm hue */
+  --muted: oklch(0.95 0.015 80); /* slightly warmer */
+  --muted-foreground: oklch(0.47 0.025 80);
+
   --destructive: oklch(0.62 0.2 25);
 
-  --border: oklch(0.9 0.01 80);
-  --input: oklch(0.96 0.005 80);
-  --ring: #471396;
+  /* Borders/inputs — subtle warmth */
+  --border: oklch(0.9 0.012 80);
+  --input: oklch(0.96 0.008 80);
+
+  /* Focus ring — warm glow */
+  --ring: #ffbf3f;
 
   /* Subtly warmer chart accents */
   --chart-1: oklch(0.55 0.08 240);
@@ -104,21 +109,26 @@
   --popover: oklch(0.22 0.03 320);
   --popover-foreground: oklch(0.97 0 0);
 
-  /* Brand colors — softened yellow and more refined accents */
-  --primary: #f5c84b; /* softer amber for dark mode */
+  /* Brand colors — warmer amber */
+  --primary: #ffd760;
   --primary-foreground: #090040;
-  --secondary: #9d6bff; /* slightly muted for modern feel */
+  --secondary: #9d6bff;
   --secondary-foreground: oklch(0.1 0 0);
-  --accent: #5b3ea3; /* refined violet */
+  --accent: #5b3ea3;
   --accent-foreground: oklch(0.98 0 0);
 
-  --muted: oklch(0.24 0.02 320);
-  --muted-foreground: oklch(0.78 0.02 80);
+  /* Neutrals — slight warmth */
+  --muted: oklch(0.24 0.025 80);
+  --muted-foreground: oklch(0.78 0.025 80);
+
   --destructive: oklch(0.6 0.2 15);
 
-  --border: oklch(0.34 0.03 320);
-  --input: oklch(0.24 0.02 320);
-  --ring: #9d6bff; /* align ring to secondary for cohesive focus state */
+  /* Borders/inputs — slight warmth */
+  --border: oklch(0.34 0.035 80);
+  --input: oklch(0.24 0.025 80);
+
+  /* Focus ring — warm to match primary for a cozy feel */
+  --ring: #ffd760;
 
   /* Updated chart palette for a modern, dynamic look */
   --chart-1: #9d6bff; /* lavender/indigo */
