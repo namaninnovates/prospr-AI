@@ -31,10 +31,30 @@ export default function Header() {
   return (
     <nav className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b backdrop-blur-md bg-white/40 dark:bg-white/10">
       <div className="flex items-center gap-3">
-        <div className="p-2 rounded-lg border bg-card">
+        <div
+          className="p-2 rounded-lg border bg-card cursor-pointer hover:opacity-90 transition"
+          role="button"
+          tabIndex={0}
+          aria-label="Go to home"
+          onClick={() => navigate("/")}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") navigate("/");
+          }}
+        >
           <img src={LOGO_URL} alt="prosprAI logo" className="h-9 w-auto" />
         </div>
-        <span className="text-2xl font-bold text-foreground tracking-tight">prosprAI</span>
+        <span
+          className="text-2xl font-bold text-foreground tracking-tight cursor-pointer hover:opacity-90 transition"
+          role="button"
+          tabIndex={0}
+          aria-label="Go to home"
+          onClick={() => navigate("/")}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") navigate("/");
+          }}
+        >
+          prosprAI
+        </span>
       </div>
       <div className="flex items-center gap-2">
         <Button variant="outline" onClick={toggleTheme} aria-label="Toggle theme" title="Toggle theme">
