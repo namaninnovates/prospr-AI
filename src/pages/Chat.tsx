@@ -14,11 +14,14 @@ import { GripVertical, Pencil, Check, X, Wand2, Brain } from "lucide-react";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Moon, Sun, ChevronDown } from "lucide-react";
 
 type InteractiveEl = HTMLElement | null;
 
 export default function ChatPage() {
-  const { isAuthenticated, isLoading, user } = useAuth();
+  const { isAuthenticated, isLoading, user, signOut } = useAuth();
   const navigate = useNavigate();
 
   const createChat = useMutation(api.chats.createChat);
@@ -39,6 +42,25 @@ export default function ChatPage() {
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [hoveringInteractive, setHoveringInteractive] = useState<boolean>(false);
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
+
+  // Add: Theme state and persistence (match Landing)
+  const [isDark, setIsDark] = useState<boolean>(true);
+  useEffect(() => {
+    const stored = localStorage.getItem("theme");
+    const shouldDark = stored ? stored === "dark" : false;
+    setIsDark(shouldDark);
+    document.documentElement.classList.toggle("dark", shouldDark);
+  }, []);
+  const toggleTheme = () => {
+    const next = !isDark;
+    setIsDark(next);
+    document.documentElement.classList.toggle("dark", next);
+    localStorage.setItem("theme", next ? "dark" : "light");
+  };
+
+  // Add: Shared logo URL (match Landing)
+  const LOGO_URL =
+    "https://harmless-tapir-303.convex.cloud/api/storage/2844fd15-ce02-408e-9ac5-3e88a6ab15f7";
 
   // Call useQuery at top level; pass undefined to pause until chat is selected
   const messages = useQuery(
@@ -352,16 +374,100 @@ export default function ChatPage() {
         transition={{ type: "spring", stiffness: 260, damping: 24 }}
         className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b backdrop-blur-md bg-white/40 dark:bg-white/10"
       >
+        {/* Left: Logo + brand name (match Landing) */}
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg border bg-card/60 backdrop-blur-md">
-            <Bot className="h-5 w-5" />
+          <div className="p-2 rounded-lg border bg-card">
+            <img src={LOGO_URL} alt="prosprAI logo" className="h-7 w-auto" />
           </div>
-          <span className="font-bold tracking-tight">FinanceAI Chat</span>
+          <span className="text-2xl font-bold text-foreground tracking-tight">prosprAI</span>
         </div>
+
+        {/* Right: Theme toggle + CTA + Profile (match Landing) */}
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={() => navigate("/")}>
-            <ArrowLeft className="mr-2 h-4 w-4" /> Home
+          <Button
+            variant="outline"
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+            title="Toggle theme"
+          >
+            {isDark ? (
+              <>
+                <Sun className="mr-2 h-4 w-4" />
+                Light
+              </>
+            ) : (
+              <>
+                <Moon className="mr-2 h-4 w-4" />
+                Dark
+              </>
+            )}
           </Button>
+
+          <Button
+            onClick={() => navigate(isAuthenticated ? "/dashboard" : "/auth")}
+            className=""
+          >
+            {isAuthenticated ? "Dashboard" : "Get Started"}
+          </Button>
+
+          {isAuthenticated && (
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="h-10 rounded-full pl-1 pr-2 gap-2"
+                  aria-label="Open profile menu"
+                >
+                  <Avatar className="h-7 w-7">
+                    <AvatarImage src={(user as any)?.image || ""} alt="Profile" />
+                    <AvatarFallback className="text-xs">
+                      {((user?.name || user?.email || "U")[0] || "U").toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <ChevronDown className="h-4 w-4 opacity-70" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-56" sideOffset={8}>
+                <div className="px-1 py-1.5 text-xs text-muted-foreground">
+                  {user?.name || user?.email || "Account"}
+                </div>
+                <div className="h-px my-1 bg-border" />
+                <button
+                  className="w-full text-left rounded-md px-2 py-1.5 hover:bg-accent/40"
+                  onClick={() => navigate("/dashboard")}
+                >
+                  Personal Info
+                </button>
+                <button
+                  className="w-full text-left rounded-md px-2 py-1.5 hover:bg-accent/40"
+                  onClick={() => navigate("/chat")}
+                >
+                  Your Data
+                </button>
+                <button
+                  className="w-full text-left rounded-md px-2 py-1.5 hover:bg-accent/40"
+                  onClick={() => navigate("/dashboard")}
+                >
+                  Settings
+                </button>
+                <div className="h-px my-1 bg-border" />
+                <button
+                  className="w-full text-left rounded-md px-2 py-1.5 bg-gradient-to-r from-red-600 to-red-400 text-white hover:from-red-700 hover:to-red-500 shadow-sm"
+                  onClick={async () => {
+                    try {
+                      if (signOut) {
+                        await signOut();
+                      }
+                    } finally {
+                      navigate("/");
+                    }
+                  }}
+                >
+                  Logout
+                </button>
+              </PopoverContent>
+            </Popover>
+          )}
         </div>
       </motion.nav>
 
