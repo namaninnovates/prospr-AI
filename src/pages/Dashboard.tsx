@@ -91,6 +91,28 @@ export default function Dashboard() {
         transition={{ type: "spring", stiffness: 250, damping: 20, mass: 0.6 }}
       />
 
+      {/* Parallax Background Elements (match Landing exactly) */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden -z-10">
+        <motion.div
+          className="absolute -top-24 -left-24 h-72 w-72 rounded-full"
+          style={{ background: "radial-gradient(circle, rgba(177,59,255,0.18), transparent 60%)" }}
+          animate={{ x: mouse.x * 20, y: mouse.y * 20 }}
+          transition={{ type: "spring", stiffness: 50, damping: 20 }}
+        />
+        <motion.div
+          className="absolute -bottom-24 -right-24 h-80 w-80 rounded-full"
+          style={{ background: "radial-gradient(circle, rgba(71,19,150,0.16), transparent 60%)" }}
+          animate={{ x: mouse.x * -25, y: mouse.y * -25 }}
+          transition={{ type: "spring", stiffness: 50, damping: 20 }}
+        />
+        <motion.div
+          className="absolute top-1/3 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full"
+          style={{ background: "radial-gradient(circle, rgba(255,204,0,0.08), transparent 60%)" }}
+          animate={{ x: mouse.x * 15, y: mouse.y * 10 }}
+          transition={{ type: "spring", stiffness: 60, damping: 22 }}
+        />
+      </div>
+
       <div className="pointer-events-none absolute inset-0 -z-10">
         <motion.div
           className="absolute -top-24 -left-24 h-72 w-72 rounded-full"
