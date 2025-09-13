@@ -348,39 +348,39 @@ export default function ChatPage() {
                             className="flex-1 text-left truncate"
                             title={c.title}
                           >
-                          {editingId === c._id ? (
-                            <div className="flex items-center gap-2">
-                              <Input
-                                value={editTitle}
-                                onChange={(e) => setEditTitle(e.target.value)}
-                                autoFocus
-                                className="h-8"
-                              />
-                              <Button size="icon" variant="outline" className="h-8 w-8" onClick={() => saveEdit(c._id)}>
-                                <Check className="h-4 w-4" />
-                              </Button>
-                              <Button size="icon" variant="ghost" className="h-8 w-8" onClick={cancelEdit}>
-                                <X className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          ) : (
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm truncate">{c.title}</span>
-                            </div>
-                          )}
-                        </button>
+                            {editingId === c._id ? (
+                              <div className="flex items-center gap-2">
+                                <Input
+                                  value={editTitle}
+                                  onChange={(e) => setEditTitle(e.target.value)}
+                                  autoFocus
+                                  className="h-8"
+                                />
+                                <Button size="icon" variant="outline" className="h-8 w-8" onClick={() => saveEdit(c._id)}>
+                                  <Check className="h-4 w-4" />
+                                </Button>
+                                <Button size="icon" variant="ghost" className="h-8 w-8" onClick={cancelEdit}>
+                                  <X className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-2">
+                                <span
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    startEdit(c._id, c.title);
+                                  }}
+                                  className="text-sm truncate hover:underline decoration-dotted"
+                                  title="Click to rename"
+                                >
+                                  {c.title}
+                                </span>
+                              </div>
+                            )}
+                          </button>
                         </div>
                         {editingId !== c._id && (
                           <div className="flex items-center gap-1">
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              className="h-8 w-8"
-                              onClick={() => startEdit(c._id, c.title)}
-                              title="Edit title"
-                            >
-                              <Pencil className="h-4 w-4" />
-                            </Button>
                             <Button
                               size="icon"
                               variant="default"
@@ -402,7 +402,82 @@ export default function ChatPage() {
                   </TooltipTrigger>
                   <TooltipContent side="right" className="max-w-xs">
                     <div className="text-xs font-medium mb-1">{c.title}</div>
-                    {renderBrief(c.brief)}
+                    {c.brief ? (
+                      <div className="prose prose-sm dark:prose-invert max-w-none">
+                        <ReactMarkdown
+                          remarkPlugins={[remarkGfm]}
+                          components={{
+                            a: ({ href, children, ...props }: any) => (
+                              <a
+                                href={href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="underline text-secondary hover:opacity-90"
+                                {...props}
+                              >
+                                {children}
+                              </a>
+                            ),
+                            code: ({ className, children, ...props }: any) => {
+                              const isBlock = typeof className === "string" && /language-/.test(className);
+                              if (isBlock) {
+                                return (
+                                  <pre className="overflow-x-auto rounded-md border bg-black/80 text-white p-2 my-1">
+                                    <code className={className} {...props}>
+                                      {children}
+                                    </code>
+                                  </pre>
+                                );
+                              }
+                              return (
+                                <code
+                                  className={`rounded bg-black/10 dark:bg-white/10 px-1 py-0.5 ${className ?? ""}`}
+                                  {...props}
+                                >
+                                  {children}
+                                </code>
+                              );
+                            },
+                            p: ({ children, ...props }: any) => (
+                              <p className="mb-1 whitespace-pre-wrap text-xs text-muted-foreground" {...props}>
+                                {children}
+                              </p>
+                            ),
+                            ul: ({ children, ...props }: any) => (
+                              <ul className="list-disc pl-4 my-1 space-y-0.5 text-xs text-muted-foreground" {...props}>
+                                {children}
+                              </ul>
+                            ),
+                            ol: ({ children, ...props }: any) => (
+                              <ol className="list-decimal pl-4 my-1 space-y-0.5 text-xs text-muted-foreground" {...props}>
+                                {children}
+                              </ol>
+                            ),
+                            li: ({ children, ...props }: any) => (
+                              <li className="leading-snug" {...props}>
+                                {children}
+                              </li>
+                            ),
+                            h1: (props: any) => <h1 className="text-sm font-semibold mb-1" {...props} />,
+                            h2: (props: any) => <h2 className="text-xs font-semibold mb-1" {...props} />,
+                            h3: (props: any) => <h3 className="text-xs font-semibold mb-1" {...props} />,
+                            table: (props: any) => (
+                              <div className="overflow-x-auto my-1">
+                                <table className="w-full text-xs border-collapse" {...props} />
+                              </div>
+                            ),
+                            th: (props: any) => <th className="border px-2 py-1 text-left bg-white/30 dark:bg-white/10" {...props} />,
+                            td: (props: any) => <td className="border px-2 py-1" {...props} />,
+                          }}
+                        >
+                          {c.brief}
+                        </ReactMarkdown>
+                      </div>
+                    ) : (
+                      <div className="text-xs text-muted-foreground">
+                        No brief yet. Click the magic wand to generate a summary.
+                      </div>
+                    )}
                   </TooltipContent>
                 </Tooltip>
               ))}
