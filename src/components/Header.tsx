@@ -50,7 +50,7 @@ export default function Header() {
           <img src={LOGO_URL} alt="prosprAI logo" className="h-9 w-auto" />
         </div>
         <span
-          className="text-2xl font-bold text-foreground tracking-tight cursor-pointer hover:opacity-90 transition"
+          className="text-2xl font-bold tracking-tight cursor-pointer hover:opacity-90 transition bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent"
           role="button"
           tabIndex={0}
           aria-label="Go to home"
