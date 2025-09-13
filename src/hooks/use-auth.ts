@@ -7,7 +7,10 @@ import { useEffect, useState } from "react";
 export function useAuth() {
   const { isLoading: isAuthLoading, isAuthenticated } = useConvexAuth();
   const user = useQuery(api.users.currentUser);
-  const { signIn, signOut } = useAuthActions();
+  // Get actions defensively to avoid destructuring undefined during early render
+  const authActions = useAuthActions();
+  const signIn = authActions?.signIn;
+  const signOut = authActions?.signOut;
 
   const [isLoading, setIsLoading] = useState(true);
 
