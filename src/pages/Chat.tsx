@@ -254,9 +254,9 @@ export default function ChatPage() {
       </div>
 
       {/* Top Bar */}
-      <nav className="flex items-center justify-between px-6 py-4 border-b">
+      <nav className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b backdrop-blur-md bg-white/40 dark:bg-white/10">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg border bg-card">
+          <div className="p-2 rounded-lg border bg-card/60 backdrop-blur-md">
             <Bot className="h-5 w-5" />
           </div>
           <span className="font-bold tracking-tight">FinanceAI Chat</span>
@@ -265,17 +265,13 @@ export default function ChatPage() {
           <Button variant="outline" onClick={() => navigate("/")}>
             <ArrowLeft className="mr-2 h-4 w-4" /> Home
           </Button>
-          <Button onClick={newChat}>
-            <Plus className="mr-2 h-4 w-4" />
-            New Chat
-          </Button>
         </div>
       </nav>
 
       {/* Layout */}
       <div className="px-6 py-6 grid gap-4 md:grid-cols-[280px_1fr] max-w-6xl mx-auto">
         {/* Sidebar: chats */}
-        <Card className="h-[72vh] md:h-[76vh]">
+        <Card className="h-[72vh] md:h-[76vh] bg-white/40 dark:bg-card/40 backdrop-blur-md border-white/30">
           <CardContent className="p-3 h-full overflow-auto space-y-2">
             {listChats.length === 0 && (
               <div className="text-sm text-muted-foreground">No chats yet. Create one to start.</div>
@@ -391,11 +387,22 @@ export default function ChatPage() {
                 </Tooltip>
               ))}
             </TooltipProvider>
+
+            {/* New Chat button moved below all chats with purple glass styling */}
+            <div className="pt-2">
+              <Button
+                onClick={newChat}
+                className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/90 shadow-md"
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                New Chat
+              </Button>
+            </div>
           </CardContent>
         </Card>
 
         {/* Chat panel */}
-        <Card className="flex flex-col h-[72vh] md:h-[76vh]">
+        <Card className="flex flex-col h-[72vh] md:h-[76vh] bg-white/40 dark:bg-card/40 backdrop-blur-md border-white/30">
           <CardContent className="p-0 flex flex-col h-full">
             {/* Messages */}
             <div ref={containerRef} className="flex-1 overflow-auto p-4 space-y-3">
@@ -414,8 +421,10 @@ export default function ChatPage() {
                     key={m._id}
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className={`max-w-[80%] rounded-md border px-3 py-2 ${
-                      m.role === "user" ? "ml-auto bg-primary/10 border-primary/30" : "bg-card"
+                    className={`max-w-[80%] rounded-md border px-3 py-2 shadow-sm backdrop-blur-md ${
+                      m.role === "user"
+                        ? "ml-auto bg-secondary/20 border-secondary/30"
+                        : "bg-white/30 dark:bg-white/10 border-white/20"
                     }`}
                   >
                     <div className="text-xs text-muted-foreground mb-1">
@@ -427,7 +436,7 @@ export default function ChatPage() {
             </div>
 
             {/* Composer */}
-            <div className="border-t p-3">
+            <div className="border-t p-3 bg-white/30 dark:bg-white/10 backdrop-blur-md">
               <div className="flex gap-2">
                 <Input
                   placeholder="Ask about budgeting, statements, ratios..."
@@ -441,8 +450,9 @@ export default function ChatPage() {
                     }
                   }}
                   disabled={sending || !activeChatId}
+                  className="bg-white/60 dark:bg-white/10"
                 />
-                <Button onClick={send} disabled={sending || !activeChatId}>
+                <Button onClick={send} disabled={sending || !activeChatId} className="bg-secondary text-secondary-foreground hover:bg-secondary/90">
                   {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                 </Button>
               </div>
