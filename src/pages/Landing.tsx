@@ -476,20 +476,20 @@ export default function Landing() {
                 initial={{ opacity: 0, y: 12, scale: 0.98 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ delay: 0.05, type: "spring", stiffness: 200, damping: 20 }}
-                whileHover={{ y: -4 }}  // Add subtle float on hover for consistency
-                className="rounded-xl border bg-white/50 dark:bg-card/40 backdrop-blur-md p-5"
+                whileHover={{ y: -4 }}
+                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5 ring-1 ring-primary/10"
               >
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-md border bg-white/60 dark:bg-background/40">
+                  <div className="p-2 rounded-md border bg-white/70 dark:bg-background/40 shadow-sm">
                     <Brain className="h-4 w-4" />
                   </div>
-                  <div className="font-semibold tracking-tight">Smart by Design</div>
+                  <div className="font-semibold tracking-tight">Clarity, Not Complexity</div>
                 </div>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Clear, actionable answers on budgeting, statements, and ratios — without the jargon.
+                  Untangle the jargon. ProsprAI distills balance sheets, ratios, and cash flows into crisp, executive‑level takeaways you can act on today.
                 </p>
                 <div className="mt-3 text-xs text-muted-foreground">
-                  ✨ Friendly, expert guidance
+                  ✨ Plain English. Precise insights. Zero fluff.
                 </div>
               </motion.div>
 
@@ -498,19 +498,19 @@ export default function Landing() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ delay: 0.12, type: "spring", stiffness: 200, damping: 20 }}
                 whileHover={{ y: -4 }}
-                className="rounded-xl border bg-white/50 dark:bg-card/40 backdrop-blur-md p-5"
+                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5 ring-1 ring-secondary/10"
               >
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-md border bg-white/60 dark:bg-background/40">
+                  <div className="p-2 rounded-md border bg-white/70 dark:bg-background/40 shadow-sm">
                     <Bot className="h-4 w-4" />
                   </div>
-                  <div className="font-semibold tracking-tight">Always On</div>
+                  <div className="font-semibold tracking-tight">Your 24/7 AI Copilot</div>
                 </div>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Ask anything — from ROE/ROA basics to cash flow health and allocation ideas.
+                  Ask anything—from ROE versus ROA to burn‑rate runway—and get fast, context‑aware responses that evolve as your finances do.
                 </p>
                 <div className="mt-3 text-xs text-muted-foreground">
-                  ⚡ Fast, reliable responses
+                  ⚡ Always on. Always relevant.
                 </div>
               </motion.div>
 
@@ -519,19 +519,19 @@ export default function Landing() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ delay: 0.18, type: "spring", stiffness: 200, damping: 20 }}
                 whileHover={{ y: -4 }}
-                className="rounded-xl border bg-white/50 dark:bg-card/40 backdrop-blur-md p-5"
+                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5 ring-1 ring-accent/10"
               >
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-md border bg-white/60 dark:bg-background/40">
+                  <div className="p-2 rounded-md border bg-white/70 dark:bg-background/40 shadow-sm">
                     <span className="text-base" role="img" aria-label="chart">📈</span>
                   </div>
-                  <div className="font-semibold tracking-tight">Built for You</div>
+                  <div className="font-semibold tracking-tight">Made Uniquely for You</div>
                 </div>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Personalized and practical — your name, your goals, your journey.
+                  ProsprAI adapts to your goals, risk appetite, and habits—giving you guidance that feels handcrafted, not one‑size‑fits‑all.
                 </p>
                 <div className="mt-3 text-xs text-muted-foreground">
-                  💛 Human tone, pro insights
+                  💛 Personal by design. Practical in execution.
                 </div>
               </motion.div>
             </div>
@@ -565,16 +565,16 @@ export default function Landing() {
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
-                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5"
+                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5 ring-1 ring-primary/10"
               >
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-md border bg-white/70 dark:bg-background/40">
                     <TrendingUp className="h-4 w-4" />
                   </div>
-                  <div className="font-semibold tracking-tight">Finance made simple</div>
+                  <div className="font-semibold tracking-tight">Clarity over complexity</div>
                 </div>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Clear answers without jargon. Understand where you stand and what to do next.
+                  No alphabet soup. Just lucid explanations and next steps, so you move from "what does this mean?" to "here's what I'll do."
                 </p>
               </motion.div>
 
@@ -582,16 +582,16 @@ export default function Landing() {
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
-                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5"
+                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5 ring-1 ring-secondary/10"
               >
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-md border bg-white/70 dark:bg-background/40">
                     <BarChart3 className="h-4 w-4" />
                   </div>
-                  <div className="font-semibold tracking-tight">Actionable insights</div>
+                  <div className="font-semibold tracking-tight">Actionable, not abstract</div>
                 </div>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Trends and tips tailored to your goals, income, and comfort with risk.
+                  Recommendations anchored to your cash flow, timelines, and constraints—so progress compounds, not confusion.
                 </p>
               </motion.div>
 
@@ -599,16 +599,16 @@ export default function Landing() {
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
-                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5"
+                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5 ring-1 ring-accent/10"
               >
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-md border bg-white/70 dark:bg-background/40">
                     <PieChart className="h-4 w-4" />
                   </div>
-                  <div className="font-semibold tracking-tight">Personalized by AI</div>
+                  <div className="font-semibold tracking-tight">Adaptive intelligence</div>
                 </div>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Advice adapts as your life evolves—budgets, portfolios, and goals included.
+                  As your life shifts, ProsprAI recalibrates—budgets, allocations, and milestones evolve with you in real time.
                 </p>
               </motion.div>
 
@@ -616,16 +616,16 @@ export default function Landing() {
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
-                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5"
+                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5 ring-1 ring-muted/20"
               >
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-md border bg-white/70 dark:bg-background/40">
                     <Shield className="h-4 w-4" />
                   </div>
-                  <div className="font-semibold tracking-tight">Secure by design</div>
+                  <div className="font-semibold tracking-tight">Privacy-first architecture</div>
                 </div>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Your data stays yours. Bank‑level protection and full control to delete anytime.
+                  Your data is yours—encrypted at rest and in transit, with full deletion controls and zero third-party reselling. Ever.
                 </p>
               </motion.div>
             </div>
@@ -646,9 +646,9 @@ export default function Landing() {
 
             <div className="mt-8 grid md:grid-cols-3 gap-6">
               {[
-                { title: "Ask AI", desc: "Type a question or upload statements.", step: "1" },
-                { title: "Get Insights", desc: "AI breaks it down with simple visuals.", step: "2" },
-                { title: "Track Growth", desc: "Dashboard keeps your progress updated.", step: "3" },
+                { title: "Ask AI", desc: "Pose a question or drop your statements—ProsprAI ingests context instantly.", step: "1" },
+                { title: "Get Insights", desc: "See boiled-down narratives, visuals, and trade-offs tailored to you.", step: "2" },
+                { title: "Track Growth", desc: "Monitor goals, budgets, and allocation drift with living guidance.", step: "3" },
               ].map((s, idx) => (
                 <motion.div
                   key={s.title}
@@ -656,7 +656,7 @@ export default function Landing() {
                   whileInView={{ opacity: 1, y: 0, scale: 1 }}
                   viewport={{ once: true, amount: 0.25 }}
                   transition={{ delay: idx * 0.06, type: "spring", stiffness: 220, damping: 22 }}
-                  className="relative rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-6"
+                  className="relative rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-6 ring-1 ring-border/50"
                 >
                   <div className="absolute -top-3 -left-3 h-8 w-8 rounded-full bg-primary text-foreground grid place-items-center font-bold">
                     {s.step}
@@ -669,7 +669,7 @@ export default function Landing() {
                       whileInView={{ width: `${((idx + 1) / 3) * 100}%` }}
                       viewport={{ once: true, amount: 0.6 }}
                       transition={{ duration: 0.8, delay: 0.1 }}
-                      className="h-full bg-secondary"
+                      className="h-full bg-gradient-to-r from-secondary to-primary"
                     />
                   </div>
                 </motion.div>
@@ -759,9 +759,9 @@ export default function Landing() {
             viewport={{ once: true, amount: 0.3 }}
             className="mx-auto max-w-4xl rounded-3xl border bg-gradient-to-br from-primary/20 via-white/70 to-transparent dark:from-secondary/20 dark:via-white/5 dark:to-transparent backdrop-blur-md p-8 text-center"
           >
-            <h3 className="text-2xl md:text-3xl font-bold">Take Charge of Your Finances Today</h3>
+            <h3 className="text-2xl md:text-3xl font-bold">Own Your Financial Momentum</h3>
             <p className="mt-2 text-muted-foreground">
-              Get clear answers and a plan that adapts to you.
+              Clarity today. Confidence tomorrow. Start compounding smarter decisions in minutes.
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
               <Button onClick={() => navigate(isAuthenticated ? "/chat" : "/auth")} className="gap-2">
