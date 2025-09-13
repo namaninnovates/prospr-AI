@@ -421,18 +421,40 @@ export default function ChatPage() {
                     key={m._id}
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className={`max-w-[80%] rounded-md border px-3 py-2 shadow-sm backdrop-blur-md ${
+                    className={`max-w-[80%] px-3.5 py-2.5 rounded-2xl border shadow-[0_8px_30px_rgba(0,0,0,0.06)] backdrop-blur-md ${
                       m.role === "user"
-                        ? "ml-auto bg-secondary/20 border-secondary/30"
-                        : "bg-white/30 dark:bg-white/10 border-white/20"
+                        ? "ml-auto border-secondary/30 bg-gradient-to-br from-secondary/20 via-secondary/10 to-transparent"
+                        : "border-white/20 bg-gradient-to-br from-white/40 via-white/20 to-transparent dark:from-white/10 dark:via-white/5 dark:to-transparent"
                     }`}
                   >
-                    <div className="text-xs text-muted-foreground mb-1">
-                      {m.role === "user" ? (user?.name || "You") : "FinanceAI"}
+                    <div className="text-[11px] uppercase tracking-wide text-muted-foreground/80 mb-1.5">
+                      {m.role === "user" ? (user?.name || "You") : "prosprAI"}
                     </div>
-                    <div className="whitespace-pre-wrap text-sm">{m.content}</div>
+                    <div className="whitespace-pre-wrap text-sm leading-relaxed">{m.content}</div>
                   </motion.div>
                 ))}
+
+              {/* Assistant "thinking" bubble while generating a reply */}
+              {activeChatId && sending && (
+                <motion.div
+                  key="assistant-thinking"
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="max-w-[80%] px-3.5 py-2.5 rounded-2xl border border-white/20 bg-gradient-to-br from-white/40 via-white/20 to-transparent dark:from-white/10 dark:via-white/5 dark:to-transparent shadow-[0_8px_30px_rgba(0,0,0,0.08)] backdrop-blur-md"
+                >
+                  <div className="text-[11px] uppercase tracking-wide text-muted-foreground/80 mb-1.5">
+                    prosprAI
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <span className="inline-flex items-center">
+                      <span className="h-1.5 w-1.5 rounded-full bg-foreground/50 animate-bounce [animation-delay:-200ms]" />
+                      <span className="h-1.5 w-1.5 rounded-full bg-foreground/50 animate-bounce mx-1" />
+                      <span className="h-1.5 w-1.5 rounded-full bg-foreground/50 animate-bounce [animation-delay:200ms]" />
+                    </span>
+                    Thinking…
+                  </div>
+                </motion.div>
+              )}
             </div>
 
             {/* Composer */}
