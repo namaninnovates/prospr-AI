@@ -19,8 +19,6 @@ export default function ChatPage() {
   const createChat = useMutation(api.chats.createChat);
   const listChats = useQuery(api.chats.listMyChats);
   const addMessage = useMutation(api.messages.addMessage);
-  const listByChat = useQuery as unknown as <T extends any>(fn: any, args?: any) => T;
-
   const chatWithAI = useAction(api.ai.chatWithAI);
 
   const [activeChatId, setActiveChatId] = useState<null | string>(null);
@@ -32,10 +30,11 @@ export default function ChatPage() {
   const [hoveringInteractive, setHoveringInteractive] = useState<boolean>(false);
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
 
-  const messages = useMemo(() => {
-    if (!activeChatId) return undefined;
-    return listByChat(api.messages.listByChat, { chatId: activeChatId as any });
-  }, [activeChatId, listByChat]);
+  // Call useQuery at top level; pass undefined to pause until chat is selected
+  const messages = useQuery(
+    api.messages.listByChat,
+    activeChatId ? ({ chatId: activeChatId as any }) : "skip"
+  );
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) navigate("/auth");
