@@ -303,133 +303,131 @@ export default function Landing() {
       </div>
 
       {/* Nav */}
-      <div className="relative z-10">
-        <nav className="fixed top-0 left-0 right-0 backdrop-blur-md bg-white/65 dark:bg-white/10 border-b z-40">
-          <div className="flex items-center justify-between px-6 py-3 relative">
-            {/* Left: Logo + brand */}
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg border bg-card">
-                <img src={LOGO_URL} alt="prosprAI logo" className="h-7 w-auto" />
-              </div>
-              <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent">prosprAI</span>
+      <nav className="sticky top-0 backdrop-blur-md bg-white/65 dark:bg-white/10 border-b z-40">
+        <div className="flex items-center justify-between px-6 py-3 relative">
+          {/* Left: Logo + brand */}
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg border bg-card">
+              <img src={LOGO_URL} alt="prosprAI logo" className="h-7 w-auto" />
             </div>
-            {/* Right: Theme + Dashboard/Get Started + Profile */}
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                onClick={toggleTheme}
-                aria-label="Toggle theme"
-                title="Toggle theme"
-              >
-                {isDark ? (
-                  <>
-                    <Sun className="mr-2 h-4 w-4" />
-                    Light
-                  </>
-                ) : (
-                  <>
-                    <Moon className="mr-2 h-4 w-4" />
-                    Dark
-                  </>
-                )}
-              </Button>
-              <Button
-                onClick={() => navigate(isAuthenticated ? "/dashboard" : "/auth")}
-                disabled={loading}
-                aria-busy={loading}
-              >
-                {isAuthenticated ? "Dashboard" : "Get Started"}
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-              {isAuthenticated && (
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      className="h-10 rounded-full pl-1 pr-2 gap-2"
-                      aria-label="Open profile menu"
-                    >
-                      <Avatar className="h-7 w-7">
-                        <AvatarImage src={(user as any)?.image || ""} alt="Profile" />
-                        <AvatarFallback className="text-xs">
-                          {((user?.name || user?.email || "U")[0] || "U").toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <ChevronDown className="h-4 w-4 opacity-70" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent align="end" className="w-56" sideOffset={8}>
-                    <div className="px-1 py-1.5 text-xs text-muted-foreground">
-                      {user?.name || user?.email || "Account"}
-                    </div>
-                    <div className="h-px my-1 bg-border" />
-                    <button
-                      className="w-full text-left rounded-md px-2 py-1.5 hover:bg-accent/40"
-                      onClick={() => navigate("/dashboard")}
-                    >
-                      Personal Info
-                    </button>
-                    <button
-                      className="w-full text-left rounded-md px-2 py-1.5 hover:bg-accent/40"
-                      onClick={() => navigate("/chat")}
-                    >
-                      Your Data
-                    </button>
-                    <button
-                      className="w-full text-left rounded-md px-2 py-1.5 hover:bg-accent/40"
-                      onClick={() => navigate("/dashboard")}
-                    >
-                      Settings
-                    </button>
-                    <div className="h-px my-1 bg-border" />
-                    <button
-                      className="w-full text-left rounded-md px-2 py-1.5 bg-gradient-to-r from-red-600 to-red-400 text-white hover:from-red-700 hover:to-red-500 shadow-sm"
-                      onClick={async () => {
-                        try {
-                          if (signOut) {
-                            await signOut();
-                          }
-                        } finally {
-                          navigate("/");
-                        }
-                      }}
-                    >
-                      Logout
-                    </button>
-                  </PopoverContent>
-                </Popover>
-              )}
-            </div>
-
-            {/* Center: Section links */}
-            <div
-              className={`hidden md:flex items-center gap-2 absolute left-1/2 -translate-x-1/2`}
-            >
-              {[
-                { id: "why", label: "Why Us" },
-                { id: "how", label: "How it Works" },
-                { id: "privacy", label: "Privacy" },
-                { id: "cta", label: "Get Started" },
-              ].map((link) => (
-                <button
-                  key={link.id}
-                  onClick={() => goTo(link.id)}
-                  className={`px-3 py-1.5 rounded-full text-sm transition ${
-                    activeSection === link.id
-                      ? "bg-primary/20 text-foreground border border-primary/30"
-                      : "hover:bg-muted/60"
-                  }`}
-                >
-                  {link.label}
-                </button>
-              ))}
-            </div>
+            <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent">prosprAI</span>
           </div>
-        </nav>
-      </div>
+          {/* Right: Theme + Dashboard/Get Started + Profile */}
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+              title="Toggle theme"
+            >
+              {isDark ? (
+                <>
+                  <Sun className="mr-2 h-4 w-4" />
+                  Light
+                </>
+              ) : (
+                <>
+                  <Moon className="mr-2 h-4 w-4" />
+                  Dark
+                </>
+              )}
+            </Button>
+            <Button
+              onClick={() => navigate(isAuthenticated ? "/dashboard" : "/auth")}
+              disabled={loading}
+              aria-busy={loading}
+            >
+              {isAuthenticated ? "Dashboard" : "Get Started"}
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+            {isAuthenticated && (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="h-10 rounded-full pl-1 pr-2 gap-2"
+                    aria-label="Open profile menu"
+                  >
+                    <Avatar className="h-7 w-7">
+                      <AvatarImage src={(user as any)?.image || ""} alt="Profile" />
+                      <AvatarFallback className="text-xs">
+                        {((user?.name || user?.email || "U")[0] || "U").toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <ChevronDown className="h-4 w-4 opacity-70" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="end" className="w-56" sideOffset={8}>
+                  <div className="px-1 py-1.5 text-xs text-muted-foreground">
+                    {user?.name || user?.email || "Account"}
+                  </div>
+                  <div className="h-px my-1 bg-border" />
+                  <button
+                    className="w-full text-left rounded-md px-2 py-1.5 hover:bg-accent/40"
+                    onClick={() => navigate("/dashboard")}
+                  >
+                    Personal Info
+                  </button>
+                  <button
+                    className="w-full text-left rounded-md px-2 py-1.5 hover:bg-accent/40"
+                    onClick={() => navigate("/chat")}
+                  >
+                    Your Data
+                  </button>
+                  <button
+                    className="w-full text-left rounded-md px-2 py-1.5 hover:bg-accent/40"
+                    onClick={() => navigate("/dashboard")}
+                  >
+                    Settings
+                  </button>
+                  <div className="h-px my-1 bg-border" />
+                  <button
+                    className="w-full text-left rounded-md px-2 py-1.5 bg-gradient-to-r from-red-600 to-red-400 text-white hover:from-red-700 hover:to-red-500 shadow-sm"
+                    onClick={async () => {
+                      try {
+                        if (signOut) {
+                          await signOut();
+                        }
+                      } finally {
+                        navigate("/");
+                      }
+                    }}
+                  >
+                    Logout
+                  </button>
+                </PopoverContent>
+              </Popover>
+            )}
+          </div>
+
+          {/* Center: Section links */}
+          <div
+            className={`hidden md:flex items-center gap-2 absolute left-1/2 -translate-x-1/2`}
+          >
+            {[
+              { id: "why", label: "Why Us" },
+              { id: "how", label: "How it Works" },
+              { id: "privacy", label: "Privacy" },
+              { id: "cta", label: "Get Started" },
+            ].map((link) => (
+              <button
+                key={link.id}
+                onClick={() => goTo(link.id)}
+                className={`px-3 py-1.5 rounded-full text-sm transition ${
+                  activeSection === link.id
+                    ? "bg-primary/20 text-foreground border border-primary/30"
+                    : "hover:bg-muted/60"
+                }`}
+              >
+                {link.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </nav>
 
       {/* Spacer to offset fixed nav height */}
-      <div className="h-14 md:h-[60px]" />
+      <div className="h-0" />
 
       {/* Hero */}
       <div id="hero" className="relative z-10">
