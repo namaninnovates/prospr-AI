@@ -32,7 +32,7 @@ export default function Header() {
     <nav className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b backdrop-blur-md bg-white/40 dark:bg-white/10">
       <div className="flex items-center gap-3">
         <div className="p-2 rounded-lg border bg-card">
-          <img src={LOGO_URL} alt="prosprAI logo" className="h-7 w-auto" />
+          <img src={LOGO_URL} alt="prosprAI logo" className="h-9 w-auto" />
         </div>
         <span className="text-2xl font-bold text-foreground tracking-tight">prosprAI</span>
       </div>
