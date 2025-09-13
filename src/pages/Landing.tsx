@@ -12,11 +12,14 @@ import { useNavigate } from "react-router";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useEffect } from "react";
 import { Moon, Sun } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ChevronDown } from "lucide-react";
 
 type InteractiveEl = HTMLElement | null;
 
 export default function Landing() {
-  const { isAuthenticated, user, isLoading } = useAuth();
+  const { isAuthenticated, user, isLoading, signOut } = useAuth();
   const navigate = useNavigate();
   const chat = useAction(api.ai.chatWithAI);
 
@@ -180,6 +183,54 @@ export default function Landing() {
               {isAuthenticated ? "Dashboard" : "Get Started"}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
+            {isAuthenticated && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="h-10 rounded-full pl-1 pr-2 gap-2"
+                    aria-label="Open profile menu"
+                  >
+                    <Avatar className="h-7 w-7">
+                      <AvatarImage src={(user as any)?.image || ""} alt="Profile" />
+                      <AvatarFallback className="text-xs">
+                        {((user?.name || user?.email || "U")[0] || "U").toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <ChevronDown className="h-4 w-4 opacity-70" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuLabel className="text-xs">
+                    {user?.name || user?.email || "Account"}
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate("/dashboard")}>
+                    Personal Info
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/chat")}>
+                    Your Data
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/dashboard")}>
+                    Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={async () => {
+                      try {
+                        if (signOut) {
+                          await signOut();
+                        }
+                      } finally {
+                        navigate("/");
+                      }
+                    }}
+                  >
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
         </nav>
       </div>
