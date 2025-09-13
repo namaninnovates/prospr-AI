@@ -94,37 +94,39 @@ export default function Dashboard() {
       />
 
       {/* Parallax Background Elements (match Landing exactly) */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden -z-10">
+      <div className="pointer-events-none fixed inset-0 overflow-hidden z-0">
         <motion.div
           className="absolute -top-24 -left-24 h-72 w-72 rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(177,59,255,0.18), transparent 60%)" }}
+          style={{ background: "radial-gradient(circle, rgba(177,59,255,0.22), transparent 60%)" }}
           animate={{ x: mouse.x * 20, y: mouse.y * 20 }}
           transition={{ type: "spring", stiffness: 50, damping: 20 }}
         />
         <motion.div
           className="absolute -bottom-24 -right-24 h-80 w-80 rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(71,19,150,0.16), transparent 60%)" }}
+          style={{ background: "radial-gradient(circle, rgba(71,19,150,0.18), transparent 60%)" }}
           animate={{ x: mouse.x * -25, y: mouse.y * -25 }}
           transition={{ type: "spring", stiffness: 50, damping: 20 }}
         />
         <motion.div
           className="absolute top-1/3 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(255,204,0,0.08), transparent 60%)" }}
+          style={{ background: "radial-gradient(circle, rgba(255,204,0,0.10), transparent 60%)" }}
           animate={{ x: mouse.x * 15, y: mouse.y * 10 }}
           transition={{ type: "spring", stiffness: 60, damping: 22 }}
         />
 
         {/* Rotating gradient mesh overlay for extra color and motion (copied from Landing) */}
         <motion.div
-          className="absolute inset-0 -z-10"
+          className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(60% 60% at 15% 20%, rgba(255, 99, 132, 0.12), transparent 60%)," +
-              "radial-gradient(50% 50% at 85% 25%, rgba(54, 162, 235, 0.12), transparent 60%)," +
-              "radial-gradient(55% 55% at 20% 85%, rgba(255, 206, 86, 0.10), transparent 60%)," +
-              "radial-gradient(45% 45% at 80% 80%, rgba(75, 192, 192, 0.12), transparent 60%)",
+              "radial-gradient(60% 60% at 15% 20%, rgba(255, 99, 132, 0.14), transparent 60%)," +
+              "radial-gradient(50% 50% at 85% 25%, rgba(54, 162, 235, 0.14), transparent 60%)," +
+              "radial-gradient(55% 55% at 20% 85%, rgba(255, 206, 86, 0.12), transparent 60%)," +
+              "radial-gradient(45% 45% at 80% 80%, rgba(75, 192, 192, 0.14), transparent 60%)",
             mixBlendMode: "multiply",
           }}
+          // elevate mesh above page background while still behind content
+           
           animate={{
             rotate: [0, 360],
             x: mouse.x * 10,
@@ -147,7 +149,7 @@ export default function Dashboard() {
         >
           <motion.div
             className="h-56 w-56 rounded-full"
-            style={{ background: "radial-gradient(circle, rgba(236,72,153,0.14), transparent 60%)" }} // fuchsia-500
+            style={{ background: "radial-gradient(circle, rgba(236,72,153,0.16), transparent 60%)" }} // fuchsia-500
             animate={{ x: [0, 10, -8, 0], y: [0, -10, 12, 0], scale: [1, 1.04, 0.98, 1] }}
             transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
           />
@@ -161,14 +163,14 @@ export default function Dashboard() {
         >
           <motion.div
             className="h-52 w-52 rounded-full"
-            style={{ background: "radial-gradient(circle, rgba(34,197,94,0.12), transparent 60%)" }} // emerald-500
+            style={{ background: "radial-gradient(circle, rgba(34,197,94,0.14), transparent 60%)" }} // emerald-500
             animate={{ x: [0, -12, 10, 0], y: [0, 8, -10, 0], scale: [1, 0.97, 1.03, 1] }}
             transition={{ duration: 20, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
           />
         </motion.div>
       </div>
 
-      <div className="pointer-events-none absolute inset-0 -z-10">
+      <div className="pointer-events-none absolute inset-0 z-0">
         <motion.div
           className="absolute -top-24 -left-24 h-72 w-72 rounded-full"
           style={{ background: "radial-gradient(circle, color-mix(in oklch, var(--chart-2) 22%, transparent), transparent 60%)" }}
