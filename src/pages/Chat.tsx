@@ -430,12 +430,10 @@ export default function ChatPage() {
                 {activeChat ? activeChat.title : "Select a chat"}
               </div>
               <Button
-                variant="outline"
-                size="sm"
                 onClick={shareChat}
                 disabled={!activeChat}
-                className="gap-2"
                 title="Share chat"
+                className="gap-2 rounded-full px-3 py-1.5 bg-secondary/90 text-secondary-foreground hover:bg-secondary shadow-[0_8px_30px_rgba(0,0,0,0.12)] backdrop-blur-md border border-white/20 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 <Share2 className="h-4 w-4" />
                 Share
