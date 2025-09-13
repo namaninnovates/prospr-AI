@@ -227,7 +227,7 @@ export default function Landing() {
                   </button>
                   <div className="h-px my-1 bg-border" />
                   <button
-                    className="w-full text-left rounded-md px-2 py-1.5 bg-gradient-to-r from-red-400 to-red-600 text-white hover:from-red-500 hover:to-red-700 shadow-sm"
+                    className="w-full text-left rounded-md px-2 py-1.5 bg-gradient-to-r from-red-600 to-red-400 text-white hover:from-red-700 hover:to-red-500 shadow-sm"
                     onClick={async () => {
                       try {
                         if (signOut) {
