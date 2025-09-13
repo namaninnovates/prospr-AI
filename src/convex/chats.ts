@@ -90,6 +90,36 @@ export const moveChat = mutation({
   },
 });
 
+export const reorderChats = mutation({
+  args: {
+    orderedIds: v.array(v.id("chats")),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) throw new Error("Not authenticated");
+
+    // Load user's chats to verify ownership and current positions
+    const myChats = await ctx.db
+      .query("chats")
+      .withIndex("by_ownerId_and_position", (q) => q.eq("ownerId", userId))
+      .order("asc")
+      .collect();
+
+    const myIdsSet = new Set(myChats.map((c) => c._id));
+    // Only allow reordering of the user's own chats
+    const filtered = args.orderedIds.filter((id) => myIdsSet.has(id));
+
+    // Assign positions sequentially based on provided order
+    // Start at 1 for readability
+    let pos = 1;
+    for (const id of filtered) {
+      await ctx.db.patch(id as Id<"chats">, { position: pos });
+      pos += 1;
+    }
+    return null;
+  },
+});
+
 export const internalSetBrief = internalMutation({
   args: {
     chatId: v.id("chats"),

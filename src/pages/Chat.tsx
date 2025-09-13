@@ -25,10 +25,12 @@ export default function ChatPage() {
   const renameChat = useMutation(api.chats.renameChat);
   const moveChat = useMutation(api.chats.moveChat);
   const summarizeChat = useAction(api.ai.summarizeChat);
+  const reorderChats = useMutation(api.chats.reorderChats);
 
   const [activeChatId, setActiveChatId] = useState<null | string>(null);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
+  const [draggingId, setDraggingId] = useState<string | null>(null);
 
   // Cursor + parallax state (same style as Landing)
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -153,6 +155,24 @@ export default function ChatPage() {
     );
   }
 
+  // Build a new ordering when a chat is dropped onto another chat
+  const reorder = async (sourceId: string, targetId: string) => {
+    if (!listChats) return;
+    if (sourceId === targetId) return;
+    const ids = listChats.map((c) => c._id);
+    const from = ids.indexOf(sourceId);
+    const to = ids.indexOf(targetId);
+    if (from === -1 || to === -1) return;
+    const next = [...ids];
+    const [moved] = next.splice(from, 1);
+    next.splice(to, 0, moved);
+    try {
+      await reorderChats({ orderedIds: next as any });
+    } finally {
+      setDraggingId(null);
+    }
+  };
+
   // Render a styled bullet list for the chat brief
   function renderBrief(text?: string) {
     if (!text) {
@@ -264,7 +284,23 @@ export default function ChatPage() {
                 <Tooltip key={c._id}>
                   <TooltipTrigger asChild>
                     <motion.div
-                      className={`w-full rounded-md border p-2 ${activeChatId === c._id ? "bg-primary/10 border-primary/30" : "bg-card"}`}
+                      className={`w-full rounded-md border p-2 ${activeChatId === c._id ? "bg-primary/10 border-primary/30" : "bg-card"} ${draggingId === c._id ? "opacity-70 ring-2 ring-primary/40" : ""}`}
+                      draggable
+                      onDragStart={(e) => {
+                        setDraggingId(c._id);
+                        e.dataTransfer.effectAllowed = "move";
+                        e.dataTransfer.setData("text/plain", c._id);
+                      }}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = "move";
+                      }}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        const source = e.dataTransfer.getData("text/plain");
+                        if (source) reorder(source, c._id);
+                      }}
+                      onDragEnd={() => setDraggingId(null)}
                       whileHover={{ y: -2 }}
                       transition={{ type: "spring", stiffness: 220, damping: 22 }}
                     >
@@ -336,8 +372,8 @@ export default function ChatPage() {
                             </Button>
                             <Button
                               size="icon"
-                              variant="outline"
-                              className="h-8 w-8"
+                              variant="default"
+                              className={`h-8 w-8 bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm hover:shadow transition-shadow ${summarizingId === c._id ? "opacity-80" : ""}`}
                               onClick={() => onSummarize(c._id)}
                               disabled={summarizingId === c._id}
                               title="Generate brief"
