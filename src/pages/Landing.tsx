@@ -609,11 +609,21 @@ export default function Landing() {
                       <motion.div
                         initial={{ opacity: 0, y: -4 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="text-xs md:text-[13px] px-2.5 py-1 rounded-full border bg-white/70 dark:bg-background/40 shadow-sm"
+                        className="text-[11px] md:text-xs px-2 py-0.5 rounded-full border bg-gradient-to-r from-secondary/20 to-primary/20 dark:from-secondary/30 dark:to-primary/20 text-foreground/80 ring-1 ring-secondary/40 shadow-[0_4px_16px_rgba(157,107,255,0.22)] backdrop-blur-sm"
                       >
-                        {remainingReplies > 0
-                          ? `${remainingReplies}/${MAX_FREE_REPLIES} complimentary replies remaining — create your free account for unlimited answers`
-                          : "You've enjoyed your complimentary replies — sign up to keep the conversation flowing"}
+                        <span className="inline-flex items-center gap-1.5">
+                          <motion.span
+                            aria-hidden
+                            initial={{ opacity: 0.6 }}
+                            animate={{ opacity: [0.6, 1, 0.6] }}
+                            transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}
+                          >
+                            ✨
+                          </motion.span>
+                          {remainingReplies > 0
+                            ? `Free replies: ${remainingReplies}/${MAX_FREE_REPLIES}`
+                            : "Limit reached — sign up to continue"}
+                        </span>
                       </motion.div>
                     )}
                   </div>
@@ -640,7 +650,7 @@ export default function Landing() {
                           !prompt.trim() ||
                           (!isAuthenticated && remainingReplies <= 0)
                         }
-                        className="gap-2 bg-gradient-to-r from-accent to-secondary text-foreground ring-1 ring-secondary/40 hover:from-accent/90 hover:to-secondary/90 hover:ring-secondary/60 shadow-[0_8px_24px_rgba(157,107,255,0.35)]"
+                        className="gap-2 bg-gradient-to-r from-secondary to-accent text-white ring-1 ring-secondary/50 hover:from-secondary/90 hover:to-accent/90 hover:ring-secondary/70 shadow-[0_10px_28px_rgba(157,107,255,0.45)]"
                       >
                         {loading ? (
                           <>
