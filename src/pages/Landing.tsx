@@ -698,7 +698,10 @@ export default function Landing() {
                     <div className="mt-5 rounded-xl border bg-white/70 dark:bg-background/40 p-3 max-h-[20vh] overflow-auto">
                       {messages.length === 0 ? (
                         <div className="text-sm text-muted-foreground">
-                          Start a conversation — prosprAI will synthesize, explain, and outline next steps tailored to your situation.
+                          Start a conversation — <span className="bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent font-semibold">prosprAI</span> will synthesize, explain, and outline next steps tailored to your situation.
+                          <span className="ml-2 font-semibold">
+                            {isAuthenticated ? "Free replies: Unlimited" : `Free replies: ${remainingReplies}/${MAX_FREE_REPLIES}`}
+                          </span>
                         </div>
                       ) : (
                         <div className="space-y-3">
