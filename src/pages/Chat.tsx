@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/use-auth";
 import { useNavigate } from "react-router";
-import { Bot, Plus, Send, Loader2, ArrowLeft } from "lucide-react";
+import { Bot, Plus, Send, Loader2, ArrowLeft, Share2 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { GripVertical, Pencil, Check, X, Wand2, Brain } from "lucide-react";
 import { toast } from "sonner";
@@ -32,7 +32,6 @@ export default function ChatPage() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [draggingId, setDraggingId] = useState<string | null>(null);
-  // Removed moving state (using drag handle instead of arrow buttons)
 
   // Cursor + parallax state (same style as Landing)
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -48,6 +47,12 @@ export default function ChatPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState<string>("");
   const [summarizingId, setSummarizingId] = useState<string | null>(null);
+
+  // Derive active chat object to show title and share
+  const activeChat = useMemo(() => {
+    if (!listChats || !activeChatId) return null;
+    return listChats.find((c) => c._id === activeChatId) ?? null;
+  }, [listChats, activeChatId]);
 
   // Reusable brain-thinking loader with animated dots and glass styling
   function BrainThinking({ label = "Thinking…" }: { label?: string }) {
@@ -134,7 +139,28 @@ export default function ChatPage() {
     setEditTitle("");
   };
 
-  // onMove removed: Using drag handle + reorderChats for ordering
+  const shareChat = async () => {
+    try {
+      if (!activeChatId || !activeChat) {
+        toast.error("Select a chat to share");
+        return;
+      }
+      const url = `${window.location.origin}/chat`;
+      const shareText = `Chat — ${activeChat.title}`;
+      if (navigator.share) {
+        await navigator.share({
+          title: activeChat.title,
+          text: shareText,
+          url,
+        });
+      } else {
+        await navigator.clipboard.writeText(`${shareText} — ${url}`);
+        toast.success("Link copied to clipboard");
+      }
+    } catch {
+      toast.error("Unable to share. Please try again.");
+    }
+  };
 
   const onSummarize = async (id: string) => {
     if (summarizingId) return;
@@ -396,6 +422,24 @@ export default function ChatPage() {
         {/* Chat panel */}
         <Card className="flex flex-col h-[72vh] md:h-[76vh] bg-white/40 dark:bg-card/40 backdrop-blur-md border-white/30">
           <CardContent className="p-0 flex flex-col h-full">
+            {/* Chat header with title and Share */}
+            <div className="flex items-center justify-between border-b p-3 bg-white/30 dark:bg-white/10 backdrop-blur-md">
+              <div className="truncate text-sm font-medium">
+                {activeChat ? activeChat.title : "Select a chat"}
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={shareChat}
+                disabled={!activeChat}
+                className="gap-2"
+                title="Share chat"
+              >
+                <Share2 className="h-4 w-4" />
+                Share
+              </Button>
+            </div>
+
             {/* Messages */}
             <div ref={containerRef} className="flex-1 overflow-auto p-4 space-y-3">
               {!activeChatId && (
