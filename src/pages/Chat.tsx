@@ -12,6 +12,8 @@ import { Bot, Plus, Send, Loader2, ArrowLeft, Share2 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { GripVertical, Pencil, Check, X, Wand2, Brain } from "lucide-react";
 import { toast } from "sonner";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type InteractiveEl = HTMLElement | null;
 
@@ -464,7 +466,62 @@ export default function ChatPage() {
                     <div className="text-[11px] uppercase tracking-wide text-muted-foreground/80 mb-1.5">
                       {m.role === "user" ? (user?.name || "You") : "prosprAI"}
                     </div>
-                    <div className="whitespace-pre-wrap text-sm leading-relaxed">{m.content}</div>
+                    {/* Render markdown for assistant replies; keep user as plain text for predictability */}
+                    {m.role === "assistant" ? (
+                      <div className="text-sm leading-relaxed">
+                        <ReactMarkdown
+                          remarkPlugins={[remarkGfm]}
+                          components={{
+                            a: ({ ...props }) => (
+                              <a
+                                {...props}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="underline text-secondary hover:opacity-90"
+                              />
+                            ),
+                            code: ({ children, className, ...props }: any) => (
+                              <code
+                                className={`rounded bg-black/10 dark:bg-white/10 px-1.5 py-0.5 ${className ?? ""}`}
+                                {...props}
+                              >
+                                {children}
+                              </code>
+                            ),
+                            pre: ({ ...props }) => (
+                              <pre
+                                {...props}
+                                className="overflow-x-auto rounded-md border bg-black/80 text-white p-3 my-2"
+                              />
+                            ),
+                            ul: ({ ...props }) => (
+                              <ul {...props} className="list-disc pl-5 my-2 space-y-1" />
+                            ),
+                            ol: ({ ...props }) => (
+                              <ol {...props} className="list-decimal pl-5 my-2 space-y-1" />
+                            ),
+                            li: ({ ...props }) => <li {...props} className="leading-snug" />,
+                            p: ({ ...props }) => <p {...props} className="mb-2" />,
+                            h1: ({ ...props }) => <h1 {...props} className="text-lg font-semibold mb-2" />,
+                            h2: ({ ...props }) => <h2 {...props} className="text-base font-semibold mb-2" />,
+                            h3: ({ ...props }) => <h3 {...props} className="text-sm font-semibold mb-2" />,
+                            table: ({ ...props }) => (
+                              <div className="overflow-x-auto my-2">
+                                <table {...props} className="w-full text-sm border-collapse" />
+                              </div>
+                            ),
+                            th: ({ ...props }) => (
+                              <th {...props} className="border px-2 py-1 text-left bg-white/30 dark:bg-white/10" />
+                            ),
+                            td: ({ ...props }) => <td {...props} className="border px-2 py-1" />,
+                          }}
+                        >
+                          {m.content}
+                        </ReactMarkdown>
+                      </div>
+                    ) : (
+                      <div className="whitespace-pre-wrap text-sm leading-relaxed">{m.content}</div>
+                    )}
                   </motion.div>
                 ))}
 
