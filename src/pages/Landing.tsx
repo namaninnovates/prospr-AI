@@ -603,7 +603,7 @@ export default function Landing() {
                       <div className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/25 border border-primary/30 shadow-sm">
                         <Bot className="h-4 w-4" />
                       </div>
-                      <span>Ask prosprAI</span>
+                      <span>Ask <span className="bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent">prosprAI</span></span>
                     </div>
                     {!isAuthenticated && (
                       <motion.div
@@ -777,7 +777,9 @@ export default function Landing() {
               viewport={{ once: true, amount: 0.3 }}
               className="text-3xl md:text-4xl font-bold tracking-tight text-center"
             >
-              Why Choose ProsprAI?
+              {"Why Choose "}
+              <span className="bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent">prosprAI</span>
+              {"?"}
             </motion.h2>
 
             <div className="grid md:grid-cols-2 gap-6 mt-8">
@@ -861,7 +863,9 @@ export default function Landing() {
               viewport={{ once: true, amount: 0.3 }}
               className="text-3xl md:text-4xl font-bold tracking-tight text-center"
             >
-              How ProsprAI Works
+              {"How "}
+              <span className="bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent">prosprAI</span>
+              {" Works"}
             </motion.h2>
 
             <div className="mt-8 grid md:grid-cols-3 gap-6">
@@ -985,7 +989,9 @@ export default function Landing() {
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
               <Button onClick={() => navigate(isAuthenticated ? "/chat" : "/auth")} className="gap-2">
-                Ask ProsprAI Now
+                {"Ask "}
+                <span className="bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent font-semibold">prosprAI</span>
+                {" Now"}
                 <ArrowRight className="h-4 w-4" />
               </Button>
               <Button variant="outline" onClick={() => navigate("/dashboard")} className="gap-2">
