@@ -160,8 +160,9 @@ export default function ChatPage() {
     if (!listChats) return;
     if (sourceId === targetId) return;
     const ids = listChats.map((c) => c._id);
-    const from = ids.indexOf(sourceId);
-    const to = ids.indexOf(targetId);
+    const idStrings = ids.map(String);
+    const from = idStrings.indexOf(String(sourceId));
+    const to = idStrings.indexOf(String(targetId));
     if (from === -1 || to === -1) return;
     const next = [...ids];
     const [moved] = next.splice(from, 1);
@@ -286,19 +287,13 @@ export default function ChatPage() {
                     <motion.div
                       className={`w-full rounded-md border p-2 ${activeChatId === c._id ? "bg-primary/10 border-primary/30" : "bg-card"} ${draggingId === c._id ? "opacity-70 ring-2 ring-primary/40" : ""}`}
                       draggable
-                      onDragStart={(e) => {
-                        setDraggingId(c._id);
-                        e.dataTransfer.effectAllowed = "move";
-                        e.dataTransfer.setData("text/plain", c._id);
-                      }}
+                      onMouseDown={() => setDraggingId(c._id)}
                       onDragOver={(e) => {
                         e.preventDefault();
-                        e.dataTransfer.dropEffect = "move";
                       }}
                       onDrop={(e) => {
                         e.preventDefault();
-                        const source = e.dataTransfer.getData("text/plain");
-                        if (source) reorder(source, c._id);
+                        if (draggingId) reorder(draggingId, c._id);
                       }}
                       onDragEnd={() => setDraggingId(null)}
                       whileHover={{ y: -2 }}
