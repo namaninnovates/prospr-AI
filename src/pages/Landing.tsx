@@ -150,7 +150,7 @@ export default function Landing() {
             <div className="p-2 rounded-lg border bg-card">
               <Brain className="h-7 w-7 text-foreground" />
             </div>
-            <span className="text-2xl font-bold text-foreground tracking-tight">FinanceAI</span>
+            <span className="text-2xl font-bold text-foreground tracking-tight">prosprAI</span>
           </div>
           <div className="flex items-center gap-2">
             {/* Theme toggle */}
@@ -196,7 +196,7 @@ export default function Landing() {
             >
               {isAuthenticated
                 ? `Welcome, ${user?.name || user?.email || "there"}`
-                : "Welcome to FinanceAI"}
+                : "Welcome to prosprAI"}
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 15 }}
@@ -204,9 +204,7 @@ export default function Landing() {
               transition={{ delay: 0.2 }}
               className="mt-4 text-lg md:text-xl text-muted-foreground"
             >
-              {isAuthenticated
-                ? "Ask anything about investments, budgeting, statements, or ratios — get clear, professional answers."
-                : "Your AI assistant for investments, budgeting, statements, and ratios — sign up to start asking questions."}
+              {"Finance Made Smarter. Prosperity Made Closer."}
             </motion.p>
 
             {/* CTA when not authenticated */}
@@ -337,7 +335,7 @@ export default function Landing() {
                 <CardContent className="p-6 space-y-4">
                   <div className="flex items-center gap-2 text-foreground/90">
                     <Bot className="h-5 w-5" />
-                    <span className="font-semibold">Ask DeepSeek Finance AI</span>
+                    <span className="font-semibold">Ask prosprAI</span>
                   </div>
                   <Textarea
                     value={prompt}
