@@ -14,10 +14,11 @@ import { GripVertical, Pencil, Check, X, Wand2, Brain } from "lucide-react";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Moon, Sun, ChevronDown } from "lucide-react";
 import Footer from "@/components/Footer";
+import Header from "@/components/Header";
 
 type InteractiveEl = HTMLElement | null;
 
@@ -368,109 +369,7 @@ export default function ChatPage() {
         </motion.div>
       </div>
 
-      {/* Top Bar */}
-      <motion.nav
-        initial={{ y: -12, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 260, damping: 24 }}
-        className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b backdrop-blur-md bg-white/40 dark:bg-white/10"
-      >
-        {/* Left: Logo + brand name (match Landing) */}
-        <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg border bg-card">
-            <img src={LOGO_URL} alt="prosprAI logo" className="h-7 w-auto" />
-          </div>
-          <span className="text-2xl font-bold text-foreground tracking-tight">prosprAI</span>
-        </div>
-
-        {/* Right: Theme toggle + CTA + Profile (match Landing) */}
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            onClick={toggleTheme}
-            aria-label="Toggle theme"
-            title="Toggle theme"
-          >
-            {isDark ? (
-              <>
-                <Sun className="mr-2 h-4 w-4" />
-                Light
-              </>
-            ) : (
-              <>
-                <Moon className="mr-2 h-4 w-4" />
-                Dark
-              </>
-            )}
-          </Button>
-
-          <Button
-            onClick={() => navigate(isAuthenticated ? "/dashboard" : "/auth")}
-            className=""
-          >
-            {isAuthenticated ? "Dashboard" : "Get Started"}
-          </Button>
-
-          {isAuthenticated && (
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="h-10 rounded-full pl-1 pr-2 gap-2"
-                  aria-label="Open profile menu"
-                >
-                  <Avatar className="h-7 w-7">
-                    <AvatarImage src={(user as any)?.image || ""} alt="Profile" />
-                    <AvatarFallback className="text-xs">
-                      {((user?.name || user?.email || "U")[0] || "U").toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <ChevronDown className="h-4 w-4 opacity-70" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent align="end" className="w-56" sideOffset={8}>
-                <div className="px-1 py-1.5 text-xs text-muted-foreground">
-                  {user?.name || user?.email || "Account"}
-                </div>
-                <div className="h-px my-1 bg-border" />
-                <button
-                  className="w-full text-left rounded-md px-2 py-1.5 hover:bg-accent/40"
-                  onClick={() => navigate("/dashboard")}
-                >
-                  Personal Info
-                </button>
-                <button
-                  className="w-full text-left rounded-md px-2 py-1.5 hover:bg-accent/40"
-                  onClick={() => navigate("/chat")}
-                >
-                  Your Data
-                </button>
-                <button
-                  className="w-full text-left rounded-md px-2 py-1.5 hover:bg-accent/40"
-                  onClick={() => navigate("/dashboard")}
-                >
-                  Settings
-                </button>
-                <div className="h-px my-1 bg-border" />
-                <button
-                  className="w-full text-left rounded-md px-2 py-1.5 bg-gradient-to-r from-red-600 to-red-400 text-white hover:from-red-700 hover:to-red-500 shadow-sm"
-                  onClick={async () => {
-                    try {
-                      if (signOut) {
-                        await signOut();
-                      }
-                    } finally {
-                      navigate("/");
-                    }
-                  }}
-                >
-                  Logout
-                </button>
-              </PopoverContent>
-            </Popover>
-          )}
-        </div>
-      </motion.nav>
+      <Header />
 
       {/* Layout */}
       <div className="px-6 py-6 grid gap-4 md:grid-cols-[280px_1fr] max-w-6xl mx-auto">

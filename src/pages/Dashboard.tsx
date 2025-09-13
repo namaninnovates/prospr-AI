@@ -10,8 +10,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, Plus, FileText, Bot, Bell, Download, TrendingUp, Wallet, WalletMinimal, PieChart, Target, GraduationCap, BookOpenCheck, Home } from "lucide-react";
+import { Loader2, Plus, FileText, Bot, Bell, Download, TrendingUp, WalletMinimal, PieChart, Target, GraduationCap, BookOpenCheck } from "lucide-react";
 import Footer from "@/components/Footer";
+import Header from "@/components/Header";
 
 type InteractiveEl = HTMLElement | null;
 type TxnType = "income" | "expense" | "asset" | "liability";
@@ -195,25 +196,7 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* Simplified Header: only logo and name */}
-      <header className="border-b px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg border bg-card">
-            <img src={LOGO_URL} alt="prosprAI logo" className="h-7 w-auto" />
-          </div>
-          <h1 className="text-xl font-bold tracking-tight">prosprAI</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={() => navigate("/")}>
-            <Home className="mr-2 h-4 w-4" />
-            Home
-          </Button>
-          <Button onClick={() => navigate("/chat")}>
-            <Bot className="mr-2 h-4 w-4" />
-            Ask prosprAI
-          </Button>
-        </div>
-      </header>
+      <Header />
 
       <main className="px-6 py-6">
         <Tabs defaultValue="home" className="mx-auto max-w-6xl">
