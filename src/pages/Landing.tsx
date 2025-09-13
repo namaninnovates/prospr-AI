@@ -518,7 +518,7 @@ export default function Landing() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ delay: 0.05, type: "spring", stiffness: 200, damping: 20 }}
                 whileHover={{ y: -4 }}
-                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5 ring-1 ring-primary/10"
+                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5 ring-1 ring-primary/10 transition-all hover:-translate-y-1 hover:bg-white/70 dark:hover:bg-card/50 hover:ring-2 hover:ring-secondary/50 hover:shadow-[0_12px_30px_rgba(157,107,255,0.22)]"
               >
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-md border bg-white/70 dark:bg-background/40 shadow-sm">
@@ -539,7 +539,7 @@ export default function Landing() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ delay: 0.12, type: "spring", stiffness: 200, damping: 20 }}
                 whileHover={{ y: -4 }}
-                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5 ring-1 ring-secondary/10"
+                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5 ring-1 ring-secondary/10 transition-all hover:-translate-y-1 hover:bg-white/70 dark:hover:bg-card/50 hover:ring-2 hover:ring-secondary/50 hover:shadow-[0_12px_30px_rgba(157,107,255,0.22)]"
               >
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-md border bg-white/70 dark:bg-background/40 shadow-sm">
@@ -560,7 +560,7 @@ export default function Landing() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ delay: 0.18, type: "spring", stiffness: 200, damping: 20 }}
                 whileHover={{ y: -4 }}
-                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5 ring-1 ring-accent/10"
+                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5 ring-1 ring-accent/10 transition-all hover:-translate-y-1 hover:bg-white/70 dark:hover:bg-card/50 hover:ring-2 hover:ring-secondary/50 hover:shadow-[0_12px_30px_rgba(157,107,255,0.22)]"
               >
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-md border bg-white/70 dark:bg-background/40 shadow-sm">
@@ -640,7 +640,7 @@ export default function Landing() {
                           !prompt.trim() ||
                           (!isAuthenticated && remainingReplies <= 0)
                         }
-                        className="gap-2 shadow-sm bg-gradient-to-r from-primary to-secondary text-foreground hover:from-primary/90 hover:to-secondary/90"
+                        className="gap-2 bg-gradient-to-r from-accent to-secondary text-foreground ring-1 ring-secondary/40 hover:from-accent/90 hover:to-secondary/90 hover:ring-secondary/60 shadow-[0_8px_24px_rgba(157,107,255,0.35)]"
                       >
                         {loading ? (
                           <>
@@ -677,7 +677,7 @@ export default function Landing() {
                     </div>
 
                     {/* Conversation */}
-                    <div className="mt-5 rounded-xl border bg-white/70 dark:bg-background/40 p-3 max-h-[32vh] overflow-auto">
+                    <div className="mt-5 rounded-xl border bg-white/70 dark:bg-background/40 p-3 max-h-[20vh] overflow-auto">
                       {messages.length === 0 ? (
                         <div className="text-sm text-muted-foreground">
                           Start a conversation — your copilot will synthesize, explain, and outline next steps tailored to your situation.
@@ -764,7 +764,7 @@ export default function Landing() {
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
-                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5 ring-1 ring-primary/10"
+                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5 ring-1 ring-primary/10 transition-all hover:-translate-y-1 hover:bg-white/70 dark:hover:bg-card/50 hover:ring-2 hover:ring-secondary/50 hover:shadow-[0_12px_30px_rgba(157,107,255,0.22)]"
               >
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-md border bg-white/70 dark:bg-background/40">
@@ -781,7 +781,7 @@ export default function Landing() {
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
-                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5 ring-1 ring-secondary/10"
+                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5 ring-1 ring-secondary/10 transition-all hover:-translate-y-1 hover:bg-white/70 dark:hover:bg-card/50 hover:ring-2 hover:ring-secondary/50 hover:shadow-[0_12px_30px_rgba(157,107,255,0.22)]"
               >
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-md border bg-white/70 dark:bg-background/40">
@@ -798,7 +798,7 @@ export default function Landing() {
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
-                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5 ring-1 ring-accent/10"
+                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5 ring-1 ring-accent/10 transition-all hover:-translate-y-1 hover:bg-white/70 dark:hover:bg-card/50 hover:ring-2 hover:ring-secondary/50 hover:shadow-[0_12px_30px_rgba(157,107,255,0.22)]"
               >
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-md border bg-white/70 dark:bg-background/40">
@@ -815,7 +815,7 @@ export default function Landing() {
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
-                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5 ring-1 ring-muted/20"
+                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5 ring-1 ring-muted/20 transition-all hover:-translate-y-1 hover:bg-white/70 dark:hover:bg-card/50 hover:ring-2 hover:ring-secondary/50 hover:shadow-[0_12px_30px_rgba(157,107,255,0.22)]"
               >
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-md border bg-white/70 dark:bg-background/40">
@@ -855,7 +855,7 @@ export default function Landing() {
                   whileInView={{ opacity: 1, y: 0, scale: 1 }}
                   viewport={{ once: true, amount: 0.25 }}
                   transition={{ delay: idx * 0.06, type: "spring", stiffness: 220, damping: 22 }}
-                  className="relative rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-6 ring-1 ring-border/50"
+                  className="relative rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-6 ring-1 ring-border/50 transition-all hover:-translate-y-1 hover:bg-white/70 dark:hover:bg-card/50 hover:ring-2 hover:ring-secondary/50 hover:shadow-[0_12px_30px_rgba(157,107,255,0.22)]"
                 >
                   <div className="absolute -top-3 -left-3 h-8 w-8 rounded-full bg-primary text-foreground grid place-items-center font-bold">
                     {s.step}
