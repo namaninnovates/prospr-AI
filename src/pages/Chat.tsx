@@ -268,7 +268,7 @@ export default function ChatPage() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen cursor-none bg-gradient-to-b from-purple-50 via-white to-yellow-50 dark:from-background dark:via-background dark:to-background"
+      className="min-h-screen cursor-none bg-gradient-to-b from-slate-50 via-white to-zinc-50 dark:from-background dark:via-background dark:to-background"
       onMouseMove={onMouseMove}
     >
       {/* Custom Glass Cursor */}
@@ -297,19 +297,19 @@ export default function ChatPage() {
       <div className="pointer-events-none fixed inset-0 overflow-hidden -z-10">
         <motion.div
           className="absolute -top-24 -left-24 h-72 w-72 rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(177,59,255,0.18), transparent 60%)" }}
+          style={{ background: "radial-gradient(circle, rgba(177,59,255,0.10), transparent 60%)" }}
           animate={{ x: mouse.x * 20, y: mouse.y * 20 }}
           transition={{ type: "spring", stiffness: 50, damping: 20 }}
         />
         <motion.div
           className="absolute -bottom-24 -right-24 h-80 w-80 rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(71,19,150,0.16), transparent 60%)" }}
+          style={{ background: "radial-gradient(circle, rgba(71,19,150,0.08), transparent 60%)" }}
           animate={{ x: mouse.x * -25, y: mouse.y * -25 }}
           transition={{ type: "spring", stiffness: 50, damping: 20 }}
         />
         <motion.div
           className="absolute top-1/3 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(255,204,0,0.08), transparent 60%)" }}
+          style={{ background: "radial-gradient(circle, rgba(255,204,0,0.05), transparent 60%)" }}
           animate={{ x: mouse.x * 15, y: mouse.y * 10 }}
           transition={{ type: "spring", stiffness: 60, damping: 22 }}
         />
@@ -319,10 +319,10 @@ export default function ChatPage() {
           className="absolute inset-0 -z-10"
           style={{
             background:
-              "radial-gradient(60% 60% at 15% 20%, rgba(255, 99, 132, 0.12), transparent 60%)," +
-              "radial-gradient(50% 50% at 85% 25%, rgba(54, 162, 235, 0.12), transparent 60%)," +
-              "radial-gradient(55% 55% at 20% 85%, rgba(255, 206, 86, 0.10), transparent 60%)," +
-              "radial-gradient(45% 45% at 80% 80%, rgba(75, 192, 192, 0.12), transparent 60%)",
+              "radial-gradient(60% 60% at 15% 20%, rgba(255, 99, 132, 0.08), transparent 60%)," +
+              "radial-gradient(50% 50% at 85% 25%, rgba(54, 162, 235, 0.08), transparent 60%)," +
+              "radial-gradient(55% 55% at 20% 85%, rgba(255, 206, 86, 0.06), transparent 60%)," +
+              "radial-gradient(45% 45% at 80% 80%, rgba(75, 192, 192, 0.08), transparent 60%)",
             mixBlendMode: "multiply",
           }}
           animate={{
@@ -347,7 +347,7 @@ export default function ChatPage() {
         >
           <motion.div
             className="h-56 w-56 rounded-full"
-            style={{ background: "radial-gradient(circle, rgba(236,72,153,0.14), transparent 60%)" }}
+            style={{ background: "radial-gradient(circle, rgba(236,72,153,0.10), transparent 60%)" }}
             animate={{ x: [0, 10, -8, 0], y: [0, -10, 12, 0], scale: [1, 1.04, 0.98, 1] }}
             transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
           />
@@ -361,7 +361,7 @@ export default function ChatPage() {
         >
           <motion.div
             className="h-52 w-52 rounded-full"
-            style={{ background: "radial-gradient(circle, rgba(34,197,94,0.12), transparent 60%)" }}
+            style={{ background: "radial-gradient(circle, rgba(34,197,94,0.08), transparent 60%)" }}
             animate={{ x: [0, -12, 10, 0], y: [0, 8, -10, 0], scale: [1, 0.97, 1.03, 1] }}
             transition={{ duration: 20, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
           />
@@ -551,7 +551,7 @@ export default function ChatPage() {
                             <Button
                               size="icon"
                               variant="default"
-                              className={`h-8 w-8 bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm hover:shadow transition-shadow ${summarizingId === c._id ? "opacity-80" : ""}`}
+                              className={`h-8 w-8 bg-white/60 text-foreground hover:bg-white/70 shadow-sm transition-shadow ${summarizingId === c._id ? "opacity-80" : ""}`}
                               onClick={() => onSummarize(c._id)}
                               disabled={summarizingId === c._id}
                               title="Generate brief"
@@ -655,7 +655,7 @@ export default function ChatPage() {
               <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                 <Button
                   onClick={newChat}
-                  className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/90 shadow-md"
+                  className="w-full bg-white/60 text-foreground hover:bg-white/70 shadow-md border border-white/30 dark:bg-white/10 dark:hover:bg-white/15"
                 >
                   <Plus className="mr-2 h-4 w-4" />
                   New Chat
@@ -678,7 +678,7 @@ export default function ChatPage() {
                   onClick={shareChat}
                   disabled={!activeChat}
                   title="Share chat"
-                  className="gap-2 rounded-full px-3 py-1.5 bg-secondary/90 text-secondary-foreground hover:bg-secondary shadow-[0_8px_30px_rgba(0,0,0,0.12)] backdrop-blur-md border border-white/20 disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="gap-2 rounded-full px-3 py-1.5 bg-white/60 text-foreground hover:bg-white/70 shadow-[0_8px_30px_rgba(0,0,0,0.12)] backdrop-blur-md border border-white/30 disabled:opacity-60 disabled:cursor-not-allowed dark:bg-white/10 dark:hover:bg-white/15"
                 >
                   <Share2 className="h-4 w-4" />
                   Share
@@ -705,7 +705,7 @@ export default function ChatPage() {
                     transition={{ type: "spring", stiffness: 220, damping: 22 }}
                     className={`max-w-[80%] px-3.5 py-2.5 rounded-2xl border shadow-[0_8px_30px_rgba(0,0,0,0.06)] backdrop-blur-md ${
                       m.role === "user"
-                        ? "ml-auto border-secondary/30 bg-gradient-to-br from-secondary/20 via-secondary/10 to-transparent"
+                        ? "ml-auto border-white/30 bg-gradient-to-br from-white/70 via-white/40 to-transparent dark:from-white/10 dark:via-white/5 dark:to-transparent"
                         : "border-white/20 bg-gradient-to-br from-white/40 via-white/20 to-transparent dark:from-white/10 dark:via-white/5 dark:to-transparent"
                     }`}
                   >
