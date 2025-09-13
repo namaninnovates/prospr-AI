@@ -245,7 +245,7 @@ export default function ChatPage() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen bg-background cursor-none"
+      className="min-h-screen cursor-none bg-gradient-to-b from-purple-50 via-white to-yellow-50 dark:from-background dark:via-background dark:to-background"
       onMouseMove={onMouseMove}
     >
       {/* Custom Glass Cursor */}
@@ -290,6 +290,59 @@ export default function ChatPage() {
           animate={{ x: mouse.x * 15, y: mouse.y * 10 }}
           transition={{ type: "spring", stiffness: 60, damping: 22 }}
         />
+
+        {/* Rotating gradient mesh overlay copied from Landing */}
+        <motion.div
+          className="absolute inset-0 -z-10"
+          style={{
+            background:
+              "radial-gradient(60% 60% at 15% 20%, rgba(255, 99, 132, 0.12), transparent 60%)," +
+              "radial-gradient(50% 50% at 85% 25%, rgba(54, 162, 235, 0.12), transparent 60%)," +
+              "radial-gradient(55% 55% at 20% 85%, rgba(255, 206, 86, 0.10), transparent 60%)," +
+              "radial-gradient(45% 45% at 80% 80%, rgba(75, 192, 192, 0.12), transparent 60%)",
+            mixBlendMode: "multiply",
+          }}
+          animate={{
+            rotate: [0, 360],
+            x: mouse.x * 10,
+            y: mouse.y * 6,
+          }}
+          transition={{
+            rotate: { duration: 80, repeat: Infinity, ease: "linear" },
+            x: { type: "spring", stiffness: 40, damping: 20 },
+            y: { type: "spring", stiffness: 40, damping: 20 },
+          }}
+          aria-hidden
+        />
+
+        {/* Extra floating blobs for liveliness */}
+        <motion.div
+          className="absolute top-10 left-1/4"
+          animate={{ x: mouse.x * 14, y: mouse.y * 10 }}
+          transition={{ type: "spring", stiffness: 50, damping: 22 }}
+          aria-hidden
+        >
+          <motion.div
+            className="h-56 w-56 rounded-full"
+            style={{ background: "radial-gradient(circle, rgba(236,72,153,0.14), transparent 60%)" }}
+            animate={{ x: [0, 10, -8, 0], y: [0, -10, 12, 0], scale: [1, 1.04, 0.98, 1] }}
+            transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </motion.div>
+
+        <motion.div
+          className="absolute bottom-10 right-1/3"
+          animate={{ x: mouse.x * -16, y: mouse.y * -12 }}
+          transition={{ type: "spring", stiffness: 50, damping: 22, delay: 0.2 }}
+          aria-hidden
+        >
+          <motion.div
+            className="h-52 w-52 rounded-full"
+            style={{ background: "radial-gradient(circle, rgba(34,197,94,0.12), transparent 60%)" }}
+            animate={{ x: [0, -12, 10, 0], y: [0, 8, -10, 0], scale: [1, 0.97, 1.03, 1] }}
+            transition={{ duration: 20, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
+          />
+        </motion.div>
       </div>
 
       {/* Top Bar */}
