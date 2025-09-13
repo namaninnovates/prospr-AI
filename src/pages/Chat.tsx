@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/use-auth";
 import { useNavigate } from "react-router";
 import { Bot, Plus, Send, Loader2, ArrowLeft } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { ArrowUp, ArrowDown, Pencil, Check, X, Wand2 } from "lucide-react";
 
 type InteractiveEl = HTMLElement | null;
 
@@ -20,6 +22,9 @@ export default function ChatPage() {
   const listChats = useQuery(api.chats.listMyChats);
   const addMessage = useMutation(api.messages.addMessage);
   const chatWithAI = useAction(api.ai.chatWithAI);
+  const renameChat = useMutation(api.chats.renameChat);
+  const moveChat = useMutation(api.chats.moveChat);
+  const summarizeChat = useAction(api.ai.summarizeChat);
 
   const [activeChatId, setActiveChatId] = useState<null | string>(null);
   const [input, setInput] = useState("");
@@ -35,6 +40,11 @@ export default function ChatPage() {
     api.messages.listByChat,
     activeChatId ? ({ chatId: activeChatId as any }) : "skip"
   );
+
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState<string>("");
+  const [movingId, setMovingId] = useState<string | null>(null);
+  const [summarizingId, setSummarizingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) navigate("/auth");
@@ -85,6 +95,44 @@ export default function ChatPage() {
       });
     } finally {
       setSending(false);
+    }
+  };
+
+  const startEdit = (id: string, current: string) => {
+    setEditingId(id);
+    setEditTitle(current);
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditTitle("");
+  };
+
+  const saveEdit = async (id: string) => {
+    const title = editTitle.trim();
+    if (!title) return;
+    await renameChat({ chatId: id as any, title });
+    setEditingId(null);
+    setEditTitle("");
+  };
+
+  const onMove = async (id: string, direction: "up" | "down") => {
+    if (movingId) return;
+    setMovingId(id);
+    try {
+      await moveChat({ chatId: id as any, direction });
+    } finally {
+      setMovingId(null);
+    }
+  };
+
+  const onSummarize = async (id: string) => {
+    if (summarizingId) return;
+    setSummarizingId(id);
+    try {
+      await summarizeChat({ chatId: id as any });
+    } finally {
+      setSummarizingId(null);
     }
   };
 
@@ -183,19 +231,109 @@ export default function ChatPage() {
             {listChats.length === 0 && (
               <div className="text-sm text-muted-foreground">No chats yet. Create one to start.</div>
             )}
-            {listChats.map((c) => (
-              <motion.button
-                key={c._id}
-                onClick={() => setActiveChatId(c._id)}
-                className={`w-full text-left rounded-md border px-3 py-2 text-sm ${
-                  activeChatId === c._id ? "bg-primary/10 border-primary/30" : "bg-card"
-                }`}
-                whileHover={{ y: -2 }}
-                transition={{ type: "spring", stiffness: 220, damping: 22 }}
-              >
-                {c.title}
-              </motion.button>
-            ))}
+            <TooltipProvider>
+              {listChats.map((c) => (
+                <Tooltip key={c._id}>
+                  <TooltipTrigger asChild>
+                    <motion.div
+                      className={`w-full rounded-md border p-2 ${activeChatId === c._id ? "bg-primary/10 border-primary/30" : "bg-card"}`}
+                      whileHover={{ y: -2 }}
+                      transition={{ type: "spring", stiffness: 220, damping: 22 }}
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <button
+                          onClick={() => setActiveChatId(c._id)}
+                          className="flex-1 text-left truncate"
+                          title={c.title}
+                        >
+                          {editingId === c._id ? (
+                            <div className="flex items-center gap-2">
+                              <Input
+                                value={editTitle}
+                                onChange={(e) => setEditTitle(e.target.value)}
+                                autoFocus
+                                className="h-8"
+                              />
+                              <Button size="icon" variant="outline" className="h-8 w-8" onClick={() => saveEdit(c._id)}>
+                                <Check className="h-4 w-4" />
+                              </Button>
+                              <Button size="icon" variant="ghost" className="h-8 w-8" onClick={cancelEdit}>
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm truncate">{c.title}</span>
+                            </div>
+                          )}
+                        </button>
+                        {editingId !== c._id && (
+                          <div className="flex items-center gap-1">
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              className="h-8 w-8"
+                              onClick={() => startEdit(c._id, c.title)}
+                              title="Edit title"
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              className="h-8 w-8"
+                              onClick={() => onMove(c._id, "up")}
+                              disabled={movingId === c._id}
+                              title="Move up"
+                            >
+                              {movingId === c._id ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <ArrowUp className="h-4 w-4" />
+                              )}
+                            </Button>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              className="h-8 w-8"
+                              onClick={() => onMove(c._id, "down")}
+                              disabled={movingId === c._id}
+                              title="Move down"
+                            >
+                              {movingId === c._id ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <ArrowDown className="h-4 w-4" />
+                              )}
+                            </Button>
+                            <Button
+                              size="icon"
+                              variant="outline"
+                              className="h-8 w-8"
+                              onClick={() => onSummarize(c._id)}
+                              disabled={summarizingId === c._id}
+                              title="Generate brief"
+                            >
+                              {summarizingId === c._id ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <Wand2 className="h-4 w-4" />
+                              )}
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-xs">
+                    <div className="text-xs font-medium mb-1">{c.title}</div>
+                    <div className="text-xs text-muted-foreground whitespace-pre-wrap line-clamp-5">
+                      {c.brief ? c.brief : "No brief yet. Click the magic wand to generate a summary."}
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              ))}
+            </TooltipProvider>
           </CardContent>
         </Card>
 

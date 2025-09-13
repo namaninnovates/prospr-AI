@@ -35,7 +35,13 @@ const schema = defineSchema(
     chats: defineTable({
       ownerId: v.id("users"),
       title: v.string(),
-    }).index("by_ownerId", ["ownerId"]),
+      // Add ordering and brief fields
+      position: v.number(),
+      brief: v.optional(v.string()),
+    })
+      .index("by_ownerId", ["ownerId"])
+      // New index to sort by position for a given owner
+      .index("by_ownerId_and_position", ["ownerId", "position"]),
 
     messages: defineTable({
       chatId: v.id("chats"),
