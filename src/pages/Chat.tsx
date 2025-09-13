@@ -372,9 +372,9 @@ export default function ChatPage() {
       <Header />
 
       {/* Layout */}
-      <div className="px-6 py-6 grid gap-4 md:grid-cols-[280px_1fr] max-w-6xl mx-auto flex-1">
+      <div className="px-4 md:px-6 py-4 md:py-6 grid gap-4 md:grid-cols-[300px_1fr] w-full max-w-[1400px] mx-auto flex-1">
         {/* Sidebar: chats */}
-        <Card className="h-[72vh] md:h-[76vh] bg-white/40 dark:bg-card/40 backdrop-blur-md border-white/30">
+        <Card className="h-[78vh] md:h-[82vh] bg-white/40 dark:bg-card/40 backdrop-blur-md border-white/30">
           <CardContent className="p-3 h-full overflow-auto space-y-2">
             {listChats.length === 0 && (
               <div className="text-sm text-muted-foreground">No chats yet. Create one to start.</div>
@@ -565,7 +565,7 @@ export default function ChatPage() {
         </Card>
 
         {/* Chat panel */}
-        <Card className="flex flex-col h-[72vh] md:h-[76vh] bg-white/40 dark:bg-card/40 backdrop-blur-md border-white/30">
+        <Card className="flex flex-col h-[78vh] md:h-[82vh] bg-white/40 dark:bg-card/40 backdrop-blur-md border-white/30">
           <CardContent className="p-0 flex flex-col h-full">
             {/* Chat header with title and Share */}
             <div className="flex items-center justify-between border-b p-3 bg-white/30 dark:bg-white/10 backdrop-blur-md">
