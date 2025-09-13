@@ -42,6 +42,51 @@ export default function Landing() {
   const heroTitleY = useTransform(scrollYProgress, [0, 1], [0, -60]); // hero heading
   const ctaWaveY = useTransform(scrollYProgress, [0, 1], [0, -80]); // CTA backdrop wave
 
+  // Add: inline chat state and guest quota tracker
+  const MAX_FREE_REPLIES = 5;
+  const [messages, setMessages] = useState<Array<{ id: string; role: "user" | "assistant"; content: string }>>([]);
+  const [usedReplies, setUsedReplies] = useState<number>(0);
+
+  useEffect(() => {
+    // Load used replies only for guests
+    if (!isAuthenticated) {
+      const saved = Number(localStorage.getItem("landing_free_replies_used") || "0");
+      setUsedReplies(Number.isFinite(saved) ? saved : 0);
+    } else {
+      // Reset local tracker for signed-in users
+      setUsedReplies(0);
+    }
+  }, [isAuthenticated]);
+
+  const remainingReplies = isAuthenticated ? Infinity : Math.max(0, MAX_FREE_REPLIES - usedReplies);
+
+  // Add: active section highlight via IntersectionObserver
+  const [activeSection, setActiveSection] = useState<string>("hero");
+  useEffect(() => {
+    const ids = ["hero", "why", "how", "privacy", "cta"];
+    const els = ids
+      .map((id) => document.getElementById(id))
+      .filter(Boolean) as HTMLElement[];
+
+    const obs = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        if (visible[0]) setActiveSection(visible[0].target.id);
+      },
+      { rootMargin: "-20% 0px -60% 0px", threshold: [0.2, 0.4, 0.6, 0.8] }
+    );
+    els.forEach((el) => obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
+
+  // Helper: smooth scroll to section
+  const goTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const { innerWidth, innerHeight } = window;
     const x = (e.clientX / innerWidth - 0.5) * 2;
@@ -81,46 +126,42 @@ export default function Landing() {
   };
 
   const askAI = async () => {
-    if (!prompt.trim() || loading) return;
+    const trimmed = prompt.trim();
+    if (!trimmed || loading) return;
+
+    // Enforce guest quota
+    if (!isAuthenticated && remainingReplies <= 0) {
+      navigate("/auth");
+      return;
+    }
+
     setLoading(true);
-    setAnswer(null);
+
+    // Push user message inline
+    const userMsg = { id: crypto.randomUUID(), role: "user" as const, content: trimmed };
+    setMessages((m) => [...m, userMsg]);
+    setPrompt("");
+
     try {
-      const res = await chat({
-        messages: [{ role: "user", content: prompt.trim() }],
-      });
-      setAnswer(res);
+      // Send full thread for richer context
+      const convo = [...messages, userMsg].map((m) => ({ role: m.role, content: m.content }));
+      const res = await chat({ messages: convo });
+
+      const aiMsg = { id: crypto.randomUUID(), role: "assistant" as const, content: String(res) };
+      setMessages((m) => [...m, aiMsg]);
+
+      // Increment quota for guests after each assistant reply
+      if (!isAuthenticated) {
+        const nextUsed = usedReplies + 1;
+        setUsedReplies(nextUsed);
+        localStorage.setItem("landing_free_replies_used", String(nextUsed));
+      }
     } catch (e: any) {
-      setAnswer(e?.message || "Something went wrong. Please try again.");
+      const errMsg = { id: crypto.randomUUID(), role: "assistant" as const, content: e?.message || "Something went wrong. Please try again." };
+      setMessages((m) => [...m, errMsg]);
     } finally {
       setLoading(false);
     }
-  };
-
-  // Add: active section highlight via IntersectionObserver
-  const [activeSection, setActiveSection] = useState<string>("hero");
-  useEffect(() => {
-    const ids = ["hero", "why", "how", "privacy", "cta"];
-    const els = ids
-      .map((id) => document.getElementById(id))
-      .filter(Boolean) as HTMLElement[];
-
-    const obs = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-        if (visible[0]) setActiveSection(visible[0].target.id);
-      },
-      { rootMargin: "-20% 0px -60% 0px", threshold: [0.2, 0.4, 0.6, 0.8] }
-    );
-    els.forEach((el) => obs.observe(el));
-    return () => obs.disconnect();
-  }, []);
-
-  // Helper: smooth scroll to section
-  const goTo = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
@@ -534,6 +575,133 @@ export default function Landing() {
                   💛 Personal by design. Practical in execution.
                 </div>
               </motion.div>
+
+              {/* Ask prosprAI — chat starter (full width, inline conversation) */}
+              <motion.div
+                initial={{ opacity: 0, y: 14, scale: 0.98 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, amount: 0.3 }}
+                className="mt-6 rounded-2xl border bg-white/70 dark:bg-card/40 backdrop-blur-md p-5 ring-1 ring-primary/10 shadow-sm md:col-span-3"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-lg font-semibold">
+                    <div className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 border border-primary/30">
+                      <Bot className="h-4 w-4" />
+                    </div>
+                    <span>Ask prosprAI</span>
+                  </div>
+                  {/* Dynamic quota note for guests */}
+                  {!isAuthenticated && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-xs px-2 py-1 rounded-full border bg-white/60 dark:bg-background/40"
+                    >
+                      {remainingReplies > 0
+                        ? `${remainingReplies}/${MAX_FREE_REPLIES} complimentary replies left — create a free account to unlock unlimited answers`
+                        : "You've reached your complimentary replies — sign up to continue the conversation"}
+                    </motion.div>
+                  )}
+                </div>
+
+                {/* Wide input */}
+                <div className="mt-3">
+                  <Textarea
+                    placeholder="e.g., How should I allocate assets for a moderate risk profile? What does ROE convey in practical terms?"
+                    className="min-h-[110px] bg-white/80 dark:bg-background/50"
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    disabled={loading || (!isAuthenticated && remainingReplies <= 0)}
+                  />
+                </div>
+
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <Button
+                    onClick={askAI}
+                    disabled={
+                      loading ||
+                      !prompt.trim() ||
+                      (!isAuthenticated && remainingReplies <= 0)
+                    }
+                    className="gap-2"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Thinking...
+                      </>
+                    ) : (
+                      <>
+                        <Bot className="h-4 w-4" />
+                        Ask AI
+                      </>
+                    )}
+                  </Button>
+
+                  {!isAuthenticated && remainingReplies <= 0 ? (
+                    <Button variant="outline" onClick={() => navigate("/auth")} className="gap-2">
+                      Sign up to continue
+                      <ArrowRight className="h-4 w-4" />
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      onClick={() => setPrompt("")}
+                      disabled={loading || !prompt}
+                    >
+                      Clear
+                    </Button>
+                  )}
+                </div>
+
+                {/* Inline conversation thread */}
+                <div className="mt-5 rounded-lg border bg-white/60 dark:bg-background/40 p-3 max-h-[46vh] overflow-auto">
+                  {messages.length === 0 ? (
+                    <div className="text-sm text-muted-foreground">
+                      Start a conversation — your assistant will synthesize, explain, and propose next steps tailored to your context.
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {messages.map((m) => (
+                        <div
+                          key={m.id}
+                          className={`flex items-start gap-3 ${m.role === "assistant" ? "" : "justify-end"}`}
+                        >
+                          {m.role === "assistant" && (
+                            <div className="h-7 w-7 rounded-full grid place-items-center bg-secondary/20 border border-secondary/40 shrink-0">
+                              <Bot className="h-4 w-4" />
+                            </div>
+                          )}
+                          <Card className={`max-w-[85%] ${m.role === "assistant" ? "bg-white/70 dark:bg-card/50" : "bg-primary/15 border-primary/30"}`}>
+                            <CardContent className="p-3 text-sm whitespace-pre-wrap">{m.content}</CardContent>
+                          </Card>
+                          {m.role === "user" && (
+                            <div className="h-7 w-7 rounded-full grid place-items-center bg-primary/20 border border-primary/40 shrink-0">
+                              <span className="text-[10px] font-semibold">You</span>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+
+                      {/* Typing indicator */}
+                      {loading && (
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <div className="h-6 w-6 rounded-full grid place-items-center bg-secondary/20 border border-secondary/40">
+                            <Bot className="h-3 w-3" />
+                          </div>
+                          <motion.span
+                            initial={{ opacity: 0.4 }}
+                            animate={{ opacity: [0.4, 1, 0.4] }}
+                            transition={{ repeat: Infinity, duration: 1.2 }}
+                          >
+                            composing a response…
+                          </motion.span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </motion.div>
             </div>
           </div>
         </section>
@@ -776,11 +944,9 @@ export default function Landing() {
         </section>
       </div>
 
-      {/* Animated Answer Modal */}
-      <Dialog open={showModal} onOpenChange={setShowModal}>
-        <DialogContent
-          showCloseButton
-        >
+      {/* Animated Answer Modal — disabled since answers now render inline */}
+      <Dialog open={false} onOpenChange={() => {}}>
+        <DialogContent showCloseButton>
           <DialogHeader>
             <DialogTitle>AI Answer</DialogTitle>
           </DialogHeader>
