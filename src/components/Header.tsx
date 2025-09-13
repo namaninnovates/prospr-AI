@@ -21,8 +21,14 @@ export default function Header() {
   const toggleTheme = () => {
     const next = !isDark;
     setIsDark(next);
-    document.documentElement.classList.toggle("dark", next);
+
+    // Add a short-lived class to animate theme variable changes
+    const root = document.documentElement;
+    root.classList.add("theme-transition");
+    root.classList.toggle("dark", next);
     localStorage.setItem("theme", next ? "dark" : "light");
+    // remove transition class after animation completes
+    window.setTimeout(() => root.classList.remove("theme-transition"), 300);
   };
 
   const LOGO_URL =

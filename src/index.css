@@ -153,3 +153,23 @@
     cursor: pointer;
   }
 }
+
+/* Smooth theme toggle transitions (respects reduced motion) */
+html.theme-transition *,
+html.theme-transition ::backdrop {
+  transition:
+    background-color 240ms ease,
+    color 240ms ease,
+    border-color 240ms ease,
+    box-shadow 240ms ease,
+    outline-color 240ms ease,
+    fill 240ms ease,
+    stroke 240ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.theme-transition *,
+  html.theme-transition ::backdrop {
+    transition: none;
+  }
+}
