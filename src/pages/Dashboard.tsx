@@ -37,6 +37,10 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [chatLoading, setChatLoading] = useState(false);
 
+  // Shared logo URL used across pages for consistency
+  const LOGO_URL =
+    "https://harmless-tapir-303.convex.cloud/api/storage/2844fd15-ce02-408e-9ac5-3e88a6ab15f7";
+
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [hoveringInteractive, setHoveringInteractive] = useState<boolean>(false);
   const [mouse, setMouse] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -194,7 +198,9 @@ export default function Dashboard() {
       {/* Simplified Header: only logo and name */}
       <header className="border-b px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <img src="/logo.svg" alt="prosprAI logo" className="h-8 w-8" />
+          <div className="p-2 rounded-lg border bg-card">
+            <img src={LOGO_URL} alt="prosprAI logo" className="h-7 w-auto" />
+          </div>
           <h1 className="text-xl font-bold tracking-tight">prosprAI</h1>
         </div>
         <div className="flex items-center gap-2">
