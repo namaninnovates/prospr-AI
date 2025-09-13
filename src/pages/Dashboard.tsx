@@ -233,7 +233,7 @@ function HomeTab() {
   return (
     <div className="space-y-6">
       <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
-        <h2 className="text-2xl font-bold tracking-tight">
+        <h2 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-purple-500 to-fuchsia-500 bg-clip-text text-transparent">
           Snapshot{user?.name ? ` — ${user.name}` : ""}
         </h2>
         <p className="text-sm text-muted-foreground">
