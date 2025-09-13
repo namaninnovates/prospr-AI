@@ -135,43 +135,11 @@ export default function Dashboard() {
         />
       </div>
 
-      <header className="border-b px-6 py-4 flex items-center justify-between">
+      {/* Simplified Header: only logo and name */}
+      <header className="border-b px-6 py-4 flex items-center">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg border bg-card">
-            <Wallet className="h-5 w-5" />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold tracking-tight">prosprAI Dashboard</h1>
-            <p className="text-sm text-muted-foreground">
-              Welcome{user?.name ? `, ${user.name}` : user?.email ? `, ${user.email}` : ""} — manage finances with AI.
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={() => navigate("/")}>
-            <Home className="mr-2 h-4 w-4" />
-            Home
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => {
-              if (chatLoading) return;
-              setChatLoading(true);
-              navigate("/chat");
-            }}
-            disabled={chatLoading}
-          >
-            {chatLoading ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Bot className="mr-2 h-4 w-4" />
-            )}
-            Ask prosprAI
-          </Button>
-          <Button onClick={() => toast("Notifications opened")}>
-            <Bell className="mr-2 h-4 w-4" />
-            Notifications
-          </Button>
+          <img src="/logo.svg" alt="prosprAI logo" className="h-8 w-8" />
+          <h1 className="text-xl font-bold tracking-tight">prosprAI</h1>
         </div>
       </header>
 
