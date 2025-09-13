@@ -58,33 +58,33 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.15 0 0);
 
-  /* Brand colors — increase golden warmth */
-  --primary: #ffce33; /* warmer, brighter amber */
+  /* Brand colors — increase golden warmth & saturation */
+  --primary: #ffbf1a; /* was #ffce33 */
   --primary-foreground: oklch(0.15 0 0);
-  --secondary: #b13bff;
+  --secondary: #a226ff; /* was #b13bff */
   --secondary-foreground: oklch(0.98 0 0);
-  --accent: #471396;
+  --accent: #3f0f8a; /* was #471396 */
   --accent-foreground: oklch(0.98 0 0);
 
-  /* Neutrals — add a gentle warm hue */
-  --muted: oklch(0.95 0.015 80); /* slightly warmer */
-  --muted-foreground: oklch(0.47 0.025 80);
+  /* Neutrals — slightly more saturated & warm */
+  --muted: oklch(0.95 0.02 80); /* was 0.015 */
+  --muted-foreground: oklch(0.47 0.03 80); /* was 0.025 */
 
-  --destructive: oklch(0.62 0.2 25);
+  --destructive: oklch(0.6 0.22 25); /* a touch richer */
 
-  /* Borders/inputs — subtle warmth */
-  --border: oklch(0.9 0.012 80);
-  --input: oklch(0.96 0.008 80);
+  /* Borders/inputs — warm & clearer edges */
+  --border: oklch(0.9 0.018 80); /* was 0.012 */
+  --input: oklch(0.96 0.012 80); /* was 0.008 */
 
-  /* Focus ring — warm glow */
-  --ring: #ffbf3f;
+  /* Focus ring — warmer glow */
+  --ring: #ffc646; /* was #ffbf3f */
 
-  /* Subtly warmer chart accents */
-  --chart-1: oklch(0.55 0.08 240);
-  --chart-2: oklch(0.6 0.06 20);
-  --chart-3: oklch(0.62 0.06 140);
-  --chart-4: oklch(0.58 0.06 330);
-  --chart-5: oklch(0.6 0.06 80);
+  /* Subtly warmer chart accents — more saturation for depth */
+  --chart-1: oklch(0.55 0.1 240);  /* was 0.08 */
+  --chart-2: oklch(0.6 0.08 20);   /* was 0.06 */
+  --chart-3: oklch(0.62 0.08 140); /* was 0.06 */
+  --chart-4: oklch(0.58 0.08 330); /* was 0.06 */
+  --chart-5: oklch(0.6 0.08 80);   /* was 0.06 */
 
   /* Sidebar */
   --sidebar: oklch(0.985 0 0);
@@ -104,46 +104,46 @@
   --foreground: oklch(0.97 0 0);
 
   /* Glass panels slightly lighter than base for elevation */
-  --card: oklch(0.22 0.03 320); /* subtle deep violet */
+  --card: oklch(0.22 0.04 320); /* was 0.03 */
   --card-foreground: oklch(0.97 0 0);
-  --popover: oklch(0.22 0.03 320);
+  --popover: oklch(0.22 0.04 320); /* was 0.03 */
   --popover-foreground: oklch(0.97 0 0);
 
-  /* Brand colors — warmer amber */
-  --primary: #ffd760;
+  /* Brand colors — richer amber & violet */
+  --primary: #ffd149;  /* was #ffd760 */
   --primary-foreground: #090040;
-  --secondary: #9d6bff;
+  --secondary: #8d57ff; /* was #9d6bff */
   --secondary-foreground: oklch(0.1 0 0);
-  --accent: #5b3ea3;
+  --accent: #54349e; /* was #5b3ea3 */
   --accent-foreground: oklch(0.98 0 0);
 
-  /* Neutrals — slight warmth */
-  --muted: oklch(0.24 0.025 80);
-  --muted-foreground: oklch(0.78 0.025 80);
+  /* Neutrals — slightly more saturated */
+  --muted: oklch(0.24 0.03 80); /* was 0.025 */
+  --muted-foreground: oklch(0.78 0.03 80); /* was 0.025 */
 
-  --destructive: oklch(0.6 0.2 15);
+  --destructive: oklch(0.58 0.22 15); /* deeper */
 
-  /* Borders/inputs — slight warmth */
-  --border: oklch(0.34 0.035 80);
-  --input: oklch(0.24 0.025 80);
+  /* Borders/inputs — clearer separation */
+  --border: oklch(0.34 0.045 80); /* was 0.035 */
+  --input: oklch(0.24 0.03 80); /* was 0.025 */
 
-  /* Focus ring — warm to match primary for a cozy feel */
-  --ring: #ffd760;
+  /* Focus ring — align with warmer primary */
+  --ring: #ffd149;
 
-  /* Updated chart palette for a modern, dynamic look */
-  --chart-1: #9d6bff; /* lavender/indigo */
-  --chart-2: #5b3ea3; /* refined violet */
-  --chart-3: #f5c84b; /* soft amber */
-  --chart-4: #4cc9f0; /* cyan */
-  --chart-5: #72e0a7; /* mint/green */
+  /* Updated chart palette for depth (slightly more saturated) */
+  --chart-1: #8d57ff; /* richer */
+  --chart-2: #54349e;
+  --chart-3: #f4ba29; /* warmer amber */
+  --chart-4: #35c2f0; /* brighter cyan */
+  --chart-5: #62d99b; /* richer mint */
 
-  --sidebar: oklch(0.18 0.02 300);
+  --sidebar: oklch(0.18 0.028 300); /* was 0.02 */
   --sidebar-foreground: oklch(0.97 0 0);
   --sidebar-primary: var(--primary);
   --sidebar-primary-foreground: #090040;
-  --sidebar-accent: oklch(0.22 0.02 300);
+  --sidebar-accent: oklch(0.22 0.028 300); /* was 0.02 */
   --sidebar-accent-foreground: oklch(0.97 0 0);
-  --sidebar-border: oklch(0.32 0.02 300);
+  --sidebar-border: oklch(0.32 0.028 300); /* was 0.02 */
   --sidebar-ring: var(--ring);
 }
 
