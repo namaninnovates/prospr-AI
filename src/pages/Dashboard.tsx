@@ -145,12 +145,13 @@ export default function Dashboard() {
 
       <main className="px-6 py-6">
         <Tabs defaultValue="home" className="mx-auto max-w-6xl">
-          <TabsList className="grid grid-cols-5">
-            <TabsTrigger value="home">Dashboard</TabsTrigger>
+          <TabsList className="grid grid-cols-6">
+            <TabsTrigger value="home">Home</TabsTrigger>
             <TabsTrigger value="ledger">Transactions & Ledgers</TabsTrigger>
             <TabsTrigger value="reports">Reports & Analysis</TabsTrigger>
             <TabsTrigger value="investments">Investments & Goals</TabsTrigger>
             <TabsTrigger value="learning">Learning Hub</TabsTrigger>
+            <TabsTrigger value="ask">Ask AI</TabsTrigger>
           </TabsList>
 
           <TabsContent value="home">
@@ -171,6 +172,19 @@ export default function Dashboard() {
 
           <TabsContent value="learning">
             <LearningTab />
+          </TabsContent>
+
+          <TabsContent value="ask">
+            <Card>
+              <CardContent className="p-4 flex items-center justify-between">
+                <div className="text-sm text-muted-foreground">
+                  Open the prosprAI chat to ask questions.
+                </div>
+                <Button onClick={() => navigate("/chat")}>
+                  Open Chat
+                </Button>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </main>
