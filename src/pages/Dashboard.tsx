@@ -136,10 +136,20 @@ export default function Dashboard() {
       </div>
 
       {/* Simplified Header: only logo and name */}
-      <header className="border-b px-6 py-4 flex items-center">
+      <header className="border-b px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <img src="/logo.svg" alt="prosprAI logo" className="h-8 w-8" />
           <h1 className="text-xl font-bold tracking-tight">prosprAI</h1>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={() => navigate("/")}>
+            <Home className="mr-2 h-4 w-4" />
+            Home
+          </Button>
+          <Button onClick={() => navigate("/chat")}>
+            <Bot className="mr-2 h-4 w-4" />
+            Ask prosprAI
+          </Button>
         </div>
       </header>
 
