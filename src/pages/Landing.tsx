@@ -232,15 +232,16 @@ export default function Landing() {
       {/* Nav */}
       <div className="relative z-10">
         <nav className="sticky top-0 backdrop-blur-md bg-white/65 dark:bg-white/10 border-b z-30">
-          <div className="flex items-center justify-between px-6 py-3">
+          <div className="flex items-center justify-between px-6 py-3 relative">
+            {/* Left: Logo + brand */}
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg border bg-card">
                 <img src={LOGO_URL} alt="prosprAI logo" className="h-7 w-auto" />
               </div>
               <span className="text-2xl font-bold text-foreground tracking-tight">prosprAI</span>
             </div>
+            {/* Right: Theme + Dashboard/Get Started + Profile */}
             <div className="flex items-center gap-2">
-              {/* Theme toggle */}
               <Button
                 variant="outline"
                 onClick={toggleTheme}
@@ -327,8 +328,10 @@ export default function Landing() {
               )}
             </div>
 
-            {/* Add: Section links with active highlight */}
-            <div className="hidden md:flex items-center gap-2">
+            {/* Center: Section links */}
+            <div
+              className={`hidden md:flex items-center gap-2 absolute left-1/2 -translate-x-1/2`}
+            >
               {[
                 { id: "why", label: "Why Us" },
                 { id: "how", label: "How it Works" },
