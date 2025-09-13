@@ -10,7 +10,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useNavigate } from "react-router";
 import { Bot, Plus, Send, Loader2, ArrowLeft } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { ArrowUp, ArrowDown, Pencil, Check, X, Wand2 } from "lucide-react";
+import { ArrowUp, ArrowDown, Pencil, Check, X, Wand2, Brain } from "lucide-react";
 
 type InteractiveEl = HTMLElement | null;
 
@@ -47,6 +47,21 @@ export default function ChatPage() {
   const [editTitle, setEditTitle] = useState<string>("");
   const [movingId, setMovingId] = useState<string | null>(null);
   const [summarizingId, setSummarizingId] = useState<string | null>(null);
+
+  // Reusable brain-thinking loader with animated dots and glass styling
+  function BrainThinking({ label = "Thinking…" }: { label?: string }) {
+    return (
+      <div className="flex items-center gap-2 text-sm text-muted-foreground rounded-2xl border border-white/30 bg-white/40 dark:bg-white/10 backdrop-blur-md px-3.5 py-2 shadow-[0_8px_30px_rgba(0,0,0,0.06)]">
+        <Brain className="h-4 w-4 text-secondary animate-pulse" />
+        <span className="inline-flex items-center">
+          <span className="h-1.5 w-1.5 rounded-full bg-foreground/60 animate-bounce [animation-delay:-200ms]" />
+          <span className="h-1.5 w-1.5 rounded-full bg-foreground/60 animate-bounce mx-1" />
+          <span className="h-1.5 w-1.5 rounded-full bg-foreground/60 animate-bounce [animation-delay:200ms]" />
+        </span>
+        {label}
+      </div>
+    );
+  }
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) navigate("/auth");
@@ -150,7 +165,7 @@ export default function ChatPage() {
   if (isLoading || !isAuthenticated || !listChats) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-6 w-6 animate-spin" />
+        <BrainThinking label="Loading chat…" />
       </div>
     );
   }
@@ -410,9 +425,7 @@ export default function ChatPage() {
                 <div className="text-sm text-muted-foreground">Select a chat or create a new one.</div>
               )}
               {activeChatId && messages === undefined && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Loader2 className="h-4 w-4 animate-spin" /> Loading messages...
-                </div>
+                <BrainThinking label="Loading messages…" />
               )}
               {activeChatId &&
                 Array.isArray(messages) &&
@@ -442,7 +455,8 @@ export default function ChatPage() {
                   animate={{ opacity: 1, y: 0 }}
                   className="max-w-[80%] px-3.5 py-2.5 rounded-2xl border border-white/20 bg-gradient-to-br from-white/40 via-white/20 to-transparent dark:from-white/10 dark:via-white/5 dark:to-transparent shadow-[0_8px_30px_rgba(0,0,0,0.08)] backdrop-blur-md"
                 >
-                  <div className="text-[11px] uppercase tracking-wide text-muted-foreground/80 mb-1.5">
+                  <div className="text-[11px] uppercase tracking-wide text-muted-foreground/80 mb-1.5 flex items-center gap-1.5">
+                    <Brain className="h-3.5 w-3.5 text-secondary animate-pulse" />
                     prosprAI
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
