@@ -346,7 +346,12 @@ export default function ChatPage() {
       </div>
 
       {/* Top Bar */}
-      <nav className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b backdrop-blur-md bg-white/40 dark:bg-white/10">
+      <motion.nav
+        initial={{ y: -12, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 260, damping: 24 }}
+        className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b backdrop-blur-md bg-white/40 dark:bg-white/10"
+      >
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg border bg-card/60 backdrop-blur-md">
             <Bot className="h-5 w-5" />
@@ -358,7 +363,7 @@ export default function ChatPage() {
             <ArrowLeft className="mr-2 h-4 w-4" /> Home
           </Button>
         </div>
-      </nav>
+      </motion.nav>
 
       {/* Layout */}
       <div className="px-6 py-6 grid gap-4 md:grid-cols-[280px_1fr] max-w-6xl mx-auto">
@@ -369,10 +374,12 @@ export default function ChatPage() {
               <div className="text-sm text-muted-foreground">No chats yet. Create one to start.</div>
             )}
             <TooltipProvider>
-              {listChats.map((c) => (
+              {listChats.map((c, idx) => (
                 <Tooltip key={c._id}>
                   <TooltipTrigger asChild>
                     <motion.div
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
                       className={`w-full rounded-md border p-2 ${activeChatId === c._id ? "bg-primary/10 border-primary/30" : "bg-card"} ${draggingId === c._id ? "opacity-70 ring-2 ring-primary/40" : ""}`}
                       onDragOver={(e) => {
                         e.preventDefault();
@@ -382,7 +389,7 @@ export default function ChatPage() {
                         if (draggingId) reorder(draggingId, c._id);
                       }}
                       whileHover={{ y: -2 }}
-                      transition={{ type: "spring", stiffness: 220, damping: 22 }}
+                      transition={{ type: "spring", stiffness: 220, damping: 22, delay: Math.min(idx * 0.02, 0.2) }}
                     >
                       <div className="flex items-center justify-between gap-2">
                         <div className="flex items-center gap-2">
@@ -538,13 +545,15 @@ export default function ChatPage() {
 
             {/* New Chat button moved below all chats with purple glass styling */}
             <div className="pt-2">
-              <Button
-                onClick={newChat}
-                className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/90 shadow-md"
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                New Chat
-              </Button>
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                <Button
+                  onClick={newChat}
+                  className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/90 shadow-md"
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  New Chat
+                </Button>
+              </motion.div>
             </div>
           </CardContent>
         </Card>
@@ -557,15 +566,17 @@ export default function ChatPage() {
               <div className="truncate text-sm font-medium">
                 {activeChat ? activeChat.title : "Select a chat"}
               </div>
-              <Button
-                onClick={shareChat}
-                disabled={!activeChat}
-                title="Share chat"
-                className="gap-2 rounded-full px-3 py-1.5 bg-secondary/90 text-secondary-foreground hover:bg-secondary shadow-[0_8px_30px_rgba(0,0,0,0.12)] backdrop-blur-md border border-white/20 disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                <Share2 className="h-4 w-4" />
-                Share
-              </Button>
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+                <Button
+                  onClick={shareChat}
+                  disabled={!activeChat}
+                  title="Share chat"
+                  className="gap-2 rounded-full px-3 py-1.5 bg-secondary/90 text-secondary-foreground hover:bg-secondary shadow-[0_8px_30px_rgba(0,0,0,0.12)] backdrop-blur-md border border-white/20 disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  <Share2 className="h-4 w-4" />
+                  Share
+                </Button>
+              </motion.div>
             </div>
 
             {/* Messages */}
@@ -580,9 +591,11 @@ export default function ChatPage() {
                 Array.isArray(messages) &&
                 messages.map((m: any) => (
                   <motion.div
+                    layout
                     key={m._id}
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
+                    transition={{ type: "spring", stiffness: 220, damping: 22 }}
                     className={`max-w-[80%] px-3.5 py-2.5 rounded-2xl border shadow-[0_8px_30px_rgba(0,0,0,0.06)] backdrop-blur-md ${
                       m.role === "user"
                         ? "ml-auto border-secondary/30 bg-gradient-to-br from-secondary/20 via-secondary/10 to-transparent"
@@ -673,9 +686,11 @@ export default function ChatPage() {
               {/* Assistant "thinking" bubble while generating a reply */}
               {activeChatId && sending && (
                 <motion.div
+                  layout
                   key="assistant-thinking"
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
+                  transition={{ type: "spring", stiffness: 220, damping: 22 }}
                   className="max-w-[80%] px-3.5 py-2.5 rounded-2xl border border-white/20 bg-gradient-to-br from-white/40 via-white/20 to-transparent dark:from-white/10 dark:via-white/5 dark:to-transparent shadow-[0_8px_30px_rgba(0,0,0,0.08)] backdrop-blur-md"
                 >
                   <div className="text-[11px] uppercase tracking-wide text-muted-foreground/80 mb-1.5 flex items-center gap-1.5">
@@ -695,7 +710,12 @@ export default function ChatPage() {
             </div>
 
             {/* Composer */}
-            <div className="border-t p-3 bg-white/30 dark:bg-white/10 backdrop-blur-md">
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ type: "spring", stiffness: 240, damping: 22, delay: 0.05 }}
+              className="border-t p-3 bg-white/30 dark:bg-white/10 backdrop-blur-md"
+            >
               <div className="flex gap-2">
                 <Input
                   placeholder="Ask about budgeting, statements, ratios..."
@@ -711,14 +731,16 @@ export default function ChatPage() {
                   disabled={sending || !activeChatId}
                   className="rounded-2xl border border-white/30 bg-gradient-to-br from-white/70 via-white/40 to-transparent dark:from-white/10 dark:via-white/5 dark:to-transparent backdrop-blur-md shadow-[0_8px_30px_rgba(0,0,0,0.08)] focus-visible:ring-2 focus-visible:ring-secondary/40 placeholder:text-foreground/60"
                 />
-                <Button onClick={send} disabled={sending || !activeChatId} className="bg-secondary/90 text-secondary-foreground hover:bg-secondary shadow-[0_8px_30px_rgba(0,0,0,0.12)] backdrop-blur-md border border-white/20">
-                  {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                </Button>
+                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+                  <Button onClick={send} disabled={sending || !activeChatId} className="bg-secondary/90 text-secondary-foreground hover:bg-secondary shadow-[0_8px_30px_rgba(0,0,0,0.12)] backdrop-blur-md border border-white/20">
+                    {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                  </Button>
+                </motion.div>
               </div>
               {!activeChatId && (
                 <div className="text-xs text-muted-foreground mt-2">Create or select a chat to begin.</div>
               )}
-            </div>
+            </motion.div>
           </CardContent>
         </Card>
       </div>
