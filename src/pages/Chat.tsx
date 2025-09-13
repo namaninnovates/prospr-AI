@@ -10,7 +10,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useNavigate } from "react-router";
 import { Bot, Plus, Send, Loader2, ArrowLeft } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { ArrowUp, ArrowDown, Pencil, Check, X, Wand2, Brain } from "lucide-react";
+import { GripVertical, Pencil, Check, X, Wand2, Brain } from "lucide-react";
 import { toast } from "sonner";
 
 type InteractiveEl = HTMLElement | null;
@@ -32,6 +32,7 @@ export default function ChatPage() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [draggingId, setDraggingId] = useState<string | null>(null);
+  // Removed moving state (using drag handle instead of arrow buttons)
 
   // Cursor + parallax state (same style as Landing)
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -46,7 +47,6 @@ export default function ChatPage() {
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState<string>("");
-  const [movingId, setMovingId] = useState<string | null>(null);
   const [summarizingId, setSummarizingId] = useState<string | null>(null);
 
   // Reusable brain-thinking loader with animated dots and glass styling
@@ -134,15 +134,7 @@ export default function ChatPage() {
     setEditTitle("");
   };
 
-  const onMove = async (id: string, direction: "up" | "down") => {
-    if (movingId) return;
-    setMovingId(id);
-    try {
-      await moveChat({ chatId: id as any, direction });
-    } finally {
-      setMovingId(null);
-    }
-  };
+  // onMove removed: Using drag handle + reorderChats for ordering
 
   const onSummarize = async (id: string) => {
     if (summarizingId) return;
@@ -301,8 +293,6 @@ export default function ChatPage() {
                   <TooltipTrigger asChild>
                     <motion.div
                       className={`w-full rounded-md border p-2 ${activeChatId === c._id ? "bg-primary/10 border-primary/30" : "bg-card"} ${draggingId === c._id ? "opacity-70 ring-2 ring-primary/40" : ""}`}
-                      draggable
-                      onMouseDown={() => setDraggingId(c._id)}
                       onDragOver={(e) => {
                         e.preventDefault();
                       }}
@@ -310,16 +300,26 @@ export default function ChatPage() {
                         e.preventDefault();
                         if (draggingId) reorder(draggingId, c._id);
                       }}
-                      onDragEnd={() => setDraggingId(null)}
                       whileHover={{ y: -2 }}
                       transition={{ type: "spring", stiffness: 220, damping: 22 }}
                     >
                       <div className="flex items-center justify-between gap-2">
-                        <button
-                          onClick={() => setActiveChatId(c._id)}
-                          className="flex-1 text-left truncate"
-                          title={c.title}
-                        >
+                        <div className="flex items-center gap-2">
+                          <button
+                            draggable
+                            onDragStart={() => setDraggingId(c._id)}
+                            onDragEnd={() => setDraggingId(null)}
+                            className="h-8 w-8 inline-flex items-center justify-center rounded-md border bg-card/70 hover:bg-card cursor-grab active:cursor-grabbing"
+                            aria-label="Drag to reorder"
+                            title="Drag to reorder"
+                          >
+                            <GripVertical className="h-4 w-4 text-muted-foreground" />
+                          </button>
+                          <button
+                            onClick={() => setActiveChatId(c._id)}
+                            className="flex-1 text-left truncate"
+                            title={c.title}
+                          >
                           {editingId === c._id ? (
                             <div className="flex items-center gap-2">
                               <Input
@@ -341,6 +341,7 @@ export default function ChatPage() {
                             </div>
                           )}
                         </button>
+                        </div>
                         {editingId !== c._id && (
                           <div className="flex items-center gap-1">
                             <Button
@@ -351,34 +352,6 @@ export default function ChatPage() {
                               title="Edit title"
                             >
                               <Pencil className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              className="h-8 w-8"
-                              onClick={() => onMove(c._id, "up")}
-                              disabled={movingId === c._id}
-                              title="Move up"
-                            >
-                              {movingId === c._id ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                              ) : (
-                                <ArrowUp className="h-4 w-4" />
-                              )}
-                            </Button>
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              className="h-8 w-8"
-                              onClick={() => onMove(c._id, "down")}
-                              disabled={movingId === c._id}
-                              title="Move down"
-                            >
-                              {movingId === c._id ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                              ) : (
-                                <ArrowDown className="h-4 w-4" />
-                              )}
                             </Button>
                             <Button
                               size="icon"
