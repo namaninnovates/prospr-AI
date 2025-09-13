@@ -620,9 +620,17 @@ export default function Landing() {
                           >
                             ✨
                           </motion.span>
-                          {remainingReplies > 0
-                            ? `Free replies: ${remainingReplies}/${MAX_FREE_REPLIES}`
-                            : "Limit reached — sign up to continue"}
+                          <>
+                            {remainingReplies > 0 ? (
+                              <>
+                                {`Free replies: ${remainingReplies}/${MAX_FREE_REPLIES}`}
+                                <span aria-hidden className="mx-1.5">•</span>
+                                <strong className="font-semibold">Unlimited after signup</strong>
+                              </>
+                            ) : (
+                              <strong className="font-semibold">Limit reached — sign up for unlimited responses</strong>
+                            )}
+                          </>
                         </span>
                       </motion.div>
                     )}
@@ -690,7 +698,7 @@ export default function Landing() {
                     <div className="mt-5 rounded-xl border bg-white/70 dark:bg-background/40 p-3 max-h-[20vh] overflow-auto">
                       {messages.length === 0 ? (
                         <div className="text-sm text-muted-foreground">
-                          Start a conversation — your copilot will synthesize, explain, and outline next steps tailored to your situation.
+                          Start a conversation — prosprAI will synthesize, explain, and outline next steps tailored to your situation.
                         </div>
                       ) : (
                         <div className="space-y-3">
