@@ -554,7 +554,7 @@ export default function ChatPage() {
               <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                 <Button
                   onClick={newChat}
-                  className="w-full bg-white/60 text-foreground hover:bg-white/70 shadow-md border border-white/30 dark:bg-white/10 dark:hover:bg-white/15"
+                  className="w-full bg-white/60 text-foreground hover:bg-muted/60 shadow-md border border-white/30 dark:bg-white/10 dark:hover:bg-muted/20"
                 >
                   <Plus className="mr-2 h-4 w-4" />
                   New Chat
@@ -577,7 +577,7 @@ export default function ChatPage() {
                   onClick={shareChat}
                   disabled={!activeChat}
                   title="Share chat"
-                  className="gap-2 rounded-full px-3 py-1.5 bg-white/60 text-foreground hover:bg-white/70 shadow-[0_8px_30px_rgba(0,0,0,0.12)] backdrop-blur-md border border-white/30 disabled:opacity-60 disabled:cursor-not-allowed dark:bg-white/10 dark:hover:bg-white/15"
+                  className="gap-2 rounded-full px-3 py-1.5 bg-white/60 text-foreground hover:bg-muted/60 shadow-[0_8px_30px_rgba(0,0,0,0.12)] backdrop-blur-md border border-white/30 disabled:opacity-60 disabled:cursor-not-allowed dark:bg-white/10 dark:hover:bg-muted/20"
                 >
                   <Share2 className="h-4 w-4" />
                   Share
@@ -738,7 +738,11 @@ export default function ChatPage() {
                   className="rounded-2xl border border-white/30 bg-gradient-to-br from-white/70 via-white/40 to-transparent dark:from-white/10 dark:via-white/5 dark:to-transparent backdrop-blur-md shadow-[0_8px_30px_rgba(0,0,0,0.08)] focus-visible:ring-2 focus-visible:ring-secondary/40 placeholder:text-foreground/60"
                 />
                 <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-                  <Button onClick={send} disabled={sending || !activeChatId} className="bg-secondary/90 text-secondary-foreground hover:bg-secondary shadow-[0_8px_30px_rgba(0,0,0,0.12)] backdrop-blur-md border border-white/20">
+                  <Button
+                    onClick={send}
+                    disabled={sending || !activeChatId}
+                    className="bg-secondary/90 text-secondary-foreground hover:bg-muted/30 shadow-[0_8px_30px_rgba(0,0,0,0.12)] backdrop-blur-md border border-white/20 dark:hover:bg-muted/30"
+                  >
                     {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                   </Button>
                 </motion.div>

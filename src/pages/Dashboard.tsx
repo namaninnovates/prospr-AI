@@ -310,7 +310,7 @@ function HomeTab() {
           whileHover={{ y: -3 }}
           className="lg:col-span-2"
         >
-          <Card className="transition-colors hover:bg-purple-100/50 dark:hover:bg-purple-900/20 hover:border-purple-300/50">
+          <Card className="transition-colors hover:bg-muted/60 dark:hover:bg-muted/20 hover:border-border/60">
             <CardHeader>
               <CardTitle>AI Insights</CardTitle>
               <CardDescription>Tips, red flags, and goal progress</CardDescription>
@@ -329,7 +329,7 @@ function HomeTab() {
           transition={{ type: "spring", stiffness: 220, damping: 24, delay: 0.05 }}
           whileHover={{ y: -3 }}
         >
-          <Card className="transition-colors hover:bg-purple-100/50 dark:hover:bg-purple-900/20 hover:border-purple-300/50">
+          <Card className="transition-colors hover:bg-muted/60 dark:hover:bg-muted/20 hover:border-border/60">
             <CardHeader>
               <CardTitle>Quick Actions</CardTitle>
               <CardDescription>Common tasks</CardDescription>
@@ -457,13 +457,13 @@ function LedgerTab() {
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <Card className="transition-colors hover:bg-purple-100/50 dark:hover:bg-purple-900/20 hover:border-purple-300/50"><CardHeader className="pb-2"><CardDescription>Income (mo.)</CardDescription></CardHeader><CardContent className="text-xl font-bold">${income.toFixed(2)}</CardContent></Card>
-        <Card className="transition-colors hover:bg-purple-100/50 dark:hover:bg-purple-900/20 hover:border-purple-300/50"><CardHeader className="pb-2"><CardDescription>Expense (mo.)</CardDescription></CardHeader><CardContent className="text-xl font-bold">${expense.toFixed(2)}</CardContent></Card>
-        <Card className="transition-colors hover:bg-purple-100/50 dark:hover:bg-purple-900/20 hover:border-purple-300/50"><CardHeader className="pb-2"><CardDescription>Net (mo.)</CardDescription></CardHeader><CardContent className="text-xl font-bold">${(income - expense).toFixed(2)}</CardContent></Card>
-        <Card className="transition-colors hover:bg-purple-100/50 dark:hover:bg-purple-900/20 hover:border-purple-300/50"><CardHeader className="pb-2"><CardDescription>Count</CardDescription></CardHeader><CardContent className="text-xl font-bold">{txns.length}</CardContent></Card>
+        <Card className="transition-colors hover:bg-muted/60 dark:hover:bg-muted/20 hover:border-border/60"><CardHeader className="pb-2"><CardDescription>Income (mo.)</CardDescription></CardHeader><CardContent className="text-xl font-bold">${income.toFixed(2)}</CardContent></Card>
+        <Card className="transition-colors hover:bg-muted/60 dark:hover:bg-muted/20 hover:border-border/60"><CardHeader className="pb-2"><CardDescription>Expense (mo.)</CardDescription></CardHeader><CardContent className="text-xl font-bold">${expense.toFixed(2)}</CardContent></Card>
+        <Card className="transition-colors hover:bg-muted/60 dark:hover:bg-muted/20 hover:border-border/60"><CardHeader className="pb-2"><CardDescription>Net (mo.)</CardDescription></CardHeader><CardContent className="text-xl font-bold">${(income - expense).toFixed(2)}</CardContent></Card>
+        <Card className="transition-colors hover:bg-muted/60 dark:hover:bg-muted/20 hover:border-border/60"><CardHeader className="pb-2"><CardDescription>Count</CardDescription></CardHeader><CardContent className="text-xl font-bold">{txns.length}</CardContent></Card>
       </div>
 
-      <Card className="transition-colors hover:bg-purple-100/50 dark:hover:bg-purple-900/20 hover:border-purple-300/50">
+      <Card className="transition-colors hover:bg-muted/60 dark:hover:bg-muted/20 hover:border-border/60">
         <CardHeader>
           <CardTitle>Ledger</CardTitle>
           <CardDescription>Recent activity</CardDescription>
@@ -572,7 +572,7 @@ function ReportsTab() {
       </motion.div>
 
       {items.map((it) => (
-        <Card key={it.title} className="transition-colors hover:bg-purple-100/50 dark:hover:bg-purple-900/20 hover:border-purple-300/50">
+        <Card key={it.title} className="transition-colors hover:bg-muted/60 dark:hover:bg-muted/20 hover:border-border/60">
           <CardHeader>
             <CardTitle>{it.title}</CardTitle>
             <CardDescription>{it.desc}</CardDescription>
@@ -618,7 +618,7 @@ function InvestmentsTab() {
         Track allocations and goal progress with quick AI suggestions for next steps.
       </motion.div>
 
-      <Card className="transition-colors hover:bg-purple-100/50 dark:hover:bg-purple-900/20 hover:border-purple-300/50">
+      <Card className="transition-colors hover:bg-muted/60 dark:hover:bg-muted/20 hover:border-border/60">
         <CardHeader>
           <CardTitle>Portfolio</CardTitle>
           <CardDescription>Allocation snapshot</CardDescription>
@@ -636,7 +636,7 @@ function InvestmentsTab() {
         </CardContent>
       </Card>
 
-      <Card className="transition-colors hover:bg-purple-100/50 dark:hover:bg-purple-900/20 hover:border-purple-300/50">
+      <Card className="transition-colors hover:bg-muted/60 dark:hover:bg-muted/20 hover:border-border/60">
         <CardHeader>
           <CardTitle>Goals</CardTitle>
           <CardDescription>Tracking progress</CardDescription>
@@ -685,7 +685,7 @@ function LearningTab() {
       </motion.div>
 
       {items.map((it) => (
-        <Card key={it.title} className="flex flex-col transition-colors hover:bg-purple-100/50 dark:hover:bg-purple-900/20 hover:border-purple-300/50">
+        <Card key={it.title} className="flex flex-col transition-colors hover:bg-muted/60 dark:hover:bg-muted/20 hover:border-border/60">
           <CardHeader>
             <div className="flex items-center gap-2">
               <div className="p-2 rounded-md border bg-card">
