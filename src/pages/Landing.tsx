@@ -14,7 +14,7 @@ import { useEffect } from "react";
 import { Moon, Sun } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Shield, Lock, TrendingUp, BarChart3, PieChart } from "lucide-react";
 import Footer from "@/components/Footer";
 
 type InteractiveEl = HTMLElement | null;
@@ -87,6 +87,33 @@ export default function Landing() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Add: active section highlight via IntersectionObserver
+  const [activeSection, setActiveSection] = useState<string>("hero");
+  useEffect(() => {
+    const ids = ["hero", "why", "how", "privacy", "cta"];
+    const els = ids
+      .map((id) => document.getElementById(id))
+      .filter(Boolean) as HTMLElement[];
+
+    const obs = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        if (visible[0]) setActiveSection(visible[0].target.id);
+      },
+      { rootMargin: "-20% 0px -60% 0px", threshold: [0.2, 0.4, 0.6, 0.8] }
+    );
+    els.forEach((el) => obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
+
+  // Helper: smooth scroll to section
+  const goTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
@@ -204,105 +231,129 @@ export default function Landing() {
 
       {/* Nav */}
       <div className="relative z-10">
-        <nav className="flex items-center justify-between px-6 py-6">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg border bg-card">
-              <img src={LOGO_URL} alt="prosprAI logo" className="h-7 w-auto" />
+        <nav className="sticky top-0 backdrop-blur-md bg-white/65 dark:bg-white/10 border-b z-30">
+          <div className="flex items-center justify-between px-6 py-3">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg border bg-card">
+                <img src={LOGO_URL} alt="prosprAI logo" className="h-7 w-auto" />
+              </div>
+              <span className="text-2xl font-bold text-foreground tracking-tight">prosprAI</span>
             </div>
-            <span className="text-2xl font-bold text-foreground tracking-tight">prosprAI</span>
-          </div>
-          <div className="flex items-center gap-2">
-            {/* Theme toggle */}
-            <Button
-              variant="outline"
-              onClick={toggleTheme}
-              aria-label="Toggle theme"
-              title="Toggle theme"
-            >
-              {isDark ? (
-                <>
-                  <Sun className="mr-2 h-4 w-4" />
-                  Light
-                </>
-              ) : (
-                <>
-                  <Moon className="mr-2 h-4 w-4" />
-                  Dark
-                </>
-              )}
-            </Button>
-            <Button
-              onClick={() => navigate(isAuthenticated ? "/dashboard" : "/auth")}
-              disabled={loading}
-              aria-busy={loading}
-            >
-              {isAuthenticated ? "Dashboard" : "Get Started"}
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-            {isAuthenticated && (
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="h-10 rounded-full pl-1 pr-2 gap-2"
-                    aria-label="Open profile menu"
-                  >
-                    <Avatar className="h-7 w-7">
-                      <AvatarImage src={(user as any)?.image || ""} alt="Profile" />
-                      <AvatarFallback className="text-xs">
-                        {((user?.name || user?.email || "U")[0] || "U").toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <ChevronDown className="h-4 w-4 opacity-70" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent align="end" className="w-56" sideOffset={8}>
-                  <div className="px-1 py-1.5 text-xs text-muted-foreground">
-                    {user?.name || user?.email || "Account"}
-                  </div>
-                  <div className="h-px my-1 bg-border" />
-                  <button
-                    className="w-full text-left rounded-md px-2 py-1.5 hover:bg-accent/40"
-                    onClick={() => navigate("/dashboard")}
-                  >
-                    Personal Info
-                  </button>
-                  <button
-                    className="w-full text-left rounded-md px-2 py-1.5 hover:bg-accent/40"
-                    onClick={() => navigate("/chat")}
-                  >
-                    Your Data
-                  </button>
-                  <button
-                    className="w-full text-left rounded-md px-2 py-1.5 hover:bg-accent/40"
-                    onClick={() => navigate("/dashboard")}
-                  >
-                    Settings
-                  </button>
-                  <div className="h-px my-1 bg-border" />
-                  <button
-                    className="w-full text-left rounded-md px-2 py-1.5 bg-gradient-to-r from-red-600 to-red-400 text-white hover:from-red-700 hover:to-red-500 shadow-sm"
-                    onClick={async () => {
-                      try {
-                        if (signOut) {
-                          await signOut();
+            <div className="flex items-center gap-2">
+              {/* Theme toggle */}
+              <Button
+                variant="outline"
+                onClick={toggleTheme}
+                aria-label="Toggle theme"
+                title="Toggle theme"
+              >
+                {isDark ? (
+                  <>
+                    <Sun className="mr-2 h-4 w-4" />
+                    Light
+                  </>
+                ) : (
+                  <>
+                    <Moon className="mr-2 h-4 w-4" />
+                    Dark
+                  </>
+                )}
+              </Button>
+              <Button
+                onClick={() => navigate(isAuthenticated ? "/dashboard" : "/auth")}
+                disabled={loading}
+                aria-busy={loading}
+              >
+                {isAuthenticated ? "Dashboard" : "Get Started"}
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+              {isAuthenticated && (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="h-10 rounded-full pl-1 pr-2 gap-2"
+                      aria-label="Open profile menu"
+                    >
+                      <Avatar className="h-7 w-7">
+                        <AvatarImage src={(user as any)?.image || ""} alt="Profile" />
+                        <AvatarFallback className="text-xs">
+                          {((user?.name || user?.email || "U")[0] || "U").toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <ChevronDown className="h-4 w-4 opacity-70" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent align="end" className="w-56" sideOffset={8}>
+                    <div className="px-1 py-1.5 text-xs text-muted-foreground">
+                      {user?.name || user?.email || "Account"}
+                    </div>
+                    <div className="h-px my-1 bg-border" />
+                    <button
+                      className="w-full text-left rounded-md px-2 py-1.5 hover:bg-accent/40"
+                      onClick={() => navigate("/dashboard")}
+                    >
+                      Personal Info
+                    </button>
+                    <button
+                      className="w-full text-left rounded-md px-2 py-1.5 hover:bg-accent/40"
+                      onClick={() => navigate("/chat")}
+                    >
+                      Your Data
+                    </button>
+                    <button
+                      className="w-full text-left rounded-md px-2 py-1.5 hover:bg-accent/40"
+                      onClick={() => navigate("/dashboard")}
+                    >
+                      Settings
+                    </button>
+                    <div className="h-px my-1 bg-border" />
+                    <button
+                      className="w-full text-left rounded-md px-2 py-1.5 bg-gradient-to-r from-red-600 to-red-400 text-white hover:from-red-700 hover:to-red-500 shadow-sm"
+                      onClick={async () => {
+                        try {
+                          if (signOut) {
+                            await signOut();
+                          }
+                        } finally {
+                          navigate("/");
                         }
-                      } finally {
-                        navigate("/");
-                      }
-                    }}
-                  >
-                    Logout
-                  </button>
-                </PopoverContent>
-              </Popover>
-            )}
+                      }}
+                    >
+                      Logout
+                    </button>
+                  </PopoverContent>
+                </Popover>
+              )}
+            </div>
+
+            {/* Add: Section links with active highlight */}
+            <div className="hidden md:flex items-center gap-2">
+              {[
+                { id: "why", label: "Why Us" },
+                { id: "how", label: "How it Works" },
+                { id: "privacy", label: "Privacy" },
+                { id: "cta", label: "Get Started" },
+              ].map((link) => (
+                <button
+                  key={link.id}
+                  onClick={() => goTo(link.id)}
+                  className={`px-3 py-1.5 rounded-full text-sm transition ${
+                    activeSection === link.id
+                      ? "bg-primary/20 text-foreground border border-primary/30"
+                      : "hover:bg-muted/60"
+                  }`}
+                >
+                  {link.label}
+                </button>
+              ))}
+            </div>
           </div>
         </nav>
       </div>
 
       {/* Hero */}
-      <div className="relative z-10">
+      <div id="hero" className="relative z-10">
         <section className="px-6 pt-10">
           <div className="mx-auto max-w-5xl text-center">
             <motion.h1
@@ -345,6 +396,19 @@ export default function Landing() {
             )}
           </div>
         </section>
+
+        {/* Scroll indicator */}
+        <div className="mt-6 flex justify-center">
+          <button
+            onClick={() => goTo("why")}
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition"
+            aria-label="Scroll to Why ProsprAI"
+            title="Scroll to Why ProsprAI"
+          >
+            <span>Scroll to explore</span>
+            <ChevronDown className="h-4 w-4 animate-bounce" />
+          </button>
+        </div>
 
         {/* Glassmorphism Illustration */}
         <section className="relative px-6 pt-8">
@@ -438,84 +502,196 @@ export default function Landing() {
           </div>
         </section>
 
-        {/* AI Chat Card - only after sign up (authenticated) */}
-        {isAuthenticated && (
-          <motion.section
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ type: "spring", stiffness: 220, damping: 26 }}
-            className="px-6 py-10"
-          >
-            <div className="mx-auto max-w-3xl">
-              <Card>
-                <CardContent className="p-6 space-y-4">
-                  <div className="flex items-center gap-2 text-foreground/90">
-                    <Bot className="h-5 w-5" />
-                    <span className="font-semibold">Ask prosprAI</span>
-                  </div>
-                  <Textarea
-                    value={prompt}
-                    onChange={(e) => setPrompt(e.target.value)}
-                    placeholder="e.g., What is a good asset allocation for a moderate risk profile? How do I compute ROE and what does it mean?"
-                  />
-                  <div className="flex items-center gap-2">
-                    <Button
-                      onClick={askAI}
-                      disabled={loading || !prompt.trim()}
-                      aria-busy={loading}
-                    >
-                      {loading ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Thinking...
-                        </>
-                      ) : (
-                        <>
-                          <Bot className="mr-2 h-4 w-4" /> Ask AI
-                        </>
-                      )}
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setPrompt("");
-                        setAnswer(null);
-                      }}
-                      disabled={loading}
-                    >
-                      Clear
-                    </Button>
-                  </div>
+        {/* New: Why Choose ProsprAI */}
+        <section id="why" className="relative px-6 py-16">
+          <div className="mx-auto max-w-5xl">
+            <motion.h2
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              className="text-3xl md:text-4xl font-bold tracking-tight text-center"
+            >
+              Why Choose ProsprAI?
+            </motion.h2>
 
-                  {answer && (
-                    <div className="mt-2 rounded-lg border p-4">
-                      <div className="mb-2 flex items-center justify-between text-sm text-muted-foreground">
-                        <div className="flex items-center gap-2">
-                          <Bot className="h-4 w-4" />
-                          Answer
-                        </div>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => setShowModal(true)}
-                        >
-                          View in Modal
-                        </Button>
-                      </div>
-                      <div className="whitespace-pre-wrap">{answer}</div>
-                    </div>
-                  )}
+            <div className="grid md:grid-cols-2 gap-6 mt-8">
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-md border bg-white/70 dark:bg-background/40">
+                    <TrendingUp className="h-4 w-4" />
+                  </div>
+                  <div className="font-semibold tracking-tight">Finance made simple</div>
+                </div>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Clear answers without jargon. Understand where you stand and what to do next.
+                </p>
+              </motion.div>
 
-                  {!answer && !loading && (
-                    <div className="text-sm text-muted-foreground">
-                      Tips: Ask about P/E, ROE/ROA, DCF basics, cash flow health, leverage, liquidity, or how to read a balance sheet.
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-md border bg-white/70 dark:bg-background/40">
+                    <BarChart3 className="h-4 w-4" />
+                  </div>
+                  <div className="font-semibold tracking-tight">Actionable insights</div>
+                </div>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Trends and tips tailored to your goals, income, and comfort with risk.
+                </p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-md border bg-white/70 dark:bg-background/40">
+                    <PieChart className="h-4 w-4" />
+                  </div>
+                  <div className="font-semibold tracking-tight">Personalized by AI</div>
+                </div>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Advice adapts as your life evolves—budgets, portfolios, and goals included.
+                </p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                className="rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-5"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-md border bg-white/70 dark:bg-background/40">
+                    <Shield className="h-4 w-4" />
+                  </div>
+                  <div className="font-semibold tracking-tight">Secure by design</div>
+                </div>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Your data stays yours. Bank‑level protection and full control to delete anytime.
+                </p>
+              </motion.div>
             </div>
-          </motion.section>
-        )}
+          </div>
+        </section>
+
+        {/* New: How ProsprAI Works */}
+        <section id="how" className="relative px-6 py-16">
+          <div className="mx-auto max-w-5xl">
+            <motion.h2
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              className="text-3xl md:text-4xl font-bold tracking-tight text-center"
+            >
+              How ProsprAI Works
+            </motion.h2>
+
+            <div className="mt-8 grid md:grid-cols-3 gap-6">
+              {[
+                { title: "Ask AI", desc: "Type a question or upload statements.", step: "1" },
+                { title: "Get Insights", desc: "AI breaks it down with simple visuals.", step: "2" },
+                { title: "Track Growth", desc: "Dashboard keeps your progress updated.", step: "3" },
+              ].map((s, idx) => (
+                <motion.div
+                  key={s.title}
+                  initial={{ opacity: 0, y: 16, scale: 0.98 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: true, amount: 0.25 }}
+                  transition={{ delay: idx * 0.06, type: "spring", stiffness: 220, damping: 22 }}
+                  className="relative rounded-xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-6"
+                >
+                  <div className="absolute -top-3 -left-3 h-8 w-8 rounded-full bg-primary text-foreground grid place-items-center font-bold">
+                    {s.step}
+                  </div>
+                  <div className="text-lg font-semibold">{s.title}</div>
+                  <p className="text-sm text-muted-foreground mt-1">{s.desc}</p>
+                  <div className="mt-4 h-2 w-full rounded-full bg-muted overflow-hidden">
+                    <motion.div
+                      initial={{ width: "0%" }}
+                      whileInView={{ width: `${((idx + 1) / 3) * 100}%` }}
+                      viewport={{ once: true, amount: 0.6 }}
+                      transition={{ duration: 0.8, delay: 0.1 }}
+                      className="h-full bg-secondary"
+                    />
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* New: Data Privacy & Security */}
+        <section id="privacy" className="relative px-6 py-16">
+          <div className="mx-auto max-w-5xl">
+            <motion.h2
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              className="text-3xl md:text-4xl font-bold tracking-tight text-center"
+            >
+              Your Data, Safe with Us
+            </motion.h2>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.98 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true, amount: 0.3 }}
+              className="mt-8 rounded-2xl border bg-white/60 dark:bg-card/40 backdrop-blur-md p-6 md:p-8"
+            >
+              <div className="grid md:grid-cols-[1fr_1.6fr] gap-6 items-center">
+                <div className="flex items-center justify-center">
+                  <div className="relative">
+                    <div className="absolute -inset-6 rounded-3xl bg-gradient-to-tr from-secondary/20 to-primary/20 blur-2xl" />
+                    <div className="relative h-28 w-28 rounded-3xl border grid place-items-center bg-white/70 dark:bg-white/10">
+                      <Lock className="h-10 w-10" />
+                    </div>
+                  </div>
+                </div>
+                <ul className="space-y-3 text-sm">
+                  <li>🔒 Bank-level encryption for all data</li>
+                  <li>🔐 No sharing with third parties</li>
+                  <li>🛡️ You control your information — delete anytime</li>
+                </ul>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* New: Final CTA */}
+        <section id="cta" className="relative px-6 py-16">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            className="mx-auto max-w-4xl rounded-3xl border bg-gradient-to-br from-primary/20 via-white/70 to-transparent dark:from-secondary/20 dark:via-white/5 dark:to-transparent backdrop-blur-md p-8 text-center"
+          >
+            <h3 className="text-2xl md:text-3xl font-bold">Take Charge of Your Finances Today</h3>
+            <p className="mt-2 text-muted-foreground">
+              Get clear answers and a plan that adapts to you.
+            </p>
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+              <Button onClick={() => navigate(isAuthenticated ? "/chat" : "/auth")} className="gap-2">
+                Ask ProsprAI Now
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+              <Button variant="outline" onClick={() => navigate("/dashboard")} className="gap-2">
+                View Dashboard
+              </Button>
+            </div>
+          </motion.div>
+        </section>
       </div>
 
       {/* Animated Answer Modal */}
