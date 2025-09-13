@@ -11,6 +11,7 @@ import { useNavigate } from "react-router";
 import { Bot, Plus, Send, Loader2, ArrowLeft } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ArrowUp, ArrowDown, Pencil, Check, X, Wand2, Brain } from "lucide-react";
+import { toast } from "sonner";
 
 type InteractiveEl = HTMLElement | null;
 
@@ -148,6 +149,9 @@ export default function ChatPage() {
     setSummarizingId(id);
     try {
       await summarizeChat({ chatId: id as any });
+      toast.success("Brief generated");
+    } catch (e: any) {
+      toast.error(e?.message ?? "Failed to summarize. Please configure OpenRouter in Integrations.");
     } finally {
       setSummarizingId(null);
     }
