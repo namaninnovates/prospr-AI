@@ -13,6 +13,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Loader2, Plus, FileText, Bot, Bell, Download, TrendingUp, WalletMinimal, PieChart, Target, GraduationCap, BookOpenCheck } from "lucide-react";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import { useAction, useMutation, useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { Progress } from "@/components/ui/progress";
+import { DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
 type InteractiveEl = HTMLElement | null;
 type TxnType = "income" | "expense" | "asset" | "liability";
@@ -37,6 +41,9 @@ export default function Dashboard() {
   const { isLoading, isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
   const [chatLoading, setChatLoading] = useState(false);
+  const me = useQuery(api.users.currentUser);
+  const updateProfile = useMutation(api.users.updateProfile);
+  const [onboardingOpen, setOnboardingOpen] = useState(false);
 
   // Shared logo URL used across pages for consistency
   const LOGO_URL =
@@ -45,6 +52,63 @@ export default function Dashboard() {
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [hoveringInteractive, setHoveringInteractive] = useState<boolean>(false);
   const [mouse, setMouse] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+
+  // Onboarding form state
+  const [firstName, setFirstName] = useState("");
+  const [middleName, setMiddleName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [dob, setDob] = useState("");
+  const [gender, setGender] = useState("");
+  const [location, setLocation] = useState("");
+  const [currency, setCurrency] = useState("");
+  const [timezone, setTimezone] = useState("");
+
+  // Initialize form from user once
+  useEffect(() => {
+    if (me) {
+      setFirstName(me.firstName ?? "");
+      setMiddleName(me.middleName ?? "");
+      setLastName(me.lastName ?? "");
+      setDob(me.dob ?? "");
+      setGender(me.gender ?? "");
+      setLocation(me.location ?? "");
+      setCurrency(me.currency ?? "");
+      setTimezone(me.timezone ?? "");
+      const fields = [me.firstName, me.lastName, me.dob, me.gender, me.location, me.currency, me.timezone];
+      const filled = fields.filter((f) => !!f && String(f).trim().length > 0).length;
+      // Open onboarding if less than 70% filled
+      setOnboardingOpen(filled < 5);
+    }
+  }, [me]);
+
+  // Compute progress
+  const progress = useMemo(() => {
+    const total = 7; // firstName, lastName, dob, gender, location, currency, timezone (middleName optional)
+    const filled =
+      (firstName.trim() ? 1 : 0) +
+      (lastName.trim() ? 1 : 0) +
+      (dob.trim() ? 1 : 0) +
+      (gender.trim() ? 1 : 0) +
+      (location.trim() ? 1 : 0) +
+      (currency.trim() ? 1 : 0) +
+      (timezone.trim() ? 1 : 0);
+    return Math.round((filled / total) * 100);
+  }, [firstName, lastName, dob, gender, location, currency, timezone]);
+
+  async function saveProfile() {
+    await updateProfile({
+      firstName: firstName || undefined,
+      middleName: middleName || undefined,
+      lastName: lastName || undefined,
+      dob: dob || undefined,
+      gender: gender || undefined,
+      location: location || undefined,
+      currency: currency || undefined,
+      timezone: timezone || undefined,
+    });
+    // Close if fully filled, otherwise keep open for user to finish later
+    if (progress >= 100) setOnboardingOpen(false);
+  }
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -243,6 +307,106 @@ export default function Dashboard() {
           </TabsContent>
         </Tabs>
       </main>
+
+      {/* Profile Onboarding Dialog */}
+      <Dialog open={onboardingOpen} onOpenChange={setOnboardingOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Complete your profile</DialogTitle>
+            <DialogDescription>
+              Help prosprAI personalize insights by adding a few details.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-muted-foreground">Profile completion</span>
+                <span className="text-xs text-muted-foreground">{progress}%</span>
+              </div>
+              <Progress value={progress} className="h-2" />
+            </div>
+
+            <div className="grid gap-3 md:grid-cols-2">
+              <div>
+                <label className="text-xs text-muted-foreground">First name</label>
+                <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="John" />
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground">Middle name (optional)</label>
+                <Input value={middleName} onChange={(e) => setMiddleName(e.target.value)} placeholder="A." />
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground">Last name</label>
+                <Input value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Doe" />
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground">Date of birth</label>
+                <Input type="date" value={dob} onChange={(e) => setDob(e.target.value)} />
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground">Gender</label>
+                <Select value={gender} onValueChange={setGender}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="female">Female</SelectItem>
+                    <SelectItem value="male">Male</SelectItem>
+                    <SelectItem value="non-binary">Non-binary</SelectItem>
+                    <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground">Location of residence</label>
+                <Input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="City, Country" />
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground">Preferred currency</label>
+                <Select value={currency} onValueChange={setCurrency}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="USD">USD — US Dollar</SelectItem>
+                    <SelectItem value="EUR">EUR — Euro</SelectItem>
+                    <SelectItem value="INR">INR — Indian Rupee</SelectItem>
+                    <SelectItem value="GBP">GBP — British Pound</SelectItem>
+                    <SelectItem value="JPY">JPY — Japanese Yen</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground">Current timezone</label>
+                <Select value={timezone} onValueChange={setTimezone}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="UTC-12:00">UTC-12:00</SelectItem>
+                    <SelectItem value="UTC-08:00">UTC-08:00 (Pacific)</SelectItem>
+                    <SelectItem value="UTC-05:00">UTC-05:00 (Eastern)</SelectItem>
+                    <SelectItem value="UTC+00:00">UTC+00:00</SelectItem>
+                    <SelectItem value="UTC+01:00">UTC+01:00</SelectItem>
+                    <SelectItem value="UTC+05:30">UTC+05:30 (India)</SelectItem>
+                    <SelectItem value="UTC+08:00">UTC+08:00</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setOnboardingOpen(false)}>
+              Fill later
+            </Button>
+            <Button onClick={saveProfile}>
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Footer />
     </motion.div>
   );

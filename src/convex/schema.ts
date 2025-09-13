@@ -30,6 +30,16 @@ const schema = defineSchema(
       isAnonymous: v.optional(v.boolean()), // is the user anonymous. do not remove
 
       role: v.optional(roleValidator), // role of the user. do not remove
+
+      // Add profile fields for onboarding
+      firstName: v.optional(v.string()),
+      middleName: v.optional(v.string()),
+      lastName: v.optional(v.string()),
+      dob: v.optional(v.string()), // ISO date string
+      gender: v.optional(v.string()), // keep string for flexibility
+      location: v.optional(v.string()),
+      currency: v.optional(v.string()),
+      timezone: v.optional(v.string()),
     }).index("email", ["email"]), // index for the email. do not remove or modify
 
     chats: defineTable({
