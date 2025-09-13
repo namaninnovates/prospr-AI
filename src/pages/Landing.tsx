@@ -598,7 +598,7 @@ export default function Landing() {
                 {/* Main card */}
                 <div className="relative rounded-2xl border bg-white/75 dark:bg-card/40 backdrop-blur-md ring-1 ring-border/60 shadow-[0_8px_30px_rgba(0,0,0,0.06)]">
                   {/* Header */}
-                  <div className="flex items-center justify-between px-5 pt-5">
+                  <div className="flex items-center justify-between px-5 pt-3">
                     <div className="flex items-center gap-2 text-lg font-semibold">
                       <div className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/25 border border-primary/30 shadow-sm">
                         <Bot className="h-4 w-4" />
@@ -637,12 +637,12 @@ export default function Landing() {
                   </div>
 
                   {/* Body */}
-                  <div className="px-5 pb-5">
+                  <div className="px-5 pb-3">
                     {/* Input */}
                     <div className="mt-3">
                       <Textarea
                         placeholder="e.g., How should I rebalance for a moderate risk profile? How do I interpret ROE vs ROA in practice?"
-                        className="min-h-[120px] bg-white/85 dark:bg-background/50 rounded-xl border border-primary/20 focus-visible:ring-2 focus-visible:ring-secondary focus-visible:border-secondary/40 transition-shadow"
+                        className="min-h-[72px] bg-white/85 dark:bg-background/50 rounded-xl border border-primary/20 focus-visible:ring-2 focus-visible:ring-secondary focus-visible:border-secondary/40 transition-shadow"
                         value={prompt}
                         onChange={(e) => setPrompt(e.target.value)}
                         disabled={loading || (!isAuthenticated && remainingReplies <= 0)}
@@ -695,7 +695,7 @@ export default function Landing() {
                     </div>
 
                     {/* Conversation */}
-                    <div className="mt-5 rounded-xl border bg-white/70 dark:bg-background/40 p-3 max-h-[20vh] overflow-auto">
+                    <div className="mt-4 rounded-xl border bg-white/70 dark:bg-background/40 p-3 max-h-[12vh] overflow-auto">
                       {messages.length === 0 ? (
                         <div className="text-sm text-muted-foreground">
                           Start a conversation — <span className="bg-gradient-to-r from-secondary via-accent to-secondary bg-clip-text text-transparent font-semibold">prosprAI</span> will synthesize, explain, and outline next steps tailored to your situation.
